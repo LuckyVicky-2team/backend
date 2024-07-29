@@ -19,3 +19,6 @@ assignees: ''
 - [ ] TODO
 - [ ] TODO
 - [ ] TODO
+
+## 마감날짜
+ex) 2024/07/31
