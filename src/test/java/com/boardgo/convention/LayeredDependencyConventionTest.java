@@ -18,7 +18,7 @@ public class LayeredDependencyConventionTest {
         javaClasses =
                 new ClassFileImporter()
                         .withImportOption(new DoNotIncludeTests())
-                        .importPackages("com.boardgo.domain.test");
+                        .importPackages("com.boardgo");
     }
 
     @Test

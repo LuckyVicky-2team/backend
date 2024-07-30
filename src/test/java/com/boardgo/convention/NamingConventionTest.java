@@ -1,5 +1,6 @@
 package com.boardgo.convention;
 
+import static com.tngtech.archunit.lang.conditions.ArchConditions.haveSimpleNameContaining;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -71,14 +72,6 @@ public class NamingConventionTest {
                 .check(javaClasses);
     }
 
-    @Test
-    @DisplayName("Service.Dto 패키지의 클래스는 이름 마지막에 Dto가 있다")
-    void Service_Dto_패키지의_클래스는_이름_마지막에_Dto가_있다() {
-        classes().that().resideInAPackage("..service.dto")
-                .should().haveSimpleNameEndingWith("Dto")
-                .check(javaClasses);
-    }
-
     //Repository
     @Test
     @DisplayName("repository 는 이름에 Repository를 포함한다")
@@ -97,6 +90,25 @@ public class NamingConventionTest {
                 .should().beAnnotatedWith(Repository.class)
                 .check(javaClasses);
 
+    }
+
+    @Test
+    @DisplayName("repository.dto 패키지의 클래스는 이름 마지막에 Dto가 있다")
+    void repository_dto_패키지의_클래스는_이름_마지막에_Dto가_있다() {
+        classes().that().resideInAPackage("..repository.dto")
+                .should().haveSimpleNameEndingWith("Dto")
+                .check(javaClasses);
+    }
+
+    //Entity
+    @Test
+    @DisplayName("entity는 이름 끝 또는 이름에 Entity가 있고, Entity 어노테이션이 있다")
+    void entity는_이름_끝_또는_이름에_Entity가_있고_Entity_어노테이션이_있다() {
+        classes().that().resideInAPackage("..domain..entity")
+                .should().haveSimpleNameEndingWith("Entity")
+                .orShould(haveSimpleNameContaining("Entity"))
+                .andShould().bePublic()
+                .check(javaClasses);
     }
 
 }
