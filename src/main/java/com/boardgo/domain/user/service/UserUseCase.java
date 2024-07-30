@@ -1,11 +1,11 @@
 package com.boardgo.domain.user.service;
 
-import com.boardgo.domain.user.controller.dto.UserResponse;
 import com.boardgo.domain.user.entity.UserEntity;
+import java.util.List;
 
 public interface UserUseCase {
     void save(UserEntity userEntity);
-    UserEntity selectAll();
+    List<UserEntity> selectAll();
     void saveDsl(UserEntity userEntity);
-    UserResponse selectAllDsl();
+    UserEntity selectDsl();
 }

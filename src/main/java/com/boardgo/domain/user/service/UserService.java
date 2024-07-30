@@ -1,10 +1,10 @@
 package com.boardgo.domain.user.service;
 
-import com.boardgo.domain.user.controller.dto.UserResponse;
 import com.boardgo.domain.user.entity.UserEntity;
 import com.boardgo.domain.user.repository.UserDslRepository;
 import com.boardgo.domain.user.repository.UserRepository;
-import com.boardgo.domain.user.service.dto.UserDto;
+import com.boardgo.domain.user.repository.dto.UserDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class UserService implements UserUseCase {
         userRepository.save(userEntity);
     }
 
-    public UserEntity selectAll(){
+    public List<UserEntity> selectAll(){
         return userRepository.selectAll();
     }
 
@@ -26,8 +26,9 @@ public class UserService implements UserUseCase {
         userDslRepository.save(userEntity);
     }
 
-    public UserResponse selectAllDsl(){
+    public UserEntity selectDsl(){
         UserDto userDto = userDslRepository.selectAll();
-        return new UserResponse(userDto);
+        // UserDto > UserEntity
+        return userDto.toEntity();
     }
 }
