@@ -18,7 +18,7 @@ public class DependencyConventionTest {
         javaClasses =
                 new ClassFileImporter()
                         .withImportOption(new DoNotIncludeTests())
-                        .importPackages("com.boardgo.domain.user");
+                        .importPackages("com.boardgo");
     }
 
     @Test
@@ -33,8 +33,8 @@ public class DependencyConventionTest {
     @Test
     @DisplayName("service는 controller와 service에 의해서만 의존된다")
     public void service는_controller와_service에_의해서만_의존된다() {
-        classes().that().resideInAPackage("..repository..")
-                .should().onlyHaveDependentClassesThat().resideInAnyPackage("..service..")
+        classes().that().resideInAPackage("..service..")
+                .should().onlyHaveDependentClassesThat().resideInAnyPackage("..service..","..controller..")
                 .check(javaClasses);
     }
 
@@ -42,7 +42,7 @@ public class DependencyConventionTest {
     @DisplayName("repository는 service에 의해서만 의존된다")
     public void repository는_service에_의해서만_의존된다() {
         classes().that().resideInAPackage("..repository..")
-                .should().onlyHaveDependentClassesThat().resideInAnyPackage("..service..")
+                .should().onlyHaveDependentClassesThat().resideInAnyPackage("..repository..","..service..")
                 .check(javaClasses);
     }
 
