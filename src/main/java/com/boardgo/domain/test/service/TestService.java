@@ -1,6 +1,6 @@
 package com.boardgo.domain.test.service;
 
-import com.boardgo.domain.test.dto.TestRequest;
+import com.boardgo.domain.test.dto.TestDto;
 import com.boardgo.domain.test.dto.TestResponse;
 import com.boardgo.domain.test.entity.TestEntity;
 import com.boardgo.domain.test.repository.TestDslRepository;
@@ -22,11 +22,12 @@ public class TestService {
         return testRepository.selectAll();
     }
 
-    void saveDsl(TestRequest testRequest){   //불가
-        testDslRepository.save(testRequest);
+    void saveDsl(TestEntity testEntity){   //불가
+        testDslRepository.save(testEntity);
     }
 
     TestResponse selectAllDsl(){ //불가
+        TestDto testDto = testDslRepository.selectAll();
         return new TestResponse();
     }
 }
