@@ -25,8 +25,8 @@ public class CustomUserDetails implements UserDetails {
 		return collection;
 	}
 
-	public String getEmail() {
-		return getUsername();
+	public Long getId() {
+		return userInfoEntity.getId();
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return userInfoEntity.getEmail();
+		return userInfoEntity.getId().toString();
 	}
 
 	@Override

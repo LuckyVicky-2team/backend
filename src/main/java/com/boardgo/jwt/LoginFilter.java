@@ -48,14 +48,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		Authentication authResult) throws IOException, ServletException {
 		CustomUserDetails customUserDetails = (CustomUserDetails)authResult.getPrincipal();
 
-		String email = customUserDetails.getEmail();
+		Long id = customUserDetails.getId();
 		Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
 		Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
 		GrantedAuthority auth = iterator.next();
 
 		String role = auth.getAuthority();
 
-		String token = jwtUtil.createJwt(email, role, ACCESS_TOKEN_DURATION);
+		String token = jwtUtil.createJwt(id, role, ACCESS_TOKEN_DURATION);
 
 		response.addHeader(AUTHORIZATION, BEARER + token);
 	}

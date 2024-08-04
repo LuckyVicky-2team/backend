@@ -22,13 +22,13 @@ public class JWTUtil {
 			Jwts.SIG.HS256.key().build().getAlgorithm());
 	}
 
-	public String getEmail(String token) {
+	public Long getId(String token) {
 		return Jwts.parser()
 			.verifyWith(secretKey)
 			.build()
 			.parseSignedClaims(token)
 			.getPayload()
-			.get("email", String.class);
+			.get("id", Long.class);
 	}
 
 	public String getRole(String token) {
@@ -50,14 +50,14 @@ public class JWTUtil {
 			.before(new Date());
 	}
 
-	public String createJwt(String email, String role, Long expiredSecond) {
+	public String createJwt(Long id, String role, Long expiredSecond) {
 
 		Date issuedAt = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
 		Date expiration = Date.from(
 			LocalDateTime.now().plusMinutes(expiredSecond).atZone(ZoneId.systemDefault()).toInstant());
 
 		return Jwts.builder()
-			.claim("email", email)
+			.claim("id", id)
 			.claim("role", role)
 			.issuedAt(issuedAt)
 			.expiration(expiration)

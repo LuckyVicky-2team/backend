@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.boardgo.jwt.JWTFilter;
 import com.boardgo.jwt.JWTUtil;
 import com.boardgo.jwt.LoginFilter;
 
@@ -44,10 +45,13 @@ public class SecurityConfig {
 			.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
 				UsernamePasswordAuthenticationFilter.class)
 
+			.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
+
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers("/signup", "/login").permitAll()
 				// TODO: 나중에 permitAll 없애기
-				.anyRequest().permitAll())
+				.anyRequest().authenticated()
+			)
 			.build();
 	}
 
