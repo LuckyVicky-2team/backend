@@ -47,15 +47,25 @@ public class UserInfoEntity extends BaseEntity {
 
     @Builder
     private UserInfoEntity(
-            Long id, String email, String password, String nickName, LocalDateTime deleteAt) {
+            Long id,
+            String email,
+            String password,
+            String nickName,
+            ProviderType providerType,
+            LocalDateTime deleteAt) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.nickName = nickName;
+        this.providerType = providerType;
         this.deleteAt = deleteAt;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
     }
 }
