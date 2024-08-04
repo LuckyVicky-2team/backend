@@ -15,28 +15,24 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "meeting")
+@Table(name = "meeting_genre_match")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MeetingParticipant extends BaseEntity {
+public class MeetingGenreMatch extends BaseEntity {
 	@Id
-	@Column(name = "meeting_participant_id")
+	@Column(name = "meeting_genre_match_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "meeting_id")
 	private Long meetingId;
 
-	@Column(name = "user_info_id")
-	private Long userInfoId;
-
-	@Column(length = 32)
-	private ParticipantType type;
+	@Column(name = "board_game_genre_id")
+	private Long boardGameGenreId;
 
 	@Builder
-	private MeetingParticipant(Long id, Long meetingId, Long userInfoId, ParticipantType type) {
+	private MeetingGenreMatch(Long id, Long meetingId, Long boardGameGenreId) {
 		this.id = id;
 		this.meetingId = meetingId;
-		this.userInfoId = userInfoId;
-		this.type = type;
+		this.boardGameGenreId = boardGameGenreId;
 	}
 }

@@ -47,7 +47,7 @@ public class MeetingEntity extends BaseEntity {
 	private LocalDateTime endDatetime;
 
 	@Builder
-	public MeetingEntity(Long id, String content, MeetingType type, String thumbnail, String city, String county,
+	private MeetingEntity(Long id, String content, MeetingType type, String thumbnail, String city, String county,
 		LocalDateTime meetingDatetime, LocalDateTime endDatetime) {
 		this.id = id;
 		this.content = content;
