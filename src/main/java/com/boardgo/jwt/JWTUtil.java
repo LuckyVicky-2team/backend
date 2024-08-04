@@ -15,7 +15,7 @@ import io.jsonwebtoken.Jwts;
 
 @Component
 public class JWTUtil {
-	private SecretKey secretKey;
+	private final SecretKey secretKey;
 
 	public JWTUtil(@Value("${spring.jwt.secret}") String secretKey) {
 		this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8),
@@ -54,7 +54,7 @@ public class JWTUtil {
 
 		Date issuedAt = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
 		Date expiration = Date.from(
-			LocalDateTime.now().plusSeconds(expiredSecond).atZone(ZoneId.systemDefault()).toInstant());
+			LocalDateTime.now().plusMinutes(expiredSecond).atZone(ZoneId.systemDefault()).toInstant());
 
 		return Jwts.builder()
 			.claim("email", email)

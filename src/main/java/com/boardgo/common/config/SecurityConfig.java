@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.boardgo.jwt.JWTUtil;
 import com.boardgo.jwt.LoginFilter;
 
 @Configuration
@@ -20,9 +21,11 @@ import com.boardgo.jwt.LoginFilter;
 public class SecurityConfig {
 
 	private final AuthenticationConfiguration authenticationConfiguration;
+	private final JWTUtil jwtUtil;
 
-	public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+	public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
 		this.authenticationConfiguration = authenticationConfiguration;
+		this.jwtUtil = jwtUtil;
 	}
 
 	@Bean
@@ -38,7 +41,7 @@ public class SecurityConfig {
 			.sessionManagement(sessionManagerConfigurer -> sessionManagerConfigurer
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-			.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)),
+			.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
 				UsernamePasswordAuthenticationFilter.class)
 
 			.authorizeHttpRequests(authorize -> authorize
