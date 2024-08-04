@@ -1,5 +1,10 @@
 package com.boardgo.common.config;
 
+import static com.boardgo.common.constant.HeaderConstant.*;
+
+import java.util.Collections;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +17,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import com.boardgo.jwt.JWTFilter;
 import com.boardgo.jwt.JWTUtil;
@@ -24,6 +30,13 @@ public class SecurityConfig {
 	private final AuthenticationConfiguration authenticationConfiguration;
 	private final JWTUtil jwtUtil;
 
+	@Value("${spring.cors.origins}")
+	private String corsOrigins;
+	@Value("${spring.cors.methods}")
+	private String corsMethods;
+	@Value("${spring.cors.headers}")
+	private String corsHeaders;
+
 	public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
 		this.authenticationConfiguration = authenticationConfiguration;
 		this.jwtUtil = jwtUtil;
@@ -32,6 +45,20 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		return httpSecurity
+
+			.cors(cors -> cors.configurationSource(request -> {
+
+				CorsConfiguration configuration = new CorsConfiguration();
+
+				configuration.setAllowedOriginPatterns(Collections.singletonList(corsOrigins));
+				configuration.setExposedHeaders(Collections.singletonList(corsHeaders));
+				configuration.setAllowedMethods(Collections.singletonList(corsMethods));
+				configuration.setAllowCredentials(true);
+
+				configuration.setExposedHeaders(Collections.singletonList(AUTHORIZATION));
+
+				return configuration;
+			}))
 
 			.httpBasic(AbstractHttpConfigurer::disable)
 

@@ -14,4 +14,8 @@ spring:
     show-sql: true
 
   jwt:
-    secret: abc
+    secret: test
+  cors:
+    origins: "*"
+    methods: "*"
+    headers: "*"
