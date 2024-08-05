@@ -28,7 +28,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 jwtUtil.createJwt(
                         oAuth2User.getId(), oAuth2User.getRoleType(), ACCESS_TOKEN_DURATION);
         response.addCookie(createCookies(AUTHORIZATION, accessToken));
-        response.sendRedirect("http://localhost:3000/"); // FIXME: 개발&운영 서버 리다이렉트 주소
+        response.sendRedirect("http://localhost:3000/home"); // FIXME: 개발&운영 서버 리다이렉트 주소/home 주소로 변환
     }
 
     private Cookie createCookies(String key, String value) {

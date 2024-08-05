@@ -86,13 +86,23 @@ public class SecurityConfig {
                                         .anyRequest()
                                         .authenticated())
                 .oauth2Login(
-                        (oauth2) ->
-                                oauth2.userInfoEndpoint(
-                                                userInfoEndpointConfig -> {
-                                                    userInfoEndpointConfig.userService(
-                                                            customOAuth2UserService);
-                                                })
-                                        .successHandler(oAuth2SuccessHandler))
+                        (oauth2) -> {
+                            oauth2.authorizationEndpoint(
+                                            authorizationEndpointConfig -> {
+                                                authorizationEndpointConfig.baseUri(
+                                                        "/oauth2/authorization");
+                                            })
+                                    .redirectionEndpoint(
+                                            redirectionEndpointConfig ->
+                                                    redirectionEndpointConfig.baseUri(
+                                                            "/login/oauth2/code/*"))
+                                    .userInfoEndpoint(
+                                            userInfoEndpointConfig -> {
+                                                userInfoEndpointConfig.userService(
+                                                        customOAuth2UserService);
+                                            })
+                                    .successHandler(oAuth2SuccessHandler);
+                        })
                 .build();
     }
 
