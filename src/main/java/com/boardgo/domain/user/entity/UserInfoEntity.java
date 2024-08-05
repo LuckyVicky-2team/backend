@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,9 +37,8 @@ public class UserInfoEntity extends BaseEntity {
     private String nickName;
 
     @Column(name = "provider_type", length = 20)
-    @NotNull
     @Enumerated(EnumType.STRING)
-    private ProviderType providerType;
+    private ProviderType providerType = ProviderType.LOCAL;
 
     @Column(name = "deleted_at", columnDefinition = "DATETIME")
     private LocalDateTime deleteAt;
