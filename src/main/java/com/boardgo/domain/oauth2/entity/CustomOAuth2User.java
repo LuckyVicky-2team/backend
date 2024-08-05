@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class CustomOAuth2User implements OAuth2User {
+    private final Long id;
     private final String email;
     private final String nickname;
     private final ProviderType providerType;
@@ -43,6 +44,7 @@ public class CustomOAuth2User implements OAuth2User {
 
     public static CustomOAuth2User create(UserInfoEntity user) {
         return new CustomOAuth2User(
+                user.getId(),
                 user.getEmail(),
                 user.getNickName(),
                 user.getProviderType(),
