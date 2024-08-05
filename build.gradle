@@ -100,6 +100,11 @@ asciidoctor {
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
     dependsOn test
+    doFirst {
+        if (!snippetsDir.get().asFile.exists()) {
+            snippetsDir.get().asFile.mkdirs()
+        }
+    }
 }
 
 asciidoctor.doFirst {
