@@ -212,12 +212,6 @@ tasks.whenTaskAdded {
 }
 
 spotless {
-    format 'misc', {
-        target '.gitignore'
-
-        trimTrailingWhitespace()
-        indentWithTabs()
-    }
     java {
         target project.fileTree(project.rootDir) {
             include '**/*.java'
