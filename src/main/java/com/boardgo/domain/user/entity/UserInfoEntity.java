@@ -14,8 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Getter
 @Entity
+@Getter
 @Table(name = "user_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserInfoEntity extends BaseEntity {
