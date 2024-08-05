@@ -36,9 +36,9 @@ public class UserInfoEntity extends BaseEntity {
     @Column(length = 50, nullable = false, unique = true)
     private String nickName;
 
-    @Column(name = "provider_type", length = 20)
+    @Column(name = "provider_type", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
-    private ProviderType providerType = ProviderType.LOCAL;
+    private ProviderType providerType;
 
     @Column(name = "deleted_at", columnDefinition = "DATETIME")
     private LocalDateTime deleteAt;
