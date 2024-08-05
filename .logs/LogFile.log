@@ -1,0 +1,10 @@
+2024-08-05 14:58:54.101 23577 [http-nio-8080-exec-1] INFO  c.boardgo.config.log.OutputLog - PRE --- http method GET, uri:[/docs/index.html], parameter: null, userId:[I'M DUMMY!]
+2024-08-05 14:59:06.556 36032 [http-nio-8080-exec-3] INFO  c.boardgo.config.log.OutputLog - PRE --- http method GET, uri:[/login], parameter: null, userId:[I'M DUMMY!]
+2024-08-05 14:59:09.505 38981 [http-nio-8080-exec-4] INFO  c.boardgo.config.log.OutputLog - PRE --- http method GET, uri:[/login], parameter: null, userId:[I'M DUMMY!]
+2024-08-05 14:59:28.350 57826 [http-nio-8080-exec-6] INFO  c.boardgo.config.log.OutputLog - PRE --- http method POST, uri:[/signup], parameter: {
+    "email": "aa@aa.com",
+    "password": "123456789",
+    "nickName": "name"
+}, userId:[I'M DUMMY!]
+2024-08-05 14:59:28.576 58052 [http-nio-8080-exec-6] INFO  c.boardgo.config.log.OutputLog - POST --- http method POST, uri:[/signup], status: 201 ,response: , userId:[I'M DUMMY!]
+2024-08-05 15:18:36.498 13124 [http-nio-8080-exec-2] INFO  c.boardgo.config.log.OutputLog - PRE --- http method GET, uri:[/docs], parameter: null, userId:[I'M DUMMY!]
