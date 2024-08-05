@@ -33,7 +33,7 @@ public class SignupDocsTest extends RestDocsTestSupport {
                 .body(signupRequest)
                 .filter(
                         document(
-                                "회원가입",
+                                "signup",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(

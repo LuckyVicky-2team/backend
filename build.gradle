@@ -101,8 +101,9 @@ asciidoctor {
     configurations 'asciidoctorExt'
     dependsOn test
     doFirst {
-        if (!snippetsDir.get().asFile.exists()) {
-            snippetsDir.get().asFile.mkdirs()
+        def snippetsDirFile = file(snippetsDir)
+        if (!snippetsDirFile.exists()) {
+            snippetsDirFile.mkdirs()
         }
     }
 }
