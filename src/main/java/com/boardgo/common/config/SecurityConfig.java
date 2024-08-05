@@ -1,6 +1,6 @@
 package com.boardgo.common.config;
 
-import static com.boardgo.common.constant.HeaderConstant.*;
+import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 
 import com.boardgo.domain.oauth2.handler.OAuth2SuccessHandler;
 import com.boardgo.domain.oauth2.service.CustomOAuth2UserService;
@@ -41,12 +41,6 @@ public class SecurityConfig {
 
     @Value("${spring.cors.headers}")
     private String corsHeaders;
-
-    public SecurityConfig(
-            AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtUtil = jwtUtil;
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

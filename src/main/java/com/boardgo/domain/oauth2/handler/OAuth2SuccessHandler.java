@@ -1,11 +1,21 @@
 package com.boardgo.domain.oauth2.handler;
 
+import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
+import static com.boardgo.common.constant.TimeConstant.ACCESS_TOKEN_DURATION;
+
+import com.boardgo.domain.oauth2.entity.CustomOAuth2User;
+import com.boardgo.jwt.JWTUtil;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    /*
     private final JWTUtil jwtUtil;
 
     @Override
@@ -29,6 +39,4 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         return cookie;
     }
-
-     */
 }
