@@ -29,9 +29,9 @@ public class UserCommandServiceV1Test extends IntegrationTestSupport {
         // when
         Long signupUserId = userUseCase.signup(signupRequest);
         // then
-        UserInfoEntity userInfoEntity = userRepository.findById(signupUserId).get();
         List<UserPrTagEntity> userPrTagEntities =
-                userPrTagRepository.findByUserInfoEntity(userInfoEntity);
+                userPrTagRepository.findByUserInfoId(signupUserId);
+        UserInfoEntity userInfoEntity = userRepository.findById(signupUserId).get();
 
         assertThat(userInfoEntity.getEmail()).isEqualTo(signupRequest.email());
         assertThat(userInfoEntity.getNickName()).isEqualTo(signupRequest.nickName());

@@ -48,6 +48,11 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+    // Jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
     // Security
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -123,10 +128,13 @@ tasks.processResources.outputs.upToDateWhen { false }
 processResources.dependsOn('copySubmodule')
 
 tasks.register('copySubmodule', Copy) {
-    from './board-submodule'
-    include '*.yaml'
-    into './src/main/resources'
+
+    from('./board-submodule/backend') {
+        include('*.yml')
+    }
+    into('src/main/resources')
 }
+
 
 tasks.register('addSubmodule', Exec) {
     workingDir './script'
@@ -164,6 +172,7 @@ jacocoTestReport {
     }
 }
 
+
 // 테스트 커버리지 검증에 따른 jacoco 테스트 성공/실패 여부
 tasks.jacocoTestCoverageVerification {
     violationRules {
@@ -195,13 +204,26 @@ tasks.jacocoTestCoverageVerification {
     }
 }
 
+tasks.whenTaskAdded {
+    if (name.contains("spotless")) {
+        mustRunAfter(tasks.compileJava)
+        mustRunAfter(tasks.processResources)
+    }
+}
+
 spotless {
     format 'misc', {
-        target '*.gradle', '.gitignore'
+        target '.gitignore'
 
         trimTrailingWhitespace()
+        indentWithTabs()
     }
     java {
+        target project.fileTree(project.rootDir) {
+            include '**/*.java'
+            exclude 'src/*/generated/**/*.*'
+        }
+
         googleJavaFormat().aosp()
         removeUnusedImports()
         trimTrailingWhitespace()
