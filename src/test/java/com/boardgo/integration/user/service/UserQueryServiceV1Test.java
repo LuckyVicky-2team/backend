@@ -1,6 +1,6 @@
 package com.boardgo.integration.user.service;
 
-import com.boardgo.common.exception.AlreadyElementExistException;
+import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.domain.oauth2.entity.ProviderType;
 import com.boardgo.domain.user.controller.dto.EmailRequest;
 import com.boardgo.domain.user.controller.dto.NickNameRequest;
@@ -44,7 +44,7 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
 
         // then
         Assertions.assertThatThrownBy(() -> userQueryUseCase.existEmail(emailRequest))
-                .isInstanceOf(AlreadyElementExistException.class);
+                .isInstanceOf(CustomIllegalArgumentException.class);
     }
 
     @Test
@@ -74,6 +74,6 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
         // when
         // then
         Assertions.assertThatThrownBy(() -> userQueryUseCase.existNickName(nickNameRequest))
-                .isInstanceOf(AlreadyElementExistException.class);
+                .isInstanceOf(CustomIllegalArgumentException.class);
     }
 }
