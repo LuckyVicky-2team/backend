@@ -18,7 +18,7 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
     @Autowired private UserQueryUseCase userQueryUseCase;
 
     @Test
-    @DisplayName("해당 이메일이 존재하지 않으면 아무일도 일어나지 않는다")
+    @DisplayName("해당 이메일이 존재하지 않으면 에러가 발생하지 않는다")
     void 해당_이메일이_존재하지_않으면_아무일도_일어나지_않는다() {
         // given
         EmailRequest emailRequest = new EmailRequest("aa@aa.com");
