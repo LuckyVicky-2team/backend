@@ -1,5 +1,6 @@
 package com.boardgo.common.exception.advice;
 
+import com.boardgo.common.exception.AlreadyElementExistException;
 import com.boardgo.common.exception.advice.dto.ErrorResponse;
 import com.boardgo.common.exception.advice.dto.FieldErrorResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -48,6 +49,18 @@ public class CommonControllerAdvice {
                         ErrorResponse.builder()
                                 .errorCode(400)
                                 .messages("JSON Parsing Error")
+                                .build());
+    }
+
+    /** 이미 존재하는 값일 경우 * */
+    @ExceptionHandler(AlreadyElementExistException.class)
+    public ResponseEntity<ErrorResponse> AlreadyElementExistException(
+            AlreadyElementExistException exception) {
+        return ResponseEntity.badRequest()
+                .body(
+                        ErrorResponse.builder()
+                                .errorCode(4002)
+                                .messages(exception.getMessage())
                                 .build());
     }
 }

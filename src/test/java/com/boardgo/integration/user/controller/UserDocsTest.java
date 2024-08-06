@@ -37,4 +37,28 @@ public class UserDocsTest extends RestDocsTestSupport {
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }
+
+    @Test
+    @DisplayName("사용자는 닉네임을 중복 검사할 수 있다")
+    void 사용자는_닉네임을_중복_검사할_수_있다() {
+
+        given(this.spec)
+                .log()
+                .all()
+                .port(port)
+                .header(API_VERSION_HEADER, "1")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParams("nickName", "nickname")
+                .filter(
+                        document(
+                                "checkNickName",
+                                queryParameters(
+                                        parameterWithName("nickName")
+                                                .description(
+                                                        "공백이나 Null은 통과되지 않습니다! 아니면 BadRequest 발생"))))
+                .when()
+                .get("/check-nickname")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
 }

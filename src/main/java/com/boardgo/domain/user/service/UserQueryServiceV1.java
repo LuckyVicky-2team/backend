@@ -1,6 +1,8 @@
 package com.boardgo.domain.user.service;
 
+import com.boardgo.common.exception.AlreadyElementExistException;
 import com.boardgo.domain.user.controller.dto.EmailRequest;
+import com.boardgo.domain.user.controller.dto.NickNameRequest;
 import com.boardgo.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,16 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
     private final UserRepository userRepository;
 
     @Override
-    public boolean existEmail(EmailRequest emailRequest) {
-        return userRepository.existsByEmail(emailRequest.email());
+    public void existEmail(EmailRequest emailRequest) {
+        if (userRepository.existsByEmail(emailRequest.email())) {
+            throw new AlreadyElementExistException("email 중복");
+        }
+    }
+
+    @Override
+    public void existNickName(NickNameRequest nickNameRequest) {
+        if (userRepository.existsByNickName(nickNameRequest.nickName())) {
+            throw new AlreadyElementExistException("nickName 중복");
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.boardgo.integration.user.service;
 
+import com.boardgo.common.exception.AlreadyElementExistException;
 import com.boardgo.domain.user.controller.dto.EmailRequest;
+import com.boardgo.domain.user.controller.dto.NickNameRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.service.UserQueryUseCase;
@@ -15,19 +17,18 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
     @Autowired private UserQueryUseCase userQueryUseCase;
 
     @Test
-    @DisplayName("해당 이메일이 존재하지 않으면 false를 반환한다")
-    void 해당_이메일이_존재하지_않으면_false를_반환한다() {
+    @DisplayName("해당 이메일이 존재하지 않으면 아무일도 일어나지 않는다")
+    void 해당_이메일이_존재하지_않으면_아무일도_일어나지_않는다() {
         // given
         EmailRequest emailRequest = new EmailRequest("aa@aa.com");
         // when
-        boolean result = userQueryUseCase.existEmail(emailRequest);
         // then
-        Assertions.assertThat(result).isEqualTo(false);
+        userQueryUseCase.existEmail(emailRequest);
     }
 
     @Test
-    @DisplayName("해당 이메일이 존재하면 true를 반환한다")
-    void 해당_이메일이_존재하면_true를_반환한다() {
+    @DisplayName("해당 이메일이 존재하면 error를 반환한다")
+    void 해당_이메일이_존재하면_error를_반환한다() {
         // given
         EmailRequest emailRequest = new EmailRequest("aa@aa.com");
         UserInfoEntity userInfoEntity =
@@ -38,8 +39,44 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
                         .build();
         userRepository.save(userInfoEntity);
         // when
-        boolean result = userQueryUseCase.existEmail(emailRequest);
+
         // then
-        Assertions.assertThat(result).isEqualTo(true);
+        Assertions.assertThatThrownBy(
+                        () -> {
+                            userQueryUseCase.existEmail(emailRequest);
+                        })
+                .isInstanceOf(AlreadyElementExistException.class);
+    }
+
+    @Test
+    @DisplayName("해당 닉네임이 존재하지 않으면 에러가 발생하지 않는다")
+    void 해당_닉네임이_존재하지_않으면_에러가_발생하지_않는다() {
+        // given
+        NickNameRequest nickNameRequest = new NickNameRequest("nickName");
+        // when
+        userQueryUseCase.existNickName(nickNameRequest);
+        // then
+
+    }
+
+    @Test
+    @DisplayName("해당 닉네임이 존재하면 에러가 발생한다")
+    void 해당_닉네임이_존재하면_에러가_발생한다() {
+        // given
+        NickNameRequest nickNameRequest = new NickNameRequest("nickName");
+        UserInfoEntity userInfoEntity =
+                UserInfoEntity.builder()
+                        .email("aa@aa.com")
+                        .password("password")
+                        .nickName("nickName")
+                        .build();
+        userRepository.save(userInfoEntity);
+        // when
+        // then
+        Assertions.assertThatThrownBy(
+                        () -> {
+                            userQueryUseCase.existNickName(nickNameRequest);
+                        })
+                .isInstanceOf(AlreadyElementExistException.class);
     }
 }
