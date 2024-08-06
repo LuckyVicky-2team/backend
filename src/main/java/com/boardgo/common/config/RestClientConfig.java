@@ -1,45 +1,34 @@
 package com.boardgo.common.config;
 
-import com.boardgo.common.exception.KakaoException;
+import com.boardgo.common.exception.ExternalException;
 import com.boardgo.common.exception.advice.dto.ErrorCode;
-import com.boardgo.oauth2.kakao.KakaoClient;
-import com.boardgo.oauth2.kakao.KakaoOAuthProperties;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.support.RestClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RestClientConfig {
+    private final RestClient restClient;
 
-    private final KakaoOAuthProperties properties;
-
-    @Bean
-    KakaoClient createRestClient() {
-        RestClient kakaoClient =
-                RestClient.builder()
-                        .baseUrl(properties.baseUrl())
-                        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+    @Autowired
+    public RestClientConfig(RestClient.Builder builder) {
+        this.restClient =
+                builder.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                         .defaultHeader(
                                 HttpHeaders.CONTENT_TYPE,
                                 String.valueOf(MediaType.APPLICATION_FORM_URLENCODED))
                         .defaultStatusHandler(
                                 HttpStatusCode::is5xxServerError,
                                 ((request, response) -> {
-                                    throw new KakaoException(
+                                    throw new ExternalException(
                                             request.getURI().toString(),
                                             ErrorCode.INTERNAL_SERVER_ERROR);
                                 }))
                         .build();
-
-        RestClientAdapter adapter = RestClientAdapter.create(kakaoClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        return factory.createClient(KakaoClient.class);
     }
 }
