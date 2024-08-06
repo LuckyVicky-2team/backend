@@ -17,7 +17,8 @@ jobs:
       - name: Pull Request URL 가져오기
         id: pr-url
         run: |
-          echo "PR_URL=$(jq -r .pull_request.html_url "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
+          PR_URL=$(jq -r .pull_request.html_url "$GITHUB_EVENT_PATH")
+          echo "PR_URL=${PR_URL}" >> $GITHUB_ENV
 
       - name: Pull Request URL 출력해보기
         run: |
@@ -57,9 +58,9 @@ jobs:
         with:
           report_paths: 'build/test-results/test/TEST-*.xml'
 
-      - name: 🍀 테스트 실패시 슬랙 알림
+      - name: 🍀 테스트 실패시 디스코드 알림
         if: failure()
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          content: "테스트 실패: ${{ github.repository }} \nPR 주소 : $PR_URL"
+          content: "테스트 실패: ${{ github.repository }} \nPR 주소 : ${{ env.PR_URL }}"

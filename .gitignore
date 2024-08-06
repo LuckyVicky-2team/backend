@@ -37,4 +37,9 @@ out/
 .vscode/
 
 ### Application Yaml ###
-src/resources
+/src/main/generated
+/src/main/resources
+
+
+### Log ###
+.log/
