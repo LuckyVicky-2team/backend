@@ -5,11 +5,13 @@ import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.service.dto.CustomUserDetails;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -17,8 +19,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        Optional<UserInfoEntity> userInfoEntity = userRepository.findById(Long.valueOf(id));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<UserInfoEntity> userInfoEntity = userRepository.findByEmail(email);
         return new CustomUserDetails(userInfoEntity.orElseThrow());
     }
 }
