@@ -169,6 +169,7 @@ sourceSets {
 //gradle clean 시, Q Class 디렉토리까지 삭제하도록 설정
 clean {
     delete file(generated)
+    delete file("out")
 }
 
 tasks.named('asciidoctor') {

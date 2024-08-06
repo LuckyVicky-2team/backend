@@ -1,5 +1,6 @@
 package com.boardgo.domain.user.service;
 
+import com.boardgo.domain.oauth2.entity.ProviderType;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.service.dto.CustomUserDetails;
@@ -20,7 +21,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<UserInfoEntity> userInfoEntity = userRepository.findByEmail(email);
+        Optional<UserInfoEntity> userInfoEntity =
+                userRepository.findByEmailAndProviderType(email, ProviderType.LOCAL);
         return new CustomUserDetails(userInfoEntity.orElseThrow());
     }
 }

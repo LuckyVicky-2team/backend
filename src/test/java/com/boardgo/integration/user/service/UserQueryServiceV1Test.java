@@ -1,6 +1,7 @@
 package com.boardgo.integration.user.service;
 
 import com.boardgo.common.exception.AlreadyElementExistException;
+import com.boardgo.domain.oauth2.entity.ProviderType;
 import com.boardgo.domain.user.controller.dto.EmailRequest;
 import com.boardgo.domain.user.controller.dto.NickNameRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
@@ -36,15 +37,13 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
                         .email("aa@aa.com")
                         .password("password")
                         .nickName("nickName")
+                        .providerType(ProviderType.LOCAL)
                         .build();
         userRepository.save(userInfoEntity);
         // when
 
         // then
-        Assertions.assertThatThrownBy(
-                        () -> {
-                            userQueryUseCase.existEmail(emailRequest);
-                        })
+        Assertions.assertThatThrownBy(() -> userQueryUseCase.existEmail(emailRequest))
                 .isInstanceOf(AlreadyElementExistException.class);
     }
 
@@ -69,14 +68,12 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
                         .email("aa@aa.com")
                         .password("password")
                         .nickName("nickName")
+                        .providerType(ProviderType.LOCAL)
                         .build();
         userRepository.save(userInfoEntity);
         // when
         // then
-        Assertions.assertThatThrownBy(
-                        () -> {
-                            userQueryUseCase.existNickName(nickNameRequest);
-                        })
+        Assertions.assertThatThrownBy(() -> userQueryUseCase.existNickName(nickNameRequest))
                 .isInstanceOf(AlreadyElementExistException.class);
     }
 }
