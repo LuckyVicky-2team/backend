@@ -80,7 +80,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers("/signup", "/login", "/docs/*")
+                                        .requestMatchers(
+                                                "/signup", "/login", "/docs/*", "/login/oauth2/**")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
