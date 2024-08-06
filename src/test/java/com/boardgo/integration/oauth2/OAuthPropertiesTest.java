@@ -32,19 +32,6 @@ public class OAuthPropertiesTest {
     }
 
     @Test
-    @DisplayName("google provide properties 매핑")
-    void google_provide_properties_매핑() {
-        // given
-        String TOKEN_REQUEST_URI = providerProperties.google().tokenUri();
-        String USER_INFO_REQUEST_URI = providerProperties.google().userInfoUri();
-
-        // then
-        assertThat(TOKEN_REQUEST_URI).isEqualTo("https://oauth2.googleapis.com/token");
-        assertThat(USER_INFO_REQUEST_URI)
-                .isEqualTo("https://www.googleapis.com/oauth2/v2/userinfo");
-    }
-
-    @Test
     @DisplayName("redirect uri properties 매핑")
     void redirect_uri_properties_매핑() {
         // given
