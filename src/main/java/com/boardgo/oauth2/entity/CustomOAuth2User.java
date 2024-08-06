@@ -1,5 +1,6 @@
 package com.boardgo.oauth2.entity;
 
+import com.boardgo.domain.user.entity.ProviderType;
 import com.boardgo.domain.user.entity.RoleType;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class CustomOAuth2User implements OAuth2User {
     private final String nickname;
     private final ProviderType providerType;
     private final RoleType roleType;
-    private final Collection<GrantedAuthority> authorities; // FIXME 얘는 추가왜해?
+    private final Collection<GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
     @Override
@@ -42,13 +43,12 @@ public class CustomOAuth2User implements OAuth2User {
         return this.nickname;
     }
 
-    public static CustomOAuth2User create(
-            UserInfoEntity user, ProviderType providerType, Map<String, Object> attributes) {
+    public static CustomOAuth2User create(UserInfoEntity user, Map<String, Object> attributes) {
         return new CustomOAuth2User(
                 user.getId(),
                 user.getEmail(),
                 user.getNickName(),
-                providerType,
+                user.getProviderType(),
                 RoleType.USER,
                 Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode())),
                 attributes);

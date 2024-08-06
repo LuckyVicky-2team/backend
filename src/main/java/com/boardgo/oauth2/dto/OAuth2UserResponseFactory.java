@@ -1,6 +1,6 @@
 package com.boardgo.oauth2.dto;
 
-import com.boardgo.oauth2.entity.ProviderType;
+import com.boardgo.domain.user.entity.ProviderType;
 import java.util.Map;
 
 public class OAuth2UserResponseFactory {

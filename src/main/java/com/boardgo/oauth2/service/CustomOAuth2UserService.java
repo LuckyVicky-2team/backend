@@ -1,13 +1,13 @@
 package com.boardgo.oauth2.service;
 
 import com.boardgo.domain.mapper.UserInfoMapper;
+import com.boardgo.domain.user.entity.ProviderType;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.oauth2.dto.OAuth2CreateUserRequest;
 import com.boardgo.oauth2.dto.OAuth2Response;
 import com.boardgo.oauth2.dto.OAuth2UserResponseFactory;
 import com.boardgo.oauth2.entity.CustomOAuth2User;
-import com.boardgo.oauth2.entity.ProviderType;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -47,7 +47,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userInfoEntity.updateEmail(oAuth2Response.getEmail());
         }
 
-        return CustomOAuth2User.create(userInfoEntity, providerType, oAuth2User.getAttributes());
+        return CustomOAuth2User.create(userInfoEntity, oAuth2User.getAttributes());
     }
 
     private UserInfoEntity createUser(OAuth2CreateUserRequest auth2CreateUserRequest) {
