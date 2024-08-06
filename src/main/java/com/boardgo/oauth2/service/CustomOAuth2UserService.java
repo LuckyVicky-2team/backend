@@ -47,7 +47,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userInfoEntity.updateEmail(oAuth2Response.getEmail());
         }
 
-        return CustomOAuth2User.create(userInfoEntity, oAuth2User.getAttributes());
+        return CustomOAuth2User.create(userInfoEntity, providerType, oAuth2User.getAttributes());
     }
 
     private UserInfoEntity createUser(OAuth2CreateUserRequest auth2CreateUserRequest) {

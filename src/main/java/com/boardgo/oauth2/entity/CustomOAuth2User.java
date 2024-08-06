@@ -42,19 +42,15 @@ public class CustomOAuth2User implements OAuth2User {
         return this.nickname;
     }
 
-    public static CustomOAuth2User create(UserInfoEntity user) {
+    public static CustomOAuth2User create(
+            UserInfoEntity user, ProviderType providerType, Map<String, Object> attributes) {
         return new CustomOAuth2User(
                 user.getId(),
                 user.getEmail(),
                 user.getNickName(),
-                user.getProviderType(),
+                providerType,
                 RoleType.USER,
-                Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode())));
-    }
-
-    public static CustomOAuth2User create(UserInfoEntity user, Map<String, Object> attributes) {
-        CustomOAuth2User customOAuth2User = create(user);
-        customOAuth2User.attributes = attributes;
-        return customOAuth2User;
+                Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode())),
+                attributes);
     }
 }
