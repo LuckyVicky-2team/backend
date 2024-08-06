@@ -5,17 +5,13 @@ import static io.restassured.RestAssured.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.*;
 
-import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.integration.support.RestDocsTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class UserDocsTest extends RestDocsTestSupport {
-
-    @Autowired private UserRepository userRepository;
 
     @Test
     @DisplayName("사용자는 이메일을 중복 검사할 수 있다")
