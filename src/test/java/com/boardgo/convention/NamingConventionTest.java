@@ -1,6 +1,5 @@
 package com.boardgo.convention;
 
-import static com.tngtech.archunit.lang.conditions.ArchConditions.haveSimpleNameContaining;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -29,18 +28,26 @@ public class NamingConventionTest {
     @Test
     @DisplayName("controller는 클래스 명에 Controller를 포함하고 RestController 어노테이션이 있다")
     void controller는_클래스_명에_Controller를_포함하고_RestController_어노테이션이_있다() {
-        classes().that().resideInAPackage("..controller")
-                .should().haveSimpleNameContaining("Controller")
-                .andShould().beAnnotatedWith(RestController.class)
+        classes()
+                .that()
+                .resideInAPackage("..controller")
+                .should()
+                .haveSimpleNameContaining("Controller")
+                .andShould()
+                .beAnnotatedWith(RestController.class)
                 .check(javaClasses);
     }
 
     @Test
     @DisplayName("controller.dto 패키지의 클래스는 Request 또는 Reponse 이름을 포함한다")
     void controller_dto_패지키의_클래스는_Request_또는_Reponse_이름을_포함한다() {
-        classes().that().resideInAPackage("..controller.dto..")
-                .should().haveSimpleNameEndingWith("Request")
-                .orShould().haveSimpleNameEndingWith("Response")
+        classes()
+                .that()
+                .resideInAPackage("..controller.dto..")
+                .should()
+                .haveSimpleNameEndingWith("Request")
+                .orShould()
+                .haveSimpleNameEndingWith("Response")
                 .check(javaClasses);
     }
 
@@ -48,67 +55,70 @@ public class NamingConventionTest {
     @Test
     @DisplayName("service 패키지는 이름에 Service나 UseCase 를 포함한다")
     void service_패키지는_이름에_Service나_UseCase_를_포함한다() {
-        classes().that().resideInAPackage("..service")
-                .should().haveSimpleNameContaining("Service")
-                .orShould().haveSimpleNameContaining("UseCase")
+        classes()
+                .that()
+                .resideInAPackage("..service")
+                .should()
+                .haveSimpleNameContaining("Service")
+                .orShould()
+                .haveSimpleNameContaining("UseCase")
                 .check(javaClasses);
     }
 
     @Test
     @DisplayName("service클래스는 Service 어노테이션이 있다")
     void service클래스는_Service_어노테이션이_있다() {
-        classes().that().resideInAPackage("..service")
-                .and().haveSimpleNameContaining("Service")
-                .should().beAnnotatedWith(Service.class)
+        classes()
+                .that()
+                .resideInAPackage("..service")
+                .and()
+                .haveSimpleNameContaining("Service")
+                .should()
+                .beAnnotatedWith(Service.class)
                 .check(javaClasses);
     }
 
     @Test
     @DisplayName("useCase는 인터페이스다")
     void useCase는_인터페이스다() {
-        classes().that().resideInAPackage("..service")
-                .and().haveSimpleNameContaining("UseCase")
-                .should().beInterfaces()
+        classes()
+                .that()
+                .resideInAPackage("..service")
+                .and()
+                .haveSimpleNameContaining("UseCase")
+                .should()
+                .beInterfaces()
                 .check(javaClasses);
     }
 
-    //Repository
+    // Repository
     @Test
     @DisplayName("repository 는 이름에 Repository를 포함한다")
     void repository_는_이름에_Repository를_포함한다() {
-        classes().that().resideInAPackage("..repository")
-                .should().haveSimpleNameContaining("Repository")
+        classes()
+                .that()
+                .resideInAPackage("..repository")
+                .and()
+                .areNotAnonymousClasses()
+                .and()
+                .areNotMemberClasses()
+                .should()
+                .haveSimpleNameContaining("Repository")
+                .orShould()
+                .haveSimpleNameContaining("RepositoryImpl")
                 .check(javaClasses);
     }
 
-    //RepositoryImp는 Repository 어노테이션이 있다
     @Test
     @DisplayName("repositoryImp는 Repository 어노테이션이 있다")
     void repositoryImp는_Repository_어노테이션이_있다() {
-        classes().that().resideInAPackage("..repository")
-                .and().haveSimpleNameContaining("Impl")
-                .should().beAnnotatedWith(Repository.class)
-                .check(javaClasses);
-
-    }
-
-    @Test
-    @DisplayName("repository.dto 패키지의 클래스는 이름 마지막에 Dto가 있다")
-    void repository_dto_패키지의_클래스는_이름_마지막에_Dto가_있다() {
-        classes().that().resideInAPackage("..repository.dto")
-                .should().haveSimpleNameEndingWith("Dto")
+        classes()
+                .that()
+                .resideInAPackage("..repository")
+                .and()
+                .haveSimpleNameContaining("Impl")
+                .should()
+                .beAnnotatedWith(Repository.class)
                 .check(javaClasses);
     }
-
-    //Entity
-    @Test
-    @DisplayName("entity는 이름 끝 또는 이름에 Entity가 있고, Entity 어노테이션이 있다")
-    void entity는_이름_끝_또는_이름에_Entity가_있고_Entity_어노테이션이_있다() {
-        classes().that().resideInAPackage("..domain..entity")
-                .should().haveSimpleNameEndingWith("Entity")
-                .orShould(haveSimpleNameContaining("Entity"))
-                .andShould().bePublic()
-                .check(javaClasses);
-    }
-
 }

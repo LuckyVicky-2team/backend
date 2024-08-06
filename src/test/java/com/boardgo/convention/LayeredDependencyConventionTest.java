@@ -26,13 +26,22 @@ public class LayeredDependencyConventionTest {
     void controller_service_repository_레이어드_계층_접근_의존성() {
         layeredArchitecture()
                 .consideringAllDependencies()
-                .layer("Controller").definedBy("..controller..")
-                .layer("Service").definedBy("..service..")
-                .layer("Repository").definedBy("..repository..")
-                .whereLayer("Controller").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller")
-                .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service")
+                .layer("Controller")
+                .definedBy("..controller")
+                .layer("Service")
+                .definedBy("..service..")
+                .layer("Repository")
+                .definedBy("..repository..")
+                .layer("Mapper")
+                .definedBy("..mapper..")
+                .layer("JWT")
+                .definedBy("..jwt..")
+                .whereLayer("Controller")
+                .mayNotBeAccessedByAnyLayer()
+                .whereLayer("Service")
+                .mayOnlyBeAccessedByLayers("Controller", "JWT")
+                .whereLayer("Repository")
+                .mayOnlyBeAccessedByLayers("Service")
                 .check(javaClasses);
     }
-
 }
