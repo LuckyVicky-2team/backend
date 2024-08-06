@@ -1,7 +1,7 @@
 package com.boardgo.domain.user.entity;
 
 import com.boardgo.common.domain.BaseEntity;
-import com.boardgo.domain.oauth2.entity.ProviderType;
+import com.boardgo.oauth2.entity.ProviderType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

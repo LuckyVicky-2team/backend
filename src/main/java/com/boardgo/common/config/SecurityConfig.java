@@ -2,11 +2,11 @@ package com.boardgo.common.config;
 
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 
-import com.boardgo.domain.oauth2.handler.OAuth2SuccessHandler;
-import com.boardgo.domain.oauth2.service.CustomOAuth2UserService;
 import com.boardgo.jwt.JWTFilter;
 import com.boardgo.jwt.JWTUtil;
 import com.boardgo.jwt.LoginFilter;
+import com.boardgo.oauth2.handler.OAuth2SuccessHandler;
+import com.boardgo.oauth2.service.CustomOAuth2UserService;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

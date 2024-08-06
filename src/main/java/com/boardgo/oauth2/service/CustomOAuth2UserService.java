@@ -1,13 +1,13 @@
-package com.boardgo.domain.oauth2.service;
+package com.boardgo.oauth2.service;
 
 import com.boardgo.domain.mapper.UserInfoMapper;
-import com.boardgo.domain.oauth2.dto.OAuth2CreateUserRequest;
-import com.boardgo.domain.oauth2.dto.OAuth2Response;
-import com.boardgo.domain.oauth2.dto.OAuth2UserResponseFactory;
-import com.boardgo.domain.oauth2.entity.CustomOAuth2User;
-import com.boardgo.domain.oauth2.entity.ProviderType;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
+import com.boardgo.oauth2.dto.OAuth2CreateUserRequest;
+import com.boardgo.oauth2.dto.OAuth2Response;
+import com.boardgo.oauth2.dto.OAuth2UserResponseFactory;
+import com.boardgo.oauth2.entity.CustomOAuth2User;
+import com.boardgo.oauth2.entity.ProviderType;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

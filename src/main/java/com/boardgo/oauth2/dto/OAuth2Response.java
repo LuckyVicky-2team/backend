@@ -1,4 +1,4 @@
-package com.boardgo.domain.oauth2.dto;
+package com.boardgo.oauth2.dto;
 
 public interface OAuth2Response {
     String getProvider();

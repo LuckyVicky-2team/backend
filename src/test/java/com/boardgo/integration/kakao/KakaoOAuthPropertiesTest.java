@@ -2,7 +2,7 @@ package com.boardgo.integration.kakao;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.boardgo.domain.kakao.KakaoOAuthProperties;
+import com.boardgo.oauth2.kakao.KakaoOAuthProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

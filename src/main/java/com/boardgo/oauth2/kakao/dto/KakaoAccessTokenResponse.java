@@ -1,3 +1,3 @@
-package com.boardgo.domain.kakao.dto;
+package com.boardgo.oauth2.kakao.dto;
 
 public record KakaoAccessTokenResponse(String accessToken) {}

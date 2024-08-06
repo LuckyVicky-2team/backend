@@ -1,4 +1,4 @@
-package com.boardgo.domain.oauth2.entity;
+package com.boardgo.oauth2.entity;
 
 import lombok.Getter;
 

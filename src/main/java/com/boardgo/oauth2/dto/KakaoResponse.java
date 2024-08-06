@@ -1,6 +1,6 @@
-package com.boardgo.domain.oauth2.dto;
+package com.boardgo.oauth2.dto;
 
-import static com.boardgo.domain.oauth2.entity.ProviderType.*;
+import static com.boardgo.oauth2.entity.ProviderType.*;
 
 import java.util.Map;
 

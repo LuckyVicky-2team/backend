@@ -1,10 +1,10 @@
-package com.boardgo.domain.kakao.service;
+package com.boardgo.oauth2.kakao.service;
 
-import static com.boardgo.domain.kakao.KakaoOAuthProperties.*;
+import static com.boardgo.oauth2.kakao.KakaoOAuthProperties.*;
 
-import com.boardgo.domain.kakao.KakaoClient;
-import com.boardgo.domain.kakao.KakaoOAuthProperties;
-import com.boardgo.domain.kakao.dto.KakaoAccessTokenResponse;
+import com.boardgo.oauth2.kakao.KakaoClient;
+import com.boardgo.oauth2.kakao.KakaoOAuthProperties;
+import com.boardgo.oauth2.kakao.dto.KakaoAccessTokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;

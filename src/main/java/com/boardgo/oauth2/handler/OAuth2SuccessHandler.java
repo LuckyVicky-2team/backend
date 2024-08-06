@@ -1,10 +1,10 @@
-package com.boardgo.domain.oauth2.handler;
+package com.boardgo.oauth2.handler;
 
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 import static com.boardgo.common.constant.TimeConstant.ACCESS_TOKEN_DURATION;
 
-import com.boardgo.domain.oauth2.entity.CustomOAuth2User;
 import com.boardgo.jwt.JWTUtil;
+import com.boardgo.oauth2.entity.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

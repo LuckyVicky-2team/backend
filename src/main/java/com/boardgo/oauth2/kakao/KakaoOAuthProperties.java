@@ -1,4 +1,4 @@
-package com.boardgo.domain.kakao;
+package com.boardgo.oauth2.kakao;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;

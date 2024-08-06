@@ -1,6 +1,6 @@
-package com.boardgo.domain.kakao;
+package com.boardgo.oauth2.kakao;
 
-import com.boardgo.domain.kakao.dto.KakaoAccessTokenResponse;
+import com.boardgo.oauth2.kakao.dto.KakaoAccessTokenResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;

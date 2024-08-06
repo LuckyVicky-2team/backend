@@ -2,8 +2,8 @@ package com.boardgo.common.config;
 
 import com.boardgo.common.exception.KakaoException;
 import com.boardgo.common.exception.advice.dto.ErrorCode;
-import com.boardgo.domain.kakao.KakaoClient;
-import com.boardgo.domain.kakao.KakaoOAuthProperties;
+import com.boardgo.oauth2.kakao.KakaoClient;
+import com.boardgo.oauth2.kakao.KakaoOAuthProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
