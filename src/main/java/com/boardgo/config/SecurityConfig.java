@@ -1,4 +1,4 @@
-package com.boardgo.common.config;
+package com.boardgo.config;
 
 import static com.boardgo.common.constant.HeaderConstant.*;
 
