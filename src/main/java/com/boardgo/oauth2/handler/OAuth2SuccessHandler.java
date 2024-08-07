@@ -2,11 +2,11 @@ package com.boardgo.oauth2.handler;
 
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 import static com.boardgo.common.constant.TimeConstant.ACCESS_TOKEN_DURATION;
+import static com.boardgo.common.utils.CookieUtil.createCookies;
 
 import com.boardgo.jwt.JWTUtil;
 import com.boardgo.oauth2.entity.CustomOAuth2User;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,14 +31,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                         oAuth2User.getId(), oAuth2User.getRoleType(), ACCESS_TOKEN_DURATION);
         response.addCookie(createCookies(AUTHORIZATION, accessToken));
         response.sendRedirect("http://localhost:3000/home"); // FIXME: 개발&운영 서버 리다이렉트 주소/home 주소로 변환
-    }
-
-    private Cookie createCookies(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(Math.toIntExact(ACCESS_TOKEN_DURATION));
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
     }
 }
