@@ -90,8 +90,7 @@ public class SecurityConfig {
                                                 "/login",
                                                 "/docs/*",
                                                 "/login/oauth2/**",
-                                                "/token",
-                                                "/social/signup")
+                                                "/token")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
