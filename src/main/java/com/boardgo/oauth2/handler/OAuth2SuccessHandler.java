@@ -5,6 +5,7 @@ import static com.boardgo.common.constant.TimeConstant.ACCESS_TOKEN_DURATION;
 import static com.boardgo.common.utils.CookieUtil.createCookies;
 
 import com.boardgo.jwt.JWTUtil;
+import com.boardgo.oauth2.dto.OAuthLoginProperties;
 import com.boardgo.oauth2.entity.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,11 +15,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JWTUtil jwtUtil;
+    private final OAuthLoginProperties properties;
 
     @Override
     public void onAuthenticationSuccess(
@@ -30,6 +34,20 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 jwtUtil.createJwt(
                         oAuth2User.getId(), oAuth2User.getRoleType(), ACCESS_TOKEN_DURATION);
         response.addCookie(createCookies(AUTHORIZATION, accessToken));
-        response.sendRedirect("http://localhost:3000/home"); // FIXME: 개발&운영 서버 리다이렉트 주소/home 주소로 변환
+
+        String redirectUrl = properties.main();
+        if (!existString(oAuth2User.getNickname())) {
+            redirectUrl =
+                    UriComponentsBuilder.fromUriString(properties.signup())
+                            .queryParam("type", "social")
+                            .build()
+                            .toUriString();
+        }
+
+        response.sendRedirect(redirectUrl);
+    }
+
+    private boolean existString(String data) {
+        return StringUtils.hasText(data) && StringUtils.hasLength(data);
     }
 }
