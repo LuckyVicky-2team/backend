@@ -84,7 +84,7 @@ public class SecurityConfig {
                                         .requestMatchers(
                                                 "/signup",
                                                 "/login",
-                                                "/docs/*",
+                                                "/docs/**",
                                                 "/check-email",
                                                 "/check-nickname")
                                         .permitAll()
