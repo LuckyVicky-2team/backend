@@ -1,10 +1,12 @@
 package com.boardgo.common.exception.advice;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
+import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.common.exception.advice.dto.ErrorResponse;
 import com.boardgo.common.exception.advice.dto.FieldErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -52,11 +54,23 @@ public class CommonControllerAdvice {
                                 .build());
     }
 
-    /** 이미 존재하는 값일 경우 * */
+    /*************** BaseRequest */
     @ExceptionHandler(CustomIllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> CustomIllegalArgumentException(
+    public ResponseEntity<ErrorResponse> customIllegalArgumentException(
             CustomIllegalArgumentException exception) {
         return ResponseEntity.badRequest()
+                .body(
+                        ErrorResponse.builder()
+                                .errorCode(exception.getErrorCode())
+                                .messages(exception.getMessage())
+                                .build());
+    }
+
+    /*************** NotFound */
+    @ExceptionHandler(CustomNoSuchElementException.class)
+    public ResponseEntity<ErrorResponse> customNoSuchElementException(
+            CustomNoSuchElementException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND.value())
                 .body(
                         ErrorResponse.builder()
                                 .errorCode(exception.getErrorCode())

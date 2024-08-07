@@ -1,8 +1,6 @@
 package com.boardgo.domain.boardgame.repository;
 
+import com.boardgo.domain.boardgame.entity.BoardGameGenreEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.boardgo.domain.boardgame.entity.BoardGameGenre;
-
-public interface BoardGameGenreRepository extends JpaRepository<BoardGameGenre, Long> {
-}
+public interface BoardGameGenreRepository extends JpaRepository<BoardGameGenreEntity, Long> {}
