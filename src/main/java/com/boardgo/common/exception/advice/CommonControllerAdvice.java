@@ -55,4 +55,16 @@ public class CommonControllerAdvice {
                                 .messages(ErrorCode.JSON_PARSING_ERROR.getMessage())
                                 .build());
     }
+
+    /** 이미 존재하는 값일 경우 * */
+    @ExceptionHandler(CustomIllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> CustomIllegalArgumentException(
+            CustomIllegalArgumentException exception) {
+        return ResponseEntity.badRequest()
+                .body(
+                        ErrorResponse.builder()
+                                .errorCode(exception.getErrorCode())
+                                .messages(exception.getMessage())
+                                .build());
+    }
 }
