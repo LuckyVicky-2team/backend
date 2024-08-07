@@ -1,5 +1,6 @@
 package com.boardgo.common.exception.advice;
 
+import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.advice.dto.ErrorCode;
 import com.boardgo.common.exception.advice.dto.ErrorResponse;
 import com.boardgo.common.exception.advice.dto.FieldErrorResponse;

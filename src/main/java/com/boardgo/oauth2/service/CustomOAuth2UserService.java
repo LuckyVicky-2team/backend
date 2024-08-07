@@ -38,7 +38,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         providerType, oAuth2User.getAttributes());
 
         UserInfoEntity userInfoEntity =
-                userRepository.findByEmailAndProviderType(oAuth2Response.getEmail(), providerType);
+                userRepository
+                        .findByEmailAndProviderType(oAuth2Response.getEmail(), providerType)
+                        .orElse(null);
         if (Objects.isNull(userInfoEntity)) {
             userInfoEntity =
                     createUser(
