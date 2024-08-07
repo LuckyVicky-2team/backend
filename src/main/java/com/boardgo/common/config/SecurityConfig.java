@@ -68,6 +68,10 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
+                .headers(
+                        headersConfigurer -> {
+                            headersConfigurer.frameOptions(frame -> frame.sameOrigin());
+                        })
                 .sessionManagement(
                         sessionManagerConfigurer ->
                                 sessionManagerConfigurer.sessionCreationPolicy(
@@ -81,7 +85,11 @@ public class SecurityConfig {
                         authorize ->
                                 authorize
                                         .requestMatchers(
-                                                "/signup", "/login", "/docs/*", "/login/oauth2/**")
+                                                "/h2-console/**",
+                                                "/signup",
+                                                "/login",
+                                                "/docs/*",
+                                                "/login/oauth2/**")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
