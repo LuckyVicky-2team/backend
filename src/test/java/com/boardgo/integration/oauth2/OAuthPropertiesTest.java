@@ -2,19 +2,14 @@ package com.boardgo.integration.oauth2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.boardgo.integration.support.IntegrationTestSupport;
 import com.boardgo.oauth2.dto.OAuthProviderProperties;
 import com.boardgo.oauth2.dto.OAuthRegistrationProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest
-@TestPropertySource("classpath:application-local.yml")
-@ActiveProfiles("local")
-public class OAuthPropertiesTest {
+public class OAuthPropertiesTest extends IntegrationTestSupport {
 
     @Autowired private OAuthProviderProperties providerProperties;
     @Autowired private OAuthRegistrationProperties registrationProperties;
