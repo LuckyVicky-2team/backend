@@ -2,8 +2,13 @@ package com.boardgo.config;
 
 import static com.boardgo.common.constant.HeaderConstant.*;
 
+import com.boardgo.jwt.JWTFilter;
+import com.boardgo.jwt.JWTUtil;
+import com.boardgo.jwt.LoginFilter;
+import com.boardgo.oauth2.handler.OAuth2SuccessHandler;
+import com.boardgo.oauth2.service.CustomOAuth2UserService;
 import java.util.Collections;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,18 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-
-import com.boardgo.jwt.JWTFilter;
-import com.boardgo.jwt.JWTUtil;
-import com.boardgo.jwt.LoginFilter;
-<<<<<<< Updated upstream
-import com.boardgo.oauth2.handler.OAuth2SuccessHandler;
-import com.boardgo.oauth2.service.CustomOAuth2UserService;
-
-import lombok.RequiredArgsConstructor;
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 @Configuration
 @EnableWebSecurity
@@ -49,12 +42,6 @@ public class SecurityConfig {
 
     @Value("${spring.cors.headers}")
     private String corsHeaders;
-
-    public SecurityConfig(
-            AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtUtil = jwtUtil;
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -99,15 +86,9 @@ public class SecurityConfig {
                         authorize ->
                                 authorize
                                         .requestMatchers(
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
                                                 "/h2-console/**",
                                                 "/resources/**",
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-                                            "/error",
+                                                "/error",
                                                 "/signup",
                                                 "/login",
                                                 "/docs/**",
