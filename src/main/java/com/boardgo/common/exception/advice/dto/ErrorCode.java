@@ -9,6 +9,8 @@ public enum ErrorCode {
     DUPLICATE_DATA(4002, "중복된 데이터 입니다"),
     TYPECASTING_ERROR(4003, "타입 캐스팅 변환에 실패했습니다"),
     NULL_ERROR(4004, "변수가 Null입니다"),
+    COOKIE_NOT_FOUNT(4005, "쿠키가 존재하지 않습니다"),
+    BAD_REQUEST(400, "유효하지 않는 데이터 입니다."),
     UNAUTHORIZED(401, "권한이 존재하지 않습니다"),
     FORBIDDEN(403, "권한이 적절하지 않습니다"),
     NOT_FOUND(404, "존재하지 않는 URI 입니다"),

@@ -2,6 +2,7 @@ package com.boardgo.common.exception.advice;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNoSuchElementException;
+import com.boardgo.common.exception.advice.dto.ErrorCode;
 import com.boardgo.common.exception.advice.dto.ErrorResponse;
 import com.boardgo.common.exception.advice.dto.FieldErrorResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -20,7 +21,11 @@ public class CommonControllerAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> ConstraintViolationException() {
         return ResponseEntity.badRequest()
-                .body(ErrorResponse.builder().errorCode(400).messages("Validation Error").build());
+                .body(
+                        ErrorResponse.builder()
+                                .errorCode(ErrorCode.BAD_REQUEST.getCode())
+                                .messages(ErrorCode.BAD_REQUEST.getMessage())
+                                .build());
     }
 
     /** Request Dto Validation Error */
@@ -38,7 +43,7 @@ public class CommonControllerAdvice {
         return ResponseEntity.badRequest()
                 .body(
                         ErrorResponse.builder()
-                                .errorCode(400)
+                                .errorCode(ErrorCode.BAD_REQUEST.getCode())
                                 .messages(FieldErrorResponse.listToString(fieldErrorResponses))
                                 .build());
     }
@@ -49,14 +54,14 @@ public class CommonControllerAdvice {
         return ResponseEntity.badRequest()
                 .body(
                         ErrorResponse.builder()
-                                .errorCode(400)
-                                .messages("JSON Parsing Error")
+                                .errorCode(ErrorCode.JSON_PARSING_ERROR.getCode())
+                                .messages(ErrorCode.JSON_PARSING_ERROR.getMessage())
                                 .build());
     }
 
-    /*************** BaseRequest */
+    /** 이미 존재하는 값일 경우 * */
     @ExceptionHandler(CustomIllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> customIllegalArgumentException(
+    public ResponseEntity<ErrorResponse> CustomIllegalArgumentException(
             CustomIllegalArgumentException exception) {
         return ResponseEntity.badRequest()
                 .body(
