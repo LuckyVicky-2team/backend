@@ -23,10 +23,13 @@ import org.springframework.web.cors.CorsConfiguration;
 import com.boardgo.jwt.JWTFilter;
 import com.boardgo.jwt.JWTUtil;
 import com.boardgo.jwt.LoginFilter;
+<<<<<<< Updated upstream
 import com.boardgo.oauth2.handler.OAuth2SuccessHandler;
 import com.boardgo.oauth2.service.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 @Configuration
@@ -97,8 +100,11 @@ public class SecurityConfig {
                                 authorize
                                         .requestMatchers(
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                                                 "/h2-console/**",
                                                 "/resources/**",
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                                             "/error",
