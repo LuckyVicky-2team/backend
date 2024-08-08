@@ -3,6 +3,7 @@ package com.boardgo.oauth2.handler;
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 import static com.boardgo.common.constant.TimeConstant.ACCESS_TOKEN_DURATION;
 import static com.boardgo.common.utils.CookieUtil.createCookies;
+import static com.boardgo.common.utils.CustomStringUtils.existString;
 
 import com.boardgo.jwt.JWTUtil;
 import com.boardgo.oauth2.dto.OAuthLoginProperties;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
@@ -45,9 +45,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }
 
         response.sendRedirect(redirectUrl);
-    }
-
-    private boolean existString(String data) {
-        return StringUtils.hasText(data) && StringUtils.hasLength(data);
     }
 }

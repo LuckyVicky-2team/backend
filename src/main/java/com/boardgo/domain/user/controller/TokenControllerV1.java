@@ -4,7 +4,9 @@ import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER1;
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 import static com.boardgo.common.constant.HeaderConstant.BEARER;
 import static com.boardgo.common.utils.CookieUtil.getCookie;
+import static com.boardgo.common.utils.CustomStringUtils.existString;
 
+import com.boardgo.common.exception.CookieNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,14 +27,14 @@ public class TokenControllerV1 {
                 Optional.ofNullable(
                         getCookie(request, AUTHORIZATION)
                                 .map(Cookie::getValue)
-                                .orElseThrow(
-                                        () ->
-                                                new IllegalArgumentException(
-                                                        "토큰내놔"))); // FIXME: dev pull 받아서 커스텀 예외
+                                .orElseThrow(() -> new CookieNotFoundException()));
+        if (!existString(jwtToken.get())) {
+            throw new CookieNotFoundException();
+        }
         response.addHeader(AUTHORIZATION, BEARER + jwtToken.get());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // TODO. refresh 토큰
+    // TODO. token 대신 refresh 토큰 사용
 
 }

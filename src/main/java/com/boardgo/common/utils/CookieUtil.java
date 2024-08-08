@@ -12,11 +12,12 @@ public abstract class CookieUtil {
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
 
-        if (!Objects.isNull(cookies)) {
-            for (Cookie cookie : cookies) {
-                if (name.equals(cookie.getName())) {
-                    return Optional.of(cookie);
-                }
+        if (Objects.isNull(cookies)) {
+            return Optional.empty();
+        }
+        for (Cookie cookie : cookies) {
+            if (name.equals(cookie.getName())) {
+                return Optional.of(cookie);
             }
         }
         return Optional.empty();
