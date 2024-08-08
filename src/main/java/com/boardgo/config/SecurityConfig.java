@@ -1,6 +1,6 @@
 package com.boardgo.config;
 
-import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
+import static com.boardgo.common.constant.HeaderConstant.*;
 
 import com.boardgo.jwt.JWTFilter;
 import com.boardgo.jwt.JWTUtil;
