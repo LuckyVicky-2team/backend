@@ -59,6 +59,8 @@ public class MeetingEntity extends BaseEntity {
             String thumbnail,
             String city,
             String county,
+            String latitude,
+            String longitude,
             LocalDateTime meetingDatetime) {
         this.id = id;
         this.content = content;
@@ -67,6 +69,8 @@ public class MeetingEntity extends BaseEntity {
         this.thumbnail = thumbnail;
         this.city = city;
         this.county = county;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.meetingDatetime = meetingDatetime;
     }
 }

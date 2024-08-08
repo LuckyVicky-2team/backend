@@ -25,6 +25,8 @@ public class MeetingEntityTest {
                         5,
                         "서울",
                         "강남",
+                        "32.12321321321",
+                        "147.12321321321",
                         LocalDateTime.MIN,
                         List.of(1L, 2L),
                         List.of(1L, 2L));
@@ -39,5 +41,7 @@ public class MeetingEntityTest {
         assertThat(meetingEntity.getMeetingDatetime())
                 .isEqualTo(meetingCreateRequest.meetingDatetime());
         assertThat(meetingEntity.getType()).isEqualTo(MeetingType.FREE);
+        assertThat(meetingEntity.getLongitude()).isEqualTo(meetingCreateRequest.longitude());
+        assertThat(meetingEntity.getLatitude()).isEqualTo(meetingCreateRequest.latitude());
     }
 }

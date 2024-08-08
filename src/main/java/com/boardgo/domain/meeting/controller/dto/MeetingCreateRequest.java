@@ -15,9 +15,10 @@ public record MeetingCreateRequest(
         @Positive Integer limitParticipant,
         String city,
         String county,
-        // TODO: 위도, 경도 추가하기
+        String latitude,
+        String longitude,
         @Future @NotNull @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime meetingDatetime,
         /* 보드게임의 id들 */
-        @NotEmpty List<Long> boardGameIdList,
+        @NotNull List<Long> boardGameIdList,
         /* GenreId */
-        @NotEmpty List<Long> genreIdList) {}
+        @NotNull List<Long> genreIdList) {}
