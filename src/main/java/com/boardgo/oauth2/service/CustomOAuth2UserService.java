@@ -40,7 +40,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         UserInfoEntity userInfoEntity =
                 userRepository
                         .findByEmailAndProviderType(oAuth2Response.getEmail(), providerType)
-                        .orElse(null);
+                        .orElse(
+                                createUser(
+                                        new OAuth2CreateUserRequest(
+                                                oAuth2Response.getEmail(), providerType)));
+        // FIXME: 소셜회원ID로 저장하기
         if (Objects.isNull(userInfoEntity)) {
             userInfoEntity =
                     createUser(
