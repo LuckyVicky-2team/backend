@@ -3,7 +3,7 @@ package com.boardgo.domain.meeting.controller;
 import static com.boardgo.common.constant.HeaderConstant.*;
 
 import com.boardgo.domain.meeting.controller.dto.MeetingCreateRequest;
-import com.boardgo.domain.meeting.service.MeetingUseCase;
+import com.boardgo.domain.meeting.service.MeetingCommandUseCase;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 public class MeetingController {
-    private final MeetingUseCase meetingUseCase;
+    private final MeetingCommandUseCase meetingCommandUseCase;
 
     @PostMapping(
             value = "/meeting",
@@ -27,7 +27,7 @@ public class MeetingController {
             @RequestPart(value = "meetingCreateRequest") @Valid
                     MeetingCreateRequest meetingCreateRequest,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) {
-        Long meetingId = meetingUseCase.create(meetingCreateRequest, imageFile);
+        Long meetingId = meetingCommandUseCase.create(meetingCreateRequest, imageFile);
         return ResponseEntity.created(URI.create("/meeting/" + meetingId)).build();
     }
 }
