@@ -42,6 +42,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
         String requestJson = objectMapper.writeValueAsString(request);
 
         given(this.spec)
+                .port(port)
                 .log()
                 .all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)

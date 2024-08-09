@@ -14,9 +14,13 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestExecutionListeners;
 
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestExecutionListeners(
+        value = {AcceptanceTestExecutionListener.class},
+        mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @ActiveProfiles("test")
 public abstract class RestDocsTestSupport {
     @Value("${spring.jwt.test-token}")
@@ -34,9 +38,8 @@ public abstract class RestDocsTestSupport {
                                 documentationConfiguration(restDocumentation)
                                         .operationPreprocessors()
                                         .withRequestDefaults(
-                                                modifyUris()
-                                                        .host("localhost")
-                                                        .port(port), // 여기도 포트를 설정
+                                                modifyUris().host("54.180.60.122").port(8080),
+                                                // 여기도 포트를 설정
                                                 prettyPrint())
                                         .withResponseDefaults(prettyPrint()))
                         .build();
