@@ -30,7 +30,6 @@ public class LoggingFilter extends OncePerRequestFilter {
         if (Objects.isNull(request.getContentType())) {
             return false;
         }
-        return request.getContentType().contains(MULTIPART_FORM)
-                || request.getContentType().toUpperCase().contains(MULTIPART_FORM.toUpperCase());
+        return request.getContentType().toLowerCase().contains(MULTIPART_FORM);
     }
 }
