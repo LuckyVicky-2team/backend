@@ -17,6 +17,7 @@ public interface MeetingMapper {
         return MeetingEntity.builder()
                 .state(MeetingState.PROGRESS)
                 .hit(0L)
+                .title(meetingCreateRequest.title())
                 .city(meetingCreateRequest.city())
                 .type(MeetingType.valueOf(meetingCreateRequest.type().toUpperCase()))
                 .meetingDatetime(meetingCreateRequest.meetingDatetime())

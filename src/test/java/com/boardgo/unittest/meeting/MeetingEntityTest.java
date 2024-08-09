@@ -24,6 +24,7 @@ public class MeetingEntityTest {
                         "content",
                         "FREE",
                         5,
+                        "title",
                         "서울",
                         "강남",
                         "32.12321321321",

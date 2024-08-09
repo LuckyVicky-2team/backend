@@ -12,13 +12,14 @@ import java.util.List;
 public record MeetingCreateRequest(
         @NotEmpty(message = "content") String content,
         @NotEmpty(message = "type") @AllowedValues(values = {"FREE", "ACCEPT"}) String type,
-        @Positive Integer limitParticipant,
+        @Positive(message = "limitParticipant") Integer limitParticipant,
+        @NotEmpty(message = "title") String title,
         String city,
         String county,
         String latitude,
         String longitude,
         @Future @NotNull @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime meetingDatetime,
         /* 보드게임의 id들 */
-        @NotNull List<Long> boardGameIdList,
+        @NotNull(message = "boardGameIdList") List<Long> boardGameIdList,
         /* GenreId */
-        @NotNull List<Long> genreIdList) {}
+        @NotNull(message = "genreIdList") List<Long> genreIdList) {}

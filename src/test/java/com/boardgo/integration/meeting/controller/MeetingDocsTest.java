@@ -29,6 +29,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                         "Test Meeting",
                         "FREE",
                         10,
+                        "title",
                         "Seoul",
                         "Gangnam",
                         "37.5665",
@@ -71,6 +72,9 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("limitParticipant")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("최대 참가자 수"),
+                                        fieldWithPath("title")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 제목"),
                                         fieldWithPath("city")
                                                 .type(JsonFieldType.STRING)
                                                 .description("모임 도시"),
