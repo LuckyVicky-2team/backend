@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ExtendWith(RestDocumentationExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles("test")
 public abstract class RestDocsTestSupport {
     @Value("${spring.jwt.test-token}")
@@ -37,7 +37,9 @@ public abstract class RestDocsTestSupport {
                                 documentationConfiguration(restDocumentation)
                                         .operationPreprocessors()
                                         .withRequestDefaults(
-                                                modifyUris().host("54.180.60.122").port(8080),
+                                                modifyUris()
+                                                        .host("localhost")
+                                                        .port(port), // 여기도 포트를 설정
                                                 prettyPrint())
                                         .withResponseDefaults(prettyPrint()))
                         .build();
