@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MeetingCommandCommandServiceV1 implements MeetingCommandUseCase {
+public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
     private final BoardGameRepository boardGameRepository;
     private final MeetingCreateFactory meetingCreateFactory;
     private final MeetingMapper meetingMapper;
