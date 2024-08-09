@@ -115,4 +115,13 @@ public class LoggingInterceptor implements HandlerInterceptor {
             return new ContentCachingResponseWrapper(response);
         }
     }
+
+    private ContentCachingResponseWrapper getContentCachingResponseWrapper(
+            HttpServletResponse response) {
+        if (response instanceof ContentCachingResponseWrapper) {
+            return (ContentCachingResponseWrapper) response;
+        } else {
+            return new ContentCachingResponseWrapper(response);
+        }
+    }
 }
