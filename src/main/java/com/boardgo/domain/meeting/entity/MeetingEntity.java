@@ -14,10 +14,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Entity
 @Table(name = "meeting")
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingEntity extends BaseEntity {
     @Id
@@ -50,6 +55,14 @@ public class MeetingEntity extends BaseEntity {
     @Column(name = "meeting_datetime", nullable = false, columnDefinition = "DATETIME")
     private LocalDateTime meetingDatetime;
 
+    @Column
+    @ColumnDefault("0")
+    private Long hit;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    MeetingState state;
+
     @Builder
     private MeetingEntity(
             Long id,
@@ -61,7 +74,9 @@ public class MeetingEntity extends BaseEntity {
             String county,
             String latitude,
             String longitude,
-            LocalDateTime meetingDatetime) {
+            LocalDateTime meetingDatetime,
+            Long hit,
+            MeetingState state) {
         this.id = id;
         this.content = content;
         this.type = type;
@@ -72,5 +87,7 @@ public class MeetingEntity extends BaseEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.meetingDatetime = meetingDatetime;
+        this.hit = hit;
+        this.state = state;
     }
 }

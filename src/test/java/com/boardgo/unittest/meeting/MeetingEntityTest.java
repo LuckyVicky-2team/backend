@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.dto.MeetingCreateRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
+import com.boardgo.domain.meeting.entity.MeetingState;
 import com.boardgo.domain.meeting.entity.MeetingType;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,5 +44,7 @@ public class MeetingEntityTest {
         assertThat(meetingEntity.getType()).isEqualTo(MeetingType.FREE);
         assertThat(meetingEntity.getLongitude()).isEqualTo(meetingCreateRequest.longitude());
         assertThat(meetingEntity.getLatitude()).isEqualTo(meetingCreateRequest.latitude());
+        assertThat(meetingEntity.getHit()).isEqualTo(0L);
+        assertThat(meetingEntity.getState()).isEqualTo(MeetingState.PROGRESS);
     }
 }

@@ -1,4 +1,4 @@
-package com.boardgo.integration.user.controller;
+package com.boardgo.integration.meeting.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.*;
 import static io.restassured.RestAssured.*;
@@ -87,10 +87,12 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                                 .description("모임 시간"),
                                         fieldWithPath("boardGameIdList")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("보드게임 id 리스트(배열)"),
+                                                .description(
+                                                        "보드게임 id 리스트(배열) / 개발 서버에서는 더미 데이터 [1 ~ 10]까지 존재"),
                                         fieldWithPath("genreIdList")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("보드게임 장르 id 리스트(배열)")),
+                                                .description(
+                                                        "보드게임 장르 id 리스트(배열) / 개발 서버에서는 더미 데이터 [1 ~ 10]까지 존재")),
                                 responseHeaders(
                                         headerWithName("Location")
                                                 .description("만들어진 모임 URI")

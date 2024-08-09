@@ -1,11 +1,14 @@
-package com.boardgo.integration.meeting;
+package com.boardgo.integration.meeting.service;
 
 import static org.assertj.core.api.Assertions.*;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
+import com.boardgo.domain.mapper.MeetingMapper;
+import com.boardgo.domain.meeting.controller.dto.MeetingCreateRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.entity.MeetingGameMatchEntity;
 import com.boardgo.domain.meeting.entity.MeetingGenreMatchEntity;
+import com.boardgo.domain.meeting.entity.MeetingState;
 import com.boardgo.domain.meeting.entity.MeetingType;
 import com.boardgo.domain.meeting.repository.MeetingGameMatchRepository;
 import com.boardgo.domain.meeting.repository.MeetingGenreMatchRepository;
@@ -28,19 +31,23 @@ public class MeetingCreateFactoryTest extends IntegrationTestSupport {
     @DisplayName("모임을 저장할 수 있다")
     void 모임을_저장할_수_있다() {
         // given
+        MeetingMapper meetingMapper = MeetingMapper.INSTANCE;
+
         LocalDateTime now = LocalDateTime.now();
+        MeetingCreateRequest meetingCreateRequest =
+                new MeetingCreateRequest(
+                        "content",
+                        "FREE",
+                        5,
+                        "서울",
+                        "강남",
+                        "32.12321321321",
+                        "147.12321321321",
+                        now,
+                        List.of(1L, 2L),
+                        List.of(1L, 2L));
         MeetingEntity meetingEntity =
-                MeetingEntity.builder()
-                        .content("content")
-                        .meetingDatetime(now)
-                        .type(MeetingType.FREE)
-                        .city("서울특별시")
-                        .county("강남구")
-                        .thumbnail("test.png")
-                        .limitParticipant(5)
-                        .longitude("32.12312412412")
-                        .latitude("146.1232312321")
-                        .build();
+                meetingMapper.toMeetingEntity(meetingCreateRequest, "thumbnail");
         List<Long> boardGameIdList = List.of(1L, 2L);
         List<Long> genreIdList = List.of(3L, 4L);
         // when
@@ -54,6 +61,9 @@ public class MeetingCreateFactoryTest extends IntegrationTestSupport {
         assertThat(meeting.getType()).isEqualTo(meetingEntity.getType());
         assertThat(meeting.getContent()).isEqualTo(meetingEntity.getContent());
         assertThat(meeting.getCounty()).isEqualTo(meetingEntity.getCounty());
+        assertThat(meeting.getThumbnail()).isEqualTo(meetingEntity.getThumbnail());
+        assertThat(meeting.getHit()).isEqualTo(0L);
+        assertThat(meeting.getState()).isEqualTo(MeetingState.PROGRESS);
 
         List<MeetingGameMatchEntity> gameMatchEntityList =
                 meetingGameMatchRepository.findByMeetingId(meetingId);
