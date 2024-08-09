@@ -96,6 +96,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
         return request.getClass().getName().contains("SecurityContextHolderAwareRequestWrapper");
     }
 
+    /** SecurityContext 에서 회원 확인 */
     private Long getUserId() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof CustomUserDetails) {
@@ -105,6 +106,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
         return null;
     }
 
+    /** ResponseBody 캐싱래퍼 */
     private ContentCachingResponseWrapper getContentCachingResponseWrapper(
             HttpServletResponse response) {
         if (response instanceof ContentCachingResponseWrapper) {
