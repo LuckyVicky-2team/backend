@@ -111,23 +111,29 @@ asciidoctor {
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
     dependsOn test
-
-    doFirst {
-        def snippetsDirFile = file(snippetsDir)
-        if (!snippetsDirFile.exists()) {
-            snippetsDirFile.mkdirs()
-        }
-    }
+    outputDir file('build/docs/asciidoc')
 }
 
-
 bootJar {
-    archiveFileName = 'application.jar'
     dependsOn asciidoctor
-    copy {
-        from asciidoctor.outputDir
-        into 'src/main/resources/static/docs'
-    }
+    archiveFileName = 'application.jar'
+}
+
+tasks.register('copyRestdocs', Copy) {
+    dependsOn bootJar
+    mustRunAfter(tasks.jacocoTestReport)
+    mustRunAfter(tasks.asciidoctor)
+
+    from file("${asciidoctor.outputDir}")
+    into file("build/resources/main/static/docs")
+}
+
+tasks.register('createDocument', Copy) {
+    dependsOn asciidoctor
+    delete file("src/main/resources/static/docs")
+
+    from file("${asciidoctor.outputDir}")
+    into file("src/main/resources/static/docs")
 }
 
 compileJava {
@@ -177,33 +183,6 @@ clean {
     delete file("out")
 }
 
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    dependsOn test
-
-    doFirst {
-        delete file('src/main/resources/static/docs')
-    }
-
-    copy {
-        from asciidoctor.outputDir
-        into 'src/main/resources/static/docs'
-    }
-
-}
-
-tasks.register('createDocument', Copy) {
-    dependsOn asciidoctor
-
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static")
-}
-
-// build 전 createDocument(REST Docs 문서화) 실행!
-build {
-    dependsOn createDocument
-}
-
 jacocoTestReport {
     reports {
         xml.required = false
@@ -251,7 +230,6 @@ tasks.configureEach {
         mustRunAfter(tasks.processTestResources)
         mustRunAfter(tasks.jacocoTestReport)
         mustRunAfter(tasks.asciidoctor)
-        mustRunAfter(tasks.createDocument)
     }
 }
 
