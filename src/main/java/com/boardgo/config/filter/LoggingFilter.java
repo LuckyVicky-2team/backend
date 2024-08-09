@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 public class LoggingFilter extends OncePerRequestFilter {
-    private final String MULTIPART_FROM = "multipart/form-data";
+    private final String MULTIPART_FORM = "multipart/form-data";
 
     @Override
     protected void doFilterInternal(
@@ -30,7 +30,7 @@ public class LoggingFilter extends OncePerRequestFilter {
         if (Objects.isNull(request.getContentType())) {
             return false;
         }
-        return request.getContentType().contains(MULTIPART_FROM)
-                || request.getContentType().toUpperCase().contains(MULTIPART_FROM);
+        return request.getContentType().contains(MULTIPART_FORM)
+                || request.getContentType().toUpperCase().contains(MULTIPART_FORM.toUpperCase());
     }
 }
