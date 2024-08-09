@@ -30,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     public FilterRegistrationBean<LoggingFilter> addFilterSupporter() {
         FilterRegistrationBean<LoggingFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new LoggingFilter());
-        registrationBean.addUrlPatterns("/**");
+        registrationBean.addUrlPatterns("/*");
         return registrationBean;
     }
 }
