@@ -1,20 +1,17 @@
 package com.boardgo.config.interceptor;
 
+import com.boardgo.config.log.LoggingMessage;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.ContentCachingResponseWrapper;
-
-import com.boardgo.config.log.LoggingMessage;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -65,7 +62,8 @@ public class LoggingInterceptor implements HandlerInterceptor {
             Object handler,
             ModelAndView modelAndView)
             throws IOException {
-        ContentCachingResponseWrapper cachingResponseWrapper = getContentCachingResponseWrapper(response);
+        ContentCachingResponseWrapper cachingResponseWrapper =
+                getContentCachingResponseWrapper(response);
 
         new LoggingMessage(request.getMethod(), request.getRequestURI())
                 .postLoggingMessage(
@@ -100,10 +98,11 @@ public class LoggingInterceptor implements HandlerInterceptor {
         return "MY NAME IS DUMMY";
     }
 
-    private ContentCachingResponseWrapper getContentCachingResponseWrapper(HttpServletResponse response){
-        if(response instanceof ContentCachingResponseWrapper){
+    private ContentCachingResponseWrapper getContentCachingResponseWrapper(
+            HttpServletResponse response) {
+        if (response instanceof ContentCachingResponseWrapper) {
             return (ContentCachingResponseWrapper) response;
-        }else{
+        } else {
             return new ContentCachingResponseWrapper(response);
         }
     }

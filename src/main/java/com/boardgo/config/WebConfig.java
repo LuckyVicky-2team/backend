@@ -1,17 +1,14 @@
 package com.boardgo.config;
 
+import com.boardgo.config.filter.LoggingFilter;
+import com.boardgo.config.interceptor.LoggingInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.boardgo.config.filter.LoggingFilter;
-import com.boardgo.config.interceptor.LoggingInterceptor;
-
-import lombok.RequiredArgsConstructor;
-
-@Configuration
+// @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 

@@ -3,6 +3,8 @@ package com.boardgo.domain.boardgame.entity;
 import com.boardgo.common.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -17,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class GameGenreMatchEntity extends BaseEntity {
     @Id
     @Column(name = "game_genre_match_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "board_game_id")
