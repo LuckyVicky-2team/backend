@@ -13,6 +13,11 @@ public abstract class ValidateUtils {
         return Pattern.matches("^[0-9a-zA-Zㄱ-ㅎ가-힣]*$", data);
     }
 
+    /** 한글,영문,숫자, 스페이스 만 포함하는지 확인 */
+    public static boolean containsHanEngNumSpace(String data) {
+        return Pattern.matches("^[0-9a-zA-Zㄱ-ㅎ가-힣\\s]*$", data);
+    }
+
     /** 닉네임 유효성 검사 */
     public static boolean validateNickname(String nickname) {
         if (nickname.length() > 8) {
@@ -32,13 +37,14 @@ public abstract class ValidateUtils {
         }
 
         for (String tag : prTags) {
+            tag = tag.trim();
             if (tag.length() > 30) {
                 throw new CustomIllegalArgumentException(
                         BAD_REQUEST.getCode(), "PR태그 글자 수는 30자 까지 가능합니다.");
             }
-            if (!containsHanEngNum(tag)) {
+            if (!containsHanEngNumSpace(tag)) {
                 throw new CustomIllegalArgumentException(
-                        BAD_REQUEST.getCode(), "한글,영문,숫자만 입력 가능합니다.");
+                        BAD_REQUEST.getCode(), "한글,영문,숫자,스페이스만 입력 가능합니다.");
             }
         }
         return true;
