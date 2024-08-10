@@ -65,4 +65,8 @@ public class UserInfoEntity extends BaseEntity {
     public void updateEmail(String email) {
         this.email = email;
     }
+
+    public void updateNickname(String nickName) {
+        this.nickName = nickName;
+    }
 }
