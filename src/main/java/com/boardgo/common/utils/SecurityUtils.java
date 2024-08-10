@@ -1,5 +1,6 @@
 package com.boardgo.common.utils;
 
+import com.boardgo.common.exception.OAuth2Exception;
 import com.boardgo.domain.user.entity.RoleType;
 import com.boardgo.domain.user.service.dto.CustomUserDetails;
 import java.util.Collection;
@@ -15,8 +16,7 @@ public abstract class SecurityUtils {
             return false;
         }
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        return authorities.stream()
-                .anyMatch(o -> o.getAuthority().equals(RoleType.USER.getCode()));
+        return authorities.stream().anyMatch(o -> o.getAuthority().equals(RoleType.USER.getCode()));
     }
 
     public static Long currentUserId() {
