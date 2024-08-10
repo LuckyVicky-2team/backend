@@ -2,6 +2,7 @@ package com.boardgo.domain.user.service;
 
 import static com.boardgo.common.exception.advice.dto.ErrorCode.DUPLICATE_DATA;
 import static com.boardgo.common.exception.advice.dto.ErrorCode.NULL_ERROR;
+import static com.boardgo.common.utils.StringUtils.removeEmptyAndSpace;
 import static com.boardgo.common.utils.ValidateUtils.validateNickname;
 import static com.boardgo.common.utils.ValidateUtils.validatePrTag;
 
@@ -13,6 +14,7 @@ import com.boardgo.domain.user.controller.dto.SocialSignupRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserPrTagRepository;
 import com.boardgo.domain.user.repository.UserRepository;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,12 +55,16 @@ public class UserCommandCommandServiceV1 implements UserCommandUseCase {
             throw new CustomIllegalArgumentException(DUPLICATE_DATA.getCode(), "중복된 닉네임입니다.");
         }
         validateNickname(signupRequest.nickName());
-        if (!Objects.isNull(signupRequest.prTags())) {
-            validatePrTag(signupRequest.prTags());
+
+        List<String> prTagList = signupRequest.prTags();
+        if (!Objects.isNull(prTagList)) {
+            prTagList = removeEmptyAndSpace(signupRequest.prTags());
+            validatePrTag(prTagList);
         }
 
         userInfoEntity.updateNickname(signupRequest.nickName());
-        userPrTagRepository.bulkInsertPrTags(signupRequest.prTags(), userInfoEntity.getId());
+        userPrTagRepository.bulkInsertPrTags(prTagList, userInfoEntity.getId());
+        // FIXME prTags 저장 시 createdAt 자동 저장안됨. UserEntity는 잘됨
         return userInfoEntity.getId();
     }
 }
