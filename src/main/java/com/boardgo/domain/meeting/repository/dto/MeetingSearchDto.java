@@ -1,14 +1,16 @@
 package com.boardgo.domain.meeting.repository.dto;
 
-import com.boardgo.domain.meeting.entity.MeetingState;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record MeetingSearchDto(
         Long id,
         String title,
-        String nickName,
         String city,
         String county,
-        List<String> genres,
+        LocalDateTime meetingDate,
         Integer limitParticipant,
-        MeetingState state) {}
+        String nickName,
+        List<String> games,
+        List<String> genres,
+        Long participantCount) {}
