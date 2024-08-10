@@ -1,6 +1,6 @@
 package com.boardgo.config;
 
-import static com.boardgo.common.constant.HeaderConstant.*;
+import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 
 import com.boardgo.jwt.JWTFilter;
 import com.boardgo.jwt.JWTUtil;
@@ -87,6 +87,7 @@ public class SecurityConfig {
                                         .requestMatchers(
                                                 "/h2-console/**",
                                                 "/resources/**",
+                                                "/health",
                                                 "/error",
                                                 "/signup",
                                                 "/login",
