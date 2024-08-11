@@ -16,7 +16,7 @@ public class BaseEntity {
 
     @CreatedDate
     @Column(
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+            columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP",
             nullable = false,
             updatable = false)
     private LocalDateTime createdAt;
