@@ -1,15 +1,21 @@
 package com.boardgo.integration.user.controller;
 
-import static com.boardgo.common.constant.HeaderConstant.*;
-import static io.restassured.RestAssured.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.*;
+import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
+import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
+import static io.restassured.RestAssured.given;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import com.boardgo.integration.support.RestDocsTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
 public class UserDocsTest extends RestDocsTestSupport {
 
@@ -60,5 +66,30 @@ public class UserDocsTest extends RestDocsTestSupport {
                 .get("/check-nickname")
                 .then()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("내 개인정보 조회하기")
+    void 내_개인정보_조회하기() {
+        given(this.spec)
+                .log()
+                .all()
+                .port(port)
+                .header(API_VERSION_HEADER, "1")
+                .header(AUTHORIZATION, testAccessToken)
+                .filter(document("personal-info", getPersonalInfoResponseFieldsSnippet()))
+                .when()
+                .get("/personal-info")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    private ResponseFieldsSnippet getPersonalInfoResponseFieldsSnippet() {
+        return responseFields(
+                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 고유 ID"),
+                fieldWithPath("nickName").type(JsonFieldType.STRING).description("닉네임"),
+                fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 이미지"),
+                fieldWithPath("averageGrade").type(JsonFieldType.NUMBER).description("평균 별점"),
+                fieldWithPath("prTags").type(JsonFieldType.ARRAY).description("PR태그"));
     }
 }
