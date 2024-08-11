@@ -103,9 +103,7 @@ public class UserDocsTest extends RestDocsTestSupport {
                 .log()
                 .all()
                 .header(API_VERSION_HEADER, "1")
-                .header(
-                        AUTHORIZATION,
-                        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjMwMDQ2MjgsImV4cCI6MTcyNDczMjYyOH0.wLeDqO_VIrgtvn47LLIlfjpiEaJDb2XOrsPpEgg5N4s")
+                .header(AUTHORIZATION, testAccessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .filter(
@@ -158,6 +156,8 @@ public class UserDocsTest extends RestDocsTestSupport {
                 fieldWithPath("nickName").type(JsonFieldType.STRING).description("닉네임"),
                 fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 이미지"),
                 fieldWithPath("averageGrade").type(JsonFieldType.NUMBER).description("평균 별점"),
-                fieldWithPath("prTags").type(JsonFieldType.ARRAY).description("PR태그"));
+                fieldWithPath("prTags")
+                        .type(JsonFieldType.ARRAY)
+                        .description("PR태그 (없을 경우 빈배열 반환)"));
     }
 }
