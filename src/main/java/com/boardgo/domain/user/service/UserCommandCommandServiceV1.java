@@ -62,7 +62,6 @@ public class UserCommandCommandServiceV1 implements UserCommandUseCase {
 
         userInfoEntity.updateNickname(signupRequest.nickName());
         userPrTagRepository.bulkInsertPrTags(prTagList, userInfoEntity.getId());
-        // FIXME prTags 저장 시 createdAt 자동 저장안됨. UserEntity는 잘됨
         return userInfoEntity.getId();
     }
 }
