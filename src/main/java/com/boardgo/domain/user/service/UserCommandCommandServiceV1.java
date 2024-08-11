@@ -2,7 +2,6 @@ package com.boardgo.domain.user.service;
 
 import static com.boardgo.common.exception.advice.dto.ErrorCode.DUPLICATE_DATA;
 import static com.boardgo.common.exception.advice.dto.ErrorCode.NULL_ERROR;
-import static com.boardgo.common.utils.StringUtils.removeEmptyAndSpace;
 import static com.boardgo.common.utils.ValidateUtils.validateNickname;
 import static com.boardgo.common.utils.ValidateUtils.validatePrTag;
 
@@ -58,7 +57,6 @@ public class UserCommandCommandServiceV1 implements UserCommandUseCase {
 
         List<String> prTagList = signupRequest.prTags();
         if (!Objects.isNull(prTagList)) {
-            prTagList = removeEmptyAndSpace(signupRequest.prTags());
             validatePrTag(prTagList);
         }
 

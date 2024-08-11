@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 public class StringUtilsTest {
 
     @Test
-    @DisplayName("빈 문자열과 공백 문자열이 리스트에 존재하지 않는다")
-    void 빈_문자열과_공백_문자열이_리스트에_존재하지_않는다() {
+    @DisplayName("문자열 리스트에 빈 문자열과 공백 문자열을 제거한다")
+    void 문자열_리스트에_빈_문자열과_공백_문자열을_제거한다() {
         // given
         List<String> list = Arrays.asList("ENFJ", " ", "나는 행복하다", "");
 
