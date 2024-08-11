@@ -11,8 +11,11 @@ import com.boardgo.domain.user.controller.dto.NickNameRequest;
 import com.boardgo.domain.user.controller.dto.UserPersonalInfoResponse;
 import com.boardgo.domain.user.entity.ProviderType;
 import com.boardgo.domain.user.entity.UserInfoEntity;
+import com.boardgo.domain.user.entity.UserPrTagEntity;
+import com.boardgo.domain.user.repository.UserPrTagRepository;
 import com.boardgo.domain.user.repository.UserRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserQueryServiceV1 implements UserQueryUseCase {
     private final UserRepository userRepository;
+    private final UserPrTagRepository userPrTagRepository;
     private final UserInfoMapper UserInfoMapper;
 
     @Override
@@ -47,12 +51,14 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
                                 () ->
                                         new CustomNullPointException(
                                                 NULL_ERROR.getCode(), "회원이 존재하지 않습니다"));
-        // TODO. 평균별점
-        Double averageGrade = 3.3;
-
-        // TODO. PR태그 이름
-        List<String> prTags = List.of("ENFJ", "빵순이", "까눌레", "마들렌");
-
-        return UserInfoMapper.toUserPersonalInfoResponse(userInfoEntity, averageGrade, prTags);
+        // TODO. 리뷰 기능 구현 필요: 평균별점
+        Double averageGrade = 4.3;
+        List<UserPrTagEntity> userPrTagEntities =
+                userPrTagRepository.findByUserInfoId(userInfoEntity.getId());
+        List<String> prTagList =
+                userPrTagEntities.stream()
+                        .map(UserPrTagEntity::getTagName)
+                        .collect(Collectors.toList());
+        return UserInfoMapper.toUserPersonalInfoResponse(userInfoEntity, averageGrade, prTagList);
     }
 }
