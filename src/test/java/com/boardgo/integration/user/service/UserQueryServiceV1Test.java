@@ -19,16 +19,12 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserQueryServiceV1Test extends IntegrationTestSupport {
     @Autowired private UserRepository userRepository;
     @Autowired private UserPrTagRepository userPrTagRepository;
@@ -109,14 +105,18 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
     @ParameterizedTest
     @DisplayName("회원정보로 이메일(id), 닉네임, 프로필이미지, 평점, PR태그를 조회한다")
     @MethodSource("getUserEntity")
-    @Order(1)
-    void 회원정보로_이메일_닉네임_프로필이미지_평점_PR태그를_조회한다(
-            UserInfoEntity userInfo, List<UserPrTagEntity> userPrTags) {
+    void 회원정보로_이메일_닉네임_프로필이미지_평점_PR태그를_조회한다(UserInfoEntity userInfo) {
         // given
         Long userId = getUserId(userInfo);
-        UserPrTagEntity userPrTagEntity1 = userPrTagRepository.save(userPrTags.get(0));
-        UserPrTagEntity userPrTagEntity2 = userPrTagRepository.save(userPrTags.get(1));
-        UserPrTagEntity userPrTagEntity3 = userPrTagRepository.save(userPrTags.get(2));
+        List<UserPrTagEntity> prTagEntities =
+                List.of(
+                        UserPrTagEntity.builder().tagName("ENFJ").userInfoId(userId).build(),
+                        UserPrTagEntity.builder().tagName("반모환영").userInfoId(userId).build(),
+                        UserPrTagEntity.builder().tagName("보드게임신").userInfoId(userId).build());
+
+        UserPrTagEntity userPrTagEntity1 = userPrTagRepository.save(prTagEntities.get(0));
+        UserPrTagEntity userPrTagEntity2 = userPrTagRepository.save(prTagEntities.get(1));
+        UserPrTagEntity userPrTagEntity3 = userPrTagRepository.save(prTagEntities.get(2));
 
         // when
         UserPersonalInfoResponse personalInfo = userQueryUseCase.getPersonalInfo(userId);
@@ -137,7 +137,6 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
     @ParameterizedTest
     @DisplayName("회원정보에 프로필이미지와 PR태그는 없을 수도 있다")
     @MethodSource("getNoImageAndPrtTagsUserEntity")
-    @Order(2)
     void 회원정보에_프로필이미지와_PR태그는_없을_수도_있다(UserInfoEntity userInfo) {
         // given
         Long userId = getUserId(userInfo);
@@ -165,13 +164,7 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
                         .profileImage("브이하는내사진.jpg")
                         .providerType(ProviderType.LOCAL)
                         .build();
-        List<UserPrTagEntity> prTagEntities =
-                List.of(
-                        UserPrTagEntity.builder().tagName("ENFJ").userInfoId(1L).build(),
-                        UserPrTagEntity.builder().tagName("반모환영").userInfoId(1L).build(),
-                        UserPrTagEntity.builder().tagName("보드게임신").userInfoId(1L).build());
-
-        return Stream.of(Arguments.of(userInfoEntity, prTagEntities));
+        return Stream.of(Arguments.of(userInfoEntity));
     }
 
     private static Stream<Arguments> getNoImageAndPrtTagsUserEntity() {
