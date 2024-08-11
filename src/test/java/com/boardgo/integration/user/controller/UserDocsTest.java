@@ -10,7 +10,6 @@ import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
@@ -27,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
 public class UserDocsTest extends RestDocsTestSupport {
@@ -130,7 +129,9 @@ public class UserDocsTest extends RestDocsTestSupport {
         return requestFields(
                 fieldWithPath("nickName").type(STRING).description("닉네임"),
                 fieldWithPath("prTags").type(ARRAY).description("PR태그").optional());
-                
+    }
+
+    @Test
     @DisplayName("내 개인정보 조회하기")
     void 내_개인정보_조회하기() {
         given(this.spec)
@@ -139,7 +140,12 @@ public class UserDocsTest extends RestDocsTestSupport {
                 .port(port)
                 .header(API_VERSION_HEADER, "1")
                 .header(AUTHORIZATION, testAccessToken)
-                .filter(document("personal-info", getPersonalInfoResponseFieldsSnippet()))
+                .filter(
+                        document(
+                                "personal-info",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                getPersonalInfoResponseFieldsSnippet()))
                 .when()
                 .get("/personal-info")
                 .then()

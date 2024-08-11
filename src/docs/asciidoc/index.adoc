@@ -60,4 +60,15 @@ Body
 include::{snippets}/social-signup/request-fields.adoc[]
 
 === 응답
-include::{snippets}/signup/http-response.adoc[]
+include::{snippets}/social-signup/http-response.adoc[]
+
+== 개인정보 조회
+=== 요청
+.curl-request
+include::{snippets}/personal-info/curl-request.adoc[]
+.http-request
+include::{snippets}/personal-info/http-request.adoc[]
+
+=== 응답
+include::{snippets}/personal-info/http-response.adoc[]
+include::{snippets}/personal-info/response-fields.adoc[]
