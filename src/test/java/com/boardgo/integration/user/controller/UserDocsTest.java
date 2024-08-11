@@ -132,6 +132,15 @@ public class UserDocsTest extends RestDocsTestSupport {
     @Test
     @DisplayName("내 개인정보 조회하기")
     void 내_개인정보_조회하기() {
+        userRepository.save(
+                UserInfoEntity.builder()
+                        .email("53634734")
+                        .password(null)
+                        .nickName("Bread")
+                        .profileImage("앙버터프레즐.jpg")
+                        .providerType(ProviderType.KAKAO)
+                        .build());
+
         given(this.spec)
                 .log()
                 .all()
