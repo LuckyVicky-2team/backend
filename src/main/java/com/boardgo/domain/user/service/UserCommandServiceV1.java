@@ -1,7 +1,10 @@
 package com.boardgo.domain.user.service;
 
-import static com.boardgo.common.exception.advice.dto.ErrorCode.*;
-import static com.boardgo.common.utils.ValidateUtils.*;
+import static com.boardgo.common.constant.S3BucketConstant.USER;
+import static com.boardgo.common.exception.advice.dto.ErrorCode.DUPLICATE_DATA;
+import static com.boardgo.common.utils.CustomStringUtils.existString;
+import static com.boardgo.common.utils.ValidateUtils.validateNickname;
+import static com.boardgo.common.utils.ValidateUtils.validatePrTag;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNullPointException;
@@ -64,26 +67,40 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
         if (!Objects.isNull(prTags)) {
             validatePrTag(prTags);
         }
+    }
+
     @Transactional
     @Override
-    public void updatePersonalInfo(
-            Long userId, UserPersonalInfoUpdateRequest updateRequest, MultipartFile profileImage) {
+    public void updateProfileImage(Long userId, MultipartFile profileImage) {
         UserInfoEntity userInfoEntity = getUserInfoEntity(userId);
-
+        String originalImage = userInfoEntity.getProfileImage();
+        String newImage = "";
         if (!profileImage.isEmpty()) {
-            s3Service.upload(FileUtils.getUniqueFileName(profileImage), profileImage);
+            newImage =
+                    s3Service.upload(USER, FileUtils.getUniqueFileName(profileImage), profileImage);
         }
+        if (existString(originalImage)) {
+            s3Service.deleteFile(originalImage);
+        }
+        userInfoEntity.updateProfileImage(newImage);
+    }
 
+    @Override
+    public void updatePersonalInfo(Long userId, UserPersonalInfoUpdateRequest updateRequest) {
+        UserInfoEntity userInfoEntity = getUserInfoEntity(userId);
         if (existString(updateRequest.nickName()) && validateNickname(updateRequest.nickName())) {
             userInfoEntity.updateNickname(updateRequest.nickName());
         }
-        userInfoEntity.encodePassword(passwordEncoder);
+        if (existString(updateRequest.password())) {
+            userInfoEntity.encodePassword(passwordEncoder);
+        }
     }
 
     @Override
     public void updatePrTags(List<String> changedPrTag, Long userId) {
         List<UserPrTagEntity> prTags = userPrTagRepository.findByUserInfoId(userId);
         userPrTagRepository.deleteAllInBatch(prTags);
+        validatePrTag(changedPrTag);
         userPrTagRepository.bulkInsertPrTags(changedPrTag, userId);
     }
 

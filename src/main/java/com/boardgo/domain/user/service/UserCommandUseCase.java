@@ -11,8 +11,9 @@ public interface UserCommandUseCase {
 
     Long socialSignup(SocialSignupRequest socialSignupRequest, Long userId);
 
-    void updatePersonalInfo(
-            Long userId, UserPersonalInfoUpdateRequest updateRequest, MultipartFile profileImage);
+    void updatePersonalInfo(Long userId, UserPersonalInfoUpdateRequest updateRequest);
+
+    void updateProfileImage(Long userId, MultipartFile profileImage);
 
     void updatePrTags(List<String> changedPrTag, Long userId);
 }

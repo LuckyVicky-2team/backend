@@ -71,4 +71,8 @@ public class UserInfoEntity extends BaseEntity {
     public void updateNickname(String nickName) {
         this.nickName = nickName;
     }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 }
