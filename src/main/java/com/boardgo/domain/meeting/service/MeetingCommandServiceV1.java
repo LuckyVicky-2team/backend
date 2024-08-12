@@ -4,6 +4,7 @@ import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.common.exception.advice.dto.ErrorCode;
 import com.boardgo.common.utils.FileUtils;
 import com.boardgo.common.utils.S3Service;
+import com.boardgo.common.utils.SecurityUtils;
 import com.boardgo.domain.boardgame.entity.BoardGameEntity;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.mapper.MeetingMapper;
@@ -12,7 +13,6 @@ import com.boardgo.domain.meeting.entity.MeetingEntity;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,8 +30,7 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
     @Override
     public Long create(MeetingCreateRequest meetingCreateRequest, MultipartFile imageFile) {
         String imageUri = registerImage(meetingCreateRequest, imageFile);
-        Long userId =
-                Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+        Long userId = SecurityUtils.currentUserId();
         MeetingEntity meetingEntity =
                 meetingMapper.toMeetingEntity(meetingCreateRequest, userId, imageUri);
         return meetingCreateFactory.create(
