@@ -8,12 +8,11 @@ import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.boardgame.repository.GameGenreMatchRepository;
 import com.boardgo.domain.user.entity.ProviderType;
 import com.boardgo.domain.user.entity.UserInfoEntity;
-import com.boardgo.domain.user.repository.UserPrTagJdbcRepository;
+import com.boardgo.domain.user.repository.UserPrTagRepository;
 import com.boardgo.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -26,8 +25,7 @@ public class BoardGameInitializer implements ApplicationRunner {
     private final BoardGameGenreRepository boardGameGenreRepository;
     private final GameGenreMatchRepository genreMatchRepository;
 
-    @Qualifier("UserPrTagJdbcRepository")
-    private final UserPrTagJdbcRepository userPrTagRepository;
+    private final UserPrTagRepository userPrTagRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
