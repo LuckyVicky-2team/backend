@@ -36,10 +36,10 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     private final JPAQueryFactory queryFactory;
     private final QMeetingEntity m = QMeetingEntity.meetingEntity;
     private final QUserInfoEntity u = QUserInfoEntity.userInfoEntity;
-    private final QMeetingGameMatchEntity mg = QMeetingGameMatchEntity.meetingGameMatchEntity;
-    private final QBoardGameEntity b = QBoardGameEntity.boardGameEntity;
-    private final QMeetingGenreMatchEntity mg2 = QMeetingGenreMatchEntity.meetingGenreMatchEntity;
-    private final QBoardGameGenreEntity g = QBoardGameGenreEntity.boardGameGenreEntity;
+    private final QMeetingGameMatchEntity mgam = QMeetingGameMatchEntity.meetingGameMatchEntity;
+    private final QBoardGameEntity bg = QBoardGameEntity.boardGameEntity;
+    private final QMeetingGenreMatchEntity mgem = QMeetingGenreMatchEntity.meetingGenreMatchEntity;
+    private final QBoardGameGenreEntity bgg = QBoardGameGenreEntity.boardGameGenreEntity;
     private final QMeetingParticipantSubEntity mpSub =
             QMeetingParticipantSubEntity.meetingParticipantSubEntity;
 
@@ -51,7 +51,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
 
         MeetingState finishState = MeetingState.valueOf("FINISH");
 
-        BooleanBuilder filters = getRequireFilters(searchRequest, g, m);
+        BooleanBuilder filters = getRequireFilters(searchRequest, bgg, m);
 
         // 페이지네이션 처리
         int size = getSize(searchRequest.size());
@@ -99,7 +99,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                 m.meetingDatetime.as("meetingDatetime"),
                                 m.limitParticipant.as("limitParticipant"),
                                 u.nickName,
-                                Expressions.stringTemplate("GROUP_CONCAT({0})", g.genre)
+                                Expressions.stringTemplate("GROUP_CONCAT({0})", bgg.genre)
                                         .as("genres"),
                                 mpSub.participantCount))
                 .from(m)
@@ -107,10 +107,10 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                 .on(u.id.eq(m.userId))
                 .innerJoin(mpSub)
                 .on(mpSub.id.eq(m.id))
-                .innerJoin(mg2)
-                .on(mg2.meetingId.eq(m.id))
-                .innerJoin(g)
-                .on(g.id.eq(mg2.boardGameGenreId))
+                .innerJoin(mgem)
+                .on(mgem.meetingId.eq(m.id))
+                .innerJoin(bgg)
+                .on(bgg.id.eq(mgem.boardGameGenreId))
                 .where(m.state.ne(finishState).and(filters))
                 .groupBy(m.id)
                 .orderBy(sortOrder)
@@ -125,14 +125,14 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         List<Tuple> queryResults =
                 queryFactory
                         .select(
-                                mg.meetingId,
-                                Expressions.stringTemplate("GROUP_CONCAT({0})", b.title)
+                                mgam.meetingId,
+                                Expressions.stringTemplate("GROUP_CONCAT({0})", bg.title)
                                         .as("games"))
-                        .from(b)
-                        .innerJoin(mg)
-                        .on(b.id.eq(mg.boardGameId))
-                        .where(mg.meetingId.in(meetingIds))
-                        .groupBy(mg.meetingId)
+                        .from(bg)
+                        .innerJoin(mgam)
+                        .on(bg.id.eq(mgam.boardGameId))
+                        .where(mgam.meetingId.in(meetingIds))
+                        .groupBy(mgam.meetingId)
                         .fetch();
 
         for (Tuple queryResult : queryResults) {
@@ -152,10 +152,10 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                     queryFactory
                             .select(m.id.count())
                             .from(m)
-                            .innerJoin(mg2)
-                            .on(mg2.meetingId.eq(m.id))
-                            .innerJoin(g)
-                            .on(g.id.eq(mg2.boardGameGenreId))
+                            .innerJoin(mgem)
+                            .on(mgem.meetingId.eq(m.id))
+                            .innerJoin(bgg)
+                            .on(bgg.id.eq(mgem.boardGameGenreId))
                             .where(m.state.ne(finishState).and(filters))
                             .groupBy(m.id)
                             .fetch()
@@ -191,10 +191,10 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     private BooleanExpression genreFilter(String genreFilter, QBoardGameGenreEntity g) {
         return Objects.nonNull(genreFilter)
                 ? m.id.in(
-                        JPAExpressions.select(mg2.meetingId)
-                                .from(mg2)
+                        JPAExpressions.select(mgem.meetingId)
+                                .from(mgem)
                                 .innerJoin(g)
-                                .on(mg2.boardGameGenreId.eq(g.id))
+                                .on(mgem.boardGameGenreId.eq(g.id))
                                 .where(g.genre.eq(genreFilter)))
                 : null;
     }
