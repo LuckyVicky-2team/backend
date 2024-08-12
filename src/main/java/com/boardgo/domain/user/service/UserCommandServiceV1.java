@@ -44,10 +44,7 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
         UserInfoEntity userInfoEntity =
                 userRepository
                         .findById(userId)
-                        .orElseThrow(
-                                () ->
-                                        new CustomNullPointException(
-                                                NULL_ERROR.getCode(), "회원이 존재하지 않습니다"));
+                        .orElseThrow(() -> new CustomNullPointException("회원이 존재하지 않습니다"));
 
         if (userRepository.existsByNickName(signupRequest.nickName())) {
             throw new CustomIllegalArgumentException(DUPLICATE_DATA.getCode(), "중복된 닉네임입니다.");
