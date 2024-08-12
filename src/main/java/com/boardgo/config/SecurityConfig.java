@@ -45,6 +45,26 @@ public class SecurityConfig {
     @Value("${spring.cors.headers}")
     private String corsHeaders;
 
+    AntPathRequestMatcher[] permitAllUri = {
+        AntPathRequestMatcher.antMatcher("/h2-console/**"),
+        AntPathRequestMatcher.antMatcher("/resources/**"),
+        AntPathRequestMatcher.antMatcher("/health"),
+        AntPathRequestMatcher.antMatcher("/error"),
+        AntPathRequestMatcher.antMatcher("/signup"),
+        AntPathRequestMatcher.antMatcher("/login"),
+        AntPathRequestMatcher.antMatcher("/docs/**"),
+        AntPathRequestMatcher.antMatcher("/check-email"),
+        AntPathRequestMatcher.antMatcher("/check-nickname"),
+        AntPathRequestMatcher.antMatcher("/login/oauth2/**"),
+        AntPathRequestMatcher.antMatcher("/token"),
+        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/meeting")
+    };
+
+    AntPathRequestMatcher[] permitUserUri = {
+        AntPathRequestMatcher.antMatcher("/social/signup"),
+        AntPathRequestMatcher.antMatcher("/personal-info")
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -87,25 +107,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers(
-                                                "/h2-console/**",
-                                                "/resources/**",
-                                                "/health",
-                                                "/error",
-                                                "/signup",
-                                                "/login",
-                                                "/docs/**",
-                                                "/check-email",
-                                                "/check-nickname",
-                                                "/login/oauth2/**",
-                                                "/token")
+                                        .requestMatchers(permitAllUri)
                                         .permitAll()
-                                        .requestMatchers("/social/signup", "/personal-info")
+                                        .requestMatchers(permitUserUri)
                                         .hasRole(RoleType.USER.toString())
-                                        .requestMatchers(
-                                                AntPathRequestMatcher.antMatcher(
-                                                        HttpMethod.GET, "/meeting"))
-                                        .permitAll()
                                         .anyRequest()
                                         .authenticated())
                 .oauth2Login(

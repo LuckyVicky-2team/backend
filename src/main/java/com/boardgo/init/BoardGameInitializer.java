@@ -76,7 +76,7 @@ public class BoardGameInitializer implements ApplicationRunner {
         return UserInfoEntity.builder()
                 .email("imhappy" + i + "@naver.com")
                 .password("password" + i)
-                .nickName("nickName" + i)
+                .nickName("해피니스" + i)
                 .profileImage("행복한내사진.jpg")
                 .providerType(ProviderType.LOCAL)
                 .build();
