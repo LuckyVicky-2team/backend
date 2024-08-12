@@ -1,9 +1,8 @@
-package com.boardgo.domain.meeting.repository.dto;
+package com.boardgo.domain.meeting.repository.projection;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-public record MeetingSearchDto(
+public record MeetingSearchProjection(
         Long id,
         String title,
         String city,
@@ -11,6 +10,5 @@ public record MeetingSearchDto(
         LocalDateTime meetingDate,
         Integer limitParticipant,
         String nickName,
-        List<String> games,
-        List<String> genres,
+        String genres,
         Long participantCount) {}

@@ -6,11 +6,13 @@ import com.boardgo.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Order(2)
 @Component
+@Profile({"dev", "local", "test"})
 @RequiredArgsConstructor
 public class UserInfoInitializer implements ApplicationRunner {
 

@@ -1,6 +1,6 @@
 package com.boardgo.config;
 
-import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
+import static com.boardgo.common.constant.HeaderConstant.*;
 
 import com.boardgo.domain.user.entity.RoleType;
 import com.boardgo.jwt.JWTFilter;
@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
@@ -100,6 +102,10 @@ public class SecurityConfig {
                                         .permitAll()
                                         .requestMatchers("/social/signup")
                                         .hasRole(RoleType.USER.toString())
+                                        .requestMatchers(
+                                                AntPathRequestMatcher.antMatcher(
+                                                        HttpMethod.GET, "/meeting"))
+                                        .permitAll()
                                         .anyRequest()
                                         .authenticated())
                 .oauth2Login(
