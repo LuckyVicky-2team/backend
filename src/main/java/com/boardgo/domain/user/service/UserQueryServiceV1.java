@@ -1,7 +1,6 @@
 package com.boardgo.domain.user.service;
 
 import static com.boardgo.common.exception.advice.dto.ErrorCode.DUPLICATE_DATA;
-import static com.boardgo.common.exception.advice.dto.ErrorCode.NULL_ERROR;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNullPointException;
@@ -47,10 +46,7 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
         UserInfoEntity userInfoEntity =
                 userRepository
                         .findById(userId)
-                        .orElseThrow(
-                                () ->
-                                        new CustomNullPointException(
-                                                NULL_ERROR.getCode(), "회원이 존재하지 않습니다"));
+                        .orElseThrow(() -> new CustomNullPointException("회원이 존재하지 않습니다"));
         // TODO. 리뷰 기능 구현 필요: 평균별점
         Double averageGrade = 4.3;
         List<UserPrTagEntity> userPrTagEntities =
