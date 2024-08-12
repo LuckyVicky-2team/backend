@@ -32,24 +32,6 @@ public class MeetingDocsTest extends RestDocsTestSupport {
     @DisplayName("사용자는 모임을 만들 수 있다")
     void 사용자는_모임을_만들_수_있다() throws JsonProcessingException {
         // 사용자 생성
-        // SignupRequest signupRequest = new SignupRequest("aa@aa.aa", "nickname", "password",
-        // null);
-        // UserInfoMapper userInfoMapper = UserInfoMapper.INSTANCE;
-        //
-        // UserInfoEntity userInfoEntity = userInfoMapper.toUserInfoEntity(signupRequest);
-        // CustomUserDetails userDetails = new CustomUserDetails(
-        //     userInfoEntity
-        // );
-        // UserInfoEntity savedUserInfoEntity = userRepository.save(userInfoEntity);
-        //
-        // String jwt = jwtUtil.createJwt(savedUserInfoEntity.getId(), RoleType.USER,
-        // TimeConstant.ACCESS_TOKEN_DURATION);
-        //
-        // // SecurityContext에 인증된 사용자 정보 설정
-        // SecurityContext context = SecurityContextHolder.createEmptyContext();
-        // context.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null,
-        // userDetails.getAuthorities()));
-        // SecurityContextHolder.setContext(context);
 
         MeetingCreateRequest request =
                 new MeetingCreateRequest(

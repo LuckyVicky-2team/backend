@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
+import org.hibernate.annotations.Synchronize;
 
 @Entity
 @Immutable
@@ -18,6 +19,7 @@ import org.hibernate.annotations.Subselect;
 	WHERE mp.type != 'OUT'
 	GROUP BY m.meeting_id
 """)
+@Synchronize({"meeting", "meeting_participant"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingParticipantSubEntity {
     @Id private Long id;
