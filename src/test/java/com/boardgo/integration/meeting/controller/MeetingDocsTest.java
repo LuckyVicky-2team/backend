@@ -150,7 +150,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .filter(
                         document(
-                                "search-meeting",
+                                "meeting-list",
                                 queryParameters(
                                         parameterWithName("count")
                                                 .description("현재 검색 조건의 전체 개수(캐싱을 위함)")
