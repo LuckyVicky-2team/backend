@@ -1,5 +1,6 @@
 package com.boardgo.integration.user.service;
 
+import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -80,14 +81,7 @@ public class UserCommandServiceV1Test extends IntegrationTestSupport {
     void 소셜_회원가입은_닉네임과_PR태그를_저장한다(SocialSignupRequest request) {
         // given
         UserInfoEntity userInfoEntity =
-                userRepository.save(
-                        UserInfoEntity.builder()
-                                .email("abc123@google.com")
-                                .password(null)
-                                .nickName(null)
-                                .providerType(ProviderType.GOOGLE)
-                                .deleteAt(null)
-                                .build());
+                userRepository.save(socialUserInfoEntity(ProviderType.GOOGLE));
 
         // when
         userCommandUseCase.socialSignup(request, userInfoEntity.getId());
