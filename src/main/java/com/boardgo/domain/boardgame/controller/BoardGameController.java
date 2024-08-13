@@ -33,7 +33,6 @@ public class BoardGameController {
         if (search.getSize() == 0) {
             return ResponseEntity.noContent().build();
         }
-
         return ResponseEntity.ok(search);
     }
 

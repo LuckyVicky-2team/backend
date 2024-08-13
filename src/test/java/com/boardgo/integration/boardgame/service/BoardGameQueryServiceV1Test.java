@@ -29,6 +29,7 @@ public class BoardGameQueryServiceV1Test extends IntegrationTestSupport {
         // when
         Page<BoardGameSearchResponse> result = boardGameQueryUseCase.search(boardGameSearchRequest);
         // then
+        System.out.println(result);
         assertThat(result.getContent().getFirst()).extracting("title").isEqualTo("boardTitle5");
         assertThat(result.getContent().getFirst()).extracting("thumbnail").isEqualTo("thumbnail5");
     }
