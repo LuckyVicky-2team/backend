@@ -98,8 +98,8 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
     @Override
     public void updatePrTags(List<String> changedPrTag, Long userId) {
         List<UserPrTagEntity> prTags = userPrTagRepository.findByUserInfoId(userId);
-        userPrTagRepository.deleteAllInBatch(prTags);
         validatePrTag(changedPrTag);
+        userPrTagRepository.deleteAllInBatch(prTags);
         userPrTagRepository.bulkInsertPrTags(changedPrTag, userId);
     }
 

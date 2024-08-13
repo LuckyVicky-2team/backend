@@ -23,7 +23,6 @@ import com.boardgo.domain.user.repository.UserPrTagRepository;
 import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.integration.support.RestDocsTestSupport;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,9 +38,6 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
 
     @Autowired private UserRepository userRepository;
     @Autowired private UserPrTagRepository userPrTagRepository;
-
-    // FIXME: RestDocsTestSupport 공용으로 사용 pull 받은 후 삭제
-    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("내 개인정보 조회하기")
