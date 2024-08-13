@@ -69,7 +69,6 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
         }
     }
 
-    @Transactional
     @Override
     public void updateProfileImage(Long userId, MultipartFile profileImage) {
         UserInfoEntity userInfoEntity = getUserInfoEntity(userId);
