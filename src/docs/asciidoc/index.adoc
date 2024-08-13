@@ -101,4 +101,3 @@ include::{snippets}/meeting-list/http-response.adoc[]
 
 Response Body
 include::{snippets}/meeting-list/response-fields.adoc[]
-

@@ -17,7 +17,7 @@ public enum ErrorCode {
     FORBIDDEN(403, "권한이 적절하지 않습니다"),
     NOT_FOUND(404, "존재하지 않는 URI 입니다"),
     ELEMENT_NOT_FOUND(4040, "존재하지 않는 리소스입니다."),
-    INTERNAL_SERVER_ERROR(500, "알 수 없는 서버 에러 입니다");
+    INTERNAL_SERVER_ERROR(4041, "알 수 없는 에러 입니다");
 
     private final int code;
     private final String message;
