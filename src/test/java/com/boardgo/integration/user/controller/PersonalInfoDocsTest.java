@@ -2,6 +2,7 @@ package com.boardgo.integration.user.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
+import static com.boardgo.integration.fixture.UserInfoFixture.localUserInfoEntity;
 import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
 import static com.boardgo.integration.fixture.UserPrTagFixture.userPrTagEntity;
 import static io.restassured.RestAssured.given;
@@ -57,7 +58,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .header(AUTHORIZATION, testAccessToken)
                 .filter(
                         document(
-                                "personal-info",
+                                "get-personal-info",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 getPersonalInfoResponseFieldsSnippet()))
@@ -84,7 +85,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
         UserPersonalInfoUpdateRequest updateRequest =
                 new UserPersonalInfoUpdateRequest("butter", "fskdj234#!@");
         String jsonValue = objectMapper.writeValueAsString(updateRequest);
-        userRepository.save(socialUserInfoEntity(ProviderType.GOOGLE));
+        userRepository.save(localUserInfoEntity());
 
         given(this.spec)
                 .log()
@@ -93,7 +94,11 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .header(API_VERSION_HEADER, "1")
                 .header(AUTHORIZATION, testAccessToken)
                 .contentType(ContentType.JSON)
-                .filter(document("personal-info", getPersonalInfoUpdateRequestPartFieldsSnippet()))
+                .filter(
+                        document(
+                                "patch-personal-info",
+                                preprocessResponse(prettyPrint()),
+                                getPersonalInfoUpdateRequestFieldsSnippet()))
                 .body(jsonValue)
                 .when()
                 .patch("/personal-info")
@@ -101,7 +106,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    private RequestFieldsSnippet getPersonalInfoUpdateRequestPartFieldsSnippet() {
+    private RequestFieldsSnippet getPersonalInfoUpdateRequestFieldsSnippet() {
         return requestFields(
                 fieldWithPath("nickName").type(JsonFieldType.STRING).description("닉네임").optional(),
                 fieldWithPath("password")
@@ -128,7 +133,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .multiPart("prTags", "ENFJ")
                 .filter(
                         document(
-                                "personal-info",
+                                "patch-profile",
                                 preprocessResponse(prettyPrint()),
                                 getRequestPartBodySnippet()))
                 .when()
