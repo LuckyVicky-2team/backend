@@ -1,4 +1,4 @@
-package com.boardgo.integration.boardgame;
+package com.boardgo.integration.boardgame.service;
 
 import static org.assertj.core.api.Assertions.*;
 
