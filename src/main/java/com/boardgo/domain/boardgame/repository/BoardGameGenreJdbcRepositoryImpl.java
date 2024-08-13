@@ -1,4 +1,4 @@
-package com.boardgo.domain.user.repository;
+package com.boardgo.domain.boardgame.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,28 +10,26 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class UserPrTagJdbcRepositoryImpl implements UserPrTagJdbcRepository {
+public class BoardGameGenreJdbcRepositoryImpl implements BoardGameGenreJdbcRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void bulkInsertPrTags(List<String> prTags, Long userInfoId) {
-        if (prTags == null) {
-            return;
-        }
-        String sql = "INSERT IGNORE INTO user_pr_tag (tag_name, user_info_id) VALUES (?, ?)";
+    @Override
+    public void bulkInsert(List<String> genres) {
+
+        String sql = "INSERT IGNORE INTO board_game_genre (genre) VALUES (?)";
 
         jdbcTemplate.batchUpdate(
                 sql,
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setString(1, prTags.get(i));
-                        ps.setLong(2, userInfoId);
+                        ps.setString(1, genres.get(i));
                     }
 
                     @Override
                     public int getBatchSize() {
-                        return prTags.size();
+                        return genres.size();
                     }
                 });
     }
