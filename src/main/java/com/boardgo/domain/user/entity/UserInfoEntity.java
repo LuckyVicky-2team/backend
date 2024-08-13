@@ -14,12 +14,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
 @Table(name = "user_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class UserInfoEntity extends BaseEntity {
     @Id
     @Column(name = "user_info_id")
@@ -35,6 +37,8 @@ public class UserInfoEntity extends BaseEntity {
     @Column(length = 50, unique = true)
     private String nickName;
 
+    @Column private String profileImage;
+
     @Column(name = "provider_type", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
@@ -48,12 +52,14 @@ public class UserInfoEntity extends BaseEntity {
             String email,
             String password,
             String nickName,
+            String profileImage,
             ProviderType providerType,
             LocalDateTime deleteAt) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.nickName = nickName;
+        this.profileImage = profileImage;
         this.providerType = providerType;
         this.deleteAt = deleteAt;
     }
@@ -64,5 +70,9 @@ public class UserInfoEntity extends BaseEntity {
 
     public void updateNickname(String nickName) {
         this.nickName = nickName;
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }

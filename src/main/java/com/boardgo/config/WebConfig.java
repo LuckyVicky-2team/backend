@@ -5,18 +5,24 @@ import com.boardgo.config.interceptor.LoggingInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+// @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
     private final LoggingInterceptor interceptor;
 
     private static final String[] INTERCEPTOR_WHITE_LIST = {
-        "/css/**", "/js/**", "/images/**", "/fonts/**", "/*.html", "/error", "/favicon.ico"
+        "/css/**",
+        "/js/**",
+        "/images/**",
+        "/fonts/**",
+        "/*.html",
+        "/error",
+        "/favicon.ico",
+        "/h2-console/**"
     };
 
     @Override

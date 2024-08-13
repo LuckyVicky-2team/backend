@@ -6,6 +6,30 @@
 :toclevels: 2
 :sectlinks:
 
+
+== 소셜 로그인 토큰 발급
+=== 요청
+.curl-request
+include::{snippets}/token/curl-request.adoc[]
+.header
+include::{snippets}/token/request-headers.adoc[]
+.cookie
+include::{snippets}/token/request-cookies.adoc[]
+
+=== 응답
+.header
+include::{snippets}/token/response-headers.adoc[]
+
+== 소셜 회원가입
+=== 요청
+.curl-request
+include::{snippets}/social-signup/curl-request.adoc[]
+.body
+include::{snippets}/social-signup/request-fields.adoc[]
+
+=== 응답
+include::{snippets}/social-signup/http-response.adoc[]
+
 == 회원가입
 === 요청
 include::{snippets}/signup/http-request.adoc[]
@@ -16,6 +40,38 @@ include::{snippets}/signup/request-fields.adoc[]
 === 응답
 include::{snippets}/signup/http-response.adoc[]
 include::{snippets}/signup/response-body.adoc[]
+
+== 개인정보 조회
+=== 요청
+.curl-request
+include::{snippets}/get-personal-info/curl-request.adoc[]
+.http-request
+include::{snippets}/get-personal-info/http-request.adoc[]
+
+=== 응답
+include::{snippets}/get-personal-info/http-response.adoc[]
+include::{snippets}/get-personal-info/response-fields.adoc[]
+
+== 개인정보 수정
+=== 요청
+.http-request
+include::{snippets}/patch-personal-info/request-fields.adoc[]
+
+=== 응답
+include::{snippets}/patch-personal-info/http-response.adoc[]
+
+== 프로필 수정
+./personal-info/profile
+
+== PR태그 수정
+=== 요청
+.curl-request
+include::{snippets}/patch-profile/curl-request.adoc[]
+.http-request
+include::{snippets}/patch-profile/request-parts.adoc[]
+
+=== 응답
+include::{snippets}/patch-profile/http-response.adoc[]
 
 == 이메일 중복체크
 === 요청
@@ -39,7 +95,7 @@ include::{snippets}/checkNickName/query-parameters.adoc[]
 === 응답
 include::{snippets}/checkNickName/http-response.adoc[]
 
-== 미팅 생성하기
+== 모임 생성
 === 요청
 include::{snippets}/meeting-create/http-request.adoc[]
 include::{snippets}/meeting-create/httpie-request.adoc[]
@@ -54,10 +110,27 @@ include::{snippets}/meeting-create/http-response.adoc[]
 Response Header
 include::{snippets}/meeting-create/response-headers.adoc[]
 
-== 소셜 회원가입
+== 모임 목록 조회
 === 요청
-Body
-include::{snippets}/social-signup/request-fields.adoc[]
+include::{snippets}/meeting-list/http-request.adoc[]
+include::{snippets}/meeting-list/httpie-request.adoc[]
+QueryString
+include::{snippets}/meeting-list/query-parameters.adoc[]
 
 === 응답
-include::{snippets}/signup/http-response.adoc[]
+include::{snippets}/meeting-list/http-response.adoc[]
+
+Response Body
+include::{snippets}/meeting-list/response-fields.adoc[]
+
+== 보드게임 등록
+=== 요청
+include::{snippets}/boardgame-create/http-request.adoc[]
+include::{snippets}/boardgame-create/httpie-request.adoc[]
+Multipart/form-data
+include::{snippets}/boardgame-create/request-parts.adoc[]
+boardGameCreateListRequest
+include::{snippets}/boardgame-create/request-part-boardGameCreateListRequest-fields.adoc[]
+
+=== 응답
+include::{snippets}/boardgame-create/http-response.adoc[]

@@ -100,9 +100,7 @@ public class UserDocsTest extends RestDocsTestSupport {
                 .log()
                 .all()
                 .header(API_VERSION_HEADER, "1")
-                .header(
-                        AUTHORIZATION,
-                        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjMwMDQ2MjgsImV4cCI6MTcyNDczMjYyOH0.wLeDqO_VIrgtvn47LLIlfjpiEaJDb2XOrsPpEgg5N4s")
+                .header(AUTHORIZATION, testAccessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .filter(
