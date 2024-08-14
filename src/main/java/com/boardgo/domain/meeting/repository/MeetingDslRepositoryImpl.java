@@ -2,15 +2,22 @@ package com.boardgo.domain.meeting.repository;
 
 import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
+import com.boardgo.domain.boardgame.repository.BoardGameRepository;
+import com.boardgo.domain.boardgame.repository.response.BoardGameByMeetingIdResponse;
+import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
 import com.boardgo.domain.meeting.entity.MeetingState;
 import com.boardgo.domain.meeting.entity.QMeetingEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGameMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGenreMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantSubEntity;
+import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
+import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import com.boardgo.domain.user.entity.QUserInfoEntity;
+import com.boardgo.domain.user.repository.UserRepository;
+import com.boardgo.domain.user.repository.response.UserParticipantResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
@@ -34,6 +41,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     private final JPAQueryFactory queryFactory;
+    private final UserRepository userRepository;
+    private final MeetingMapper meetingMapper;
+    private final BoardGameRepository boardGameRepository;
     private final QMeetingEntity m = QMeetingEntity.meetingEntity;
     private final QUserInfoEntity u = QUserInfoEntity.userInfoEntity;
     private final QMeetingGameMatchEntity mgam = QMeetingGameMatchEntity.meetingGameMatchEntity;
@@ -43,8 +53,15 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     private final QMeetingParticipantSubEntity mpSub =
             QMeetingParticipantSubEntity.meetingParticipantSubEntity;
 
-    public MeetingDslRepositoryImpl(EntityManager entityManager) {
+    public MeetingDslRepositoryImpl(
+            EntityManager entityManager,
+            UserRepository userRepository,
+            MeetingMapper meetingMapper,
+            BoardGameRepository boardGameRepository) {
         this.queryFactory = new JPAQueryFactory(entityManager);
+        this.userRepository = userRepository;
+        this.meetingMapper = meetingMapper;
+        this.boardGameRepository = boardGameRepository;
     }
 
     public Page<MeetingSearchResponse> findByFilters(MeetingSearchRequest searchRequest) {
@@ -79,6 +96,36 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
 
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         return new PageImpl<>(results, pageable, total);
+    }
+
+    @Override
+    public MeetingDetailResponse findDetailById(Long meetingId) {
+        List<UserParticipantResponse> userParticipantResponseList =
+                userRepository.findByMeetingId(meetingId);
+        List<BoardGameByMeetingIdResponse> boardGameByMeetingIdResponseList =
+                boardGameRepository.findMeetingDetailByMeetingId(meetingId);
+        MeetingDetailProjection meetingDetailProjection =
+                queryFactory
+                        .select(
+                                Projections.constructor(
+                                        MeetingDetailProjection.class,
+                                        m.id,
+                                        m.title,
+                                        m.content,
+                                        m.longitude,
+                                        m.latitude,
+                                        m.city,
+                                        m.county,
+                                        m.limitParticipant,
+                                        m.state))
+                        .from(m)
+                        .where(m.id.eq(meetingId))
+                        .fetchOne();
+
+        return meetingMapper.toMeetingDetailResponse(
+                meetingDetailProjection,
+                userParticipantResponseList,
+                boardGameByMeetingIdResponseList);
     }
 
     private List<MeetingSearchProjection> getMeetingSearchDtoList(

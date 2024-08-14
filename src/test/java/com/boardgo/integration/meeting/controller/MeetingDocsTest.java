@@ -268,6 +268,152 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                 .statusCode(HttpStatus.OK.value());
     }
 
+    @Test
+    @DisplayName("사용자는 모임 상세 조회를 할 수 있다")
+    void 사용자는_모임_상세_조회를_할_수_있다() {
+        initEssentialData();
+        given(this.spec)
+                .log()
+                .all()
+                .port(port)
+                .header(API_VERSION_HEADER, "1")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .filter(
+                        document(
+                                "meeting-list",
+                                queryParameters(
+                                        parameterWithName("count")
+                                                .description("현재 검색 조건의 전체 개수(캐싱을 위함)")
+                                                .optional(),
+                                        parameterWithName("tag").description("태그 필터").optional(),
+                                        parameterWithName("startDate")
+                                                .description("모임 날짜 검색을 위한 시작 날짜")
+                                                .optional(),
+                                        parameterWithName("endDate")
+                                                .description("모임 날짜 검색을 위한 마지막 날짜")
+                                                .optional(),
+                                        parameterWithName("searchWord")
+                                                .description("검색어")
+                                                .optional(),
+                                        parameterWithName("searchType")
+                                                .description(
+                                                        "검색 타입: TITLE, CONTENT, ALL(제목 or 내용 중 포함되면 가져옴)")
+                                                .optional(),
+                                        parameterWithName("city").description("도시 필터").optional(),
+                                        parameterWithName("county")
+                                                .description("County 필터")
+                                                .optional(),
+                                        parameterWithName("page")
+                                                .description("페이지 위치 ex) 1, 2, 3 ...")
+                                                .optional(),
+                                        parameterWithName("size")
+                                                .description("페이지 크기 (만약을 대비해서)")
+                                                .optional(),
+                                        parameterWithName("sortBy")
+                                                .description(
+                                                        "정렬 기준: MEETING_DATE, PARTICIPANT_COUNT")
+                                                .optional()),
+                                responseFields(
+                                        fieldWithPath("content[]")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("content")
+                                                .optional(),
+                                        fieldWithPath("content[].id")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("모임 ID"),
+                                        fieldWithPath("content[].title")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 제목"),
+                                        fieldWithPath("content[].city")
+                                                .type(JsonFieldType.STRING)
+                                                .description("도시"),
+                                        fieldWithPath("content[].county")
+                                                .type(JsonFieldType.STRING)
+                                                .description("county..(군, 구)"),
+                                        fieldWithPath("content[].meetingDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 시간"),
+                                        fieldWithPath("content[].limitParticipant")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("최대 참가자 수"),
+                                        fieldWithPath("content[].nickName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 개설자 닉네임"),
+                                        fieldWithPath("content[].thumbnail")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 썸네일 URI"),
+                                        fieldWithPath("content[].games")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("보드게임 제목들"),
+                                        fieldWithPath("content[].tags")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("태그(게임의 장르)"),
+                                        fieldWithPath("content[].participantCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 참가자 수"),
+                                        fieldWithPath("totalElements")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("전체 개수 (요청 때 count에 넣어주시면 캐싱 됩니다..!)"),
+                                        fieldWithPath("totalPages")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("전체 페이지 수"),
+                                        fieldWithPath("number")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 페이지"),
+                                        fieldWithPath("size")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("한 페이지 당 개수"),
+                                        fieldWithPath("sort.empty")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬 조건이 비어있는지 여부"),
+                                        fieldWithPath("sort.sorted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("content가 정렬되어 있는지의 여부"),
+                                        fieldWithPath("sort.unsorted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬이 안되어있는지의 여부"),
+                                        fieldWithPath("first")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("가장 첫번째 페이지의 숫자"),
+                                        fieldWithPath("last")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("가장 마지막 페이지의 숫자"),
+                                        fieldWithPath("numberOfElements")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 페이지에 있는 content.size()"),
+                                        fieldWithPath("empty")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("페이지가 비어있는지 여부"),
+                                        fieldWithPath("pageable.pageNumber")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 페이지 번호"),
+                                        fieldWithPath("pageable.pageSize")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("페이지 당 항목 수"),
+                                        fieldWithPath("pageable.offset")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 페이지의 시작 지점"),
+                                        fieldWithPath("pageable.paged")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("페이지가 페이징 되었는지 여부"),
+                                        fieldWithPath("pageable.unpaged")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("페이지가 페이징 되지 않았는지 여부"),
+                                        fieldWithPath("pageable.sort.empty")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬 조건이 비어있는지 여부"),
+                                        fieldWithPath("pageable.sort.sorted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬이 되었는지 여부"),
+                                        fieldWithPath("pageable.sort.unsorted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬되지 않았는지 여부"))))
+                .when()
+                .get("/meeting/100")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
     private void initEssentialData() {
         testBoardGameInitializer.generateBoardGameData();
         testUserInfoInitializer.generateUserData();
