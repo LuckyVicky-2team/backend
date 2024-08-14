@@ -54,6 +54,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         MeetingEntity meetingEntity =
                 MeetingEntity.builder()
                         .hit(0L)
+                        .userId(1L)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -67,8 +68,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         List<Long> boardGameIdList = List.of(1L, 2L);
         List<Long> boardGameGenreIdList = List.of(1L, 2L);
         Long meetingId =
-                meetingCreateFactory.create(
-                        meetingEntity, 1L, boardGameIdList, boardGameGenreIdList);
+                meetingCreateFactory.create(meetingEntity, boardGameIdList, boardGameGenreIdList);
 
         MeetingParticipantEntity savedParticipant =
                 meetingParticipantRepository.save(
@@ -77,8 +77,6 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                                 .userInfoId(2L)
                                 .type(ParticipantType.PARTICIPANT)
                                 .build());
-        MeetingEntity meeting = meetingRepository.findById(meetingId).get();
-        System.out.println(meeting.getState());
 
         // when
         MeetingDetailResponse result = meetingQueryUseCase.getDetailById(meetingId);

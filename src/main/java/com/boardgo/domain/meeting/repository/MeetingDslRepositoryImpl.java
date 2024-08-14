@@ -110,6 +110,8 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                 Projections.constructor(
                                         MeetingDetailProjection.class,
                                         m.id,
+                                        u.nickName,
+                                        m.meetingDatetime,
                                         m.title,
                                         m.content,
                                         m.longitude,
@@ -119,6 +121,8 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                         m.limitParticipant,
                                         m.state))
                         .from(m)
+                        .innerJoin(u)
+                        .on(m.userId.eq(u.id))
                         .where(m.id.eq(meetingId))
                         .fetchOne();
 

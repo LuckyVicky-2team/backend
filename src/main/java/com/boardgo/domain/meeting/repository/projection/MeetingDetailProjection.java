@@ -1,9 +1,12 @@
 package com.boardgo.domain.meeting.repository.projection;
 
 import com.boardgo.domain.meeting.entity.MeetingState;
+import java.time.LocalDateTime;
 
 public record MeetingDetailProjection(
         Long meetingId,
+        String userNickName,
+        LocalDateTime meetingDatetime,
         String title,
         String content,
         String longitude,

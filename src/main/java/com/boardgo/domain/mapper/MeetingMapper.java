@@ -48,6 +48,8 @@ public interface MeetingMapper {
                         .collect(Collectors.toSet());
         return new MeetingDetailResponse(
                 meetingDetailProjection.meetingId(),
+                meetingDetailProjection.userNickName(),
+                meetingDetailProjection.meetingDatetime(),
                 meetingDetailProjection.title(),
                 meetingDetailProjection.content(),
                 meetingDetailProjection.longitude(),
@@ -57,6 +59,7 @@ public interface MeetingMapper {
                 meetingDetailProjection.limitParticipant(),
                 meetingDetailProjection.state(),
                 genres.stream().toList(),
+                (long) userParticipantResponseList.size(),
                 userParticipantResponseList,
                 boardGameByMeetingIdResponseList.stream()
                         .map(BoardGameMapper.INSTANCE::toBoardGameListResponse)
