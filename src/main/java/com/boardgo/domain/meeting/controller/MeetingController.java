@@ -4,6 +4,7 @@ import static com.boardgo.common.constant.HeaderConstant.*;
 
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
+import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import com.boardgo.domain.meeting.service.MeetingCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,5 +43,10 @@ public class MeetingController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(searchResult);
+    }
+
+    @GetMapping(value = "/meeting/{id}", headers = API_VERSION_HEADER1)
+    public ResponseEntity<MeetingDetailResponse> getById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(meetingQueryUseCase.getDetailById(id));
     }
 }
