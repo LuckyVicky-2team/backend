@@ -188,6 +188,17 @@ Response Body
 
 include::{snippets}/meeting-detail/response-fields.adoc[]
 
+== 모임 참가하기
+
+=== 요청
+
+include::{snippets}/meeting-participation/http-request.adoc[]
+include::{snippets}/meeting-participation/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/meeting-participation/http-response.adoc[]
+
 == 보드게임 등록
 
 === 요청
@@ -208,15 +219,17 @@ include::{snippets}/boardgame-create/request-part-boardGameCreateListRequest-fie
 include::{snippets}/boardgame-create/http-response.adoc[]
 
 == 보드게임 검색 기능(페이징)
+
 === 요청
+
 include::{snippets}/boardgame-list/http-request.adoc[]
 include::{snippets}/boardgame-list/httpie-request.adoc[]
 .QueryString
 include::{snippets}/boardgame-list/query-parameters.adoc[]
 
 === 응답
+
 include::{snippets}/boardgame-list/http-response.adoc[]
 
 .Response Body
-
 include::{snippets}/boardgame-list/response-fields.adoc[]

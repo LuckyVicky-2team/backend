@@ -7,6 +7,7 @@ import com.boardgo.domain.meeting.controller.request.MeetingParticipateRequest;
 import com.boardgo.domain.meeting.service.MeetingParticipantCommandUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,6 @@ public class MeetingParticipantController {
     public ResponseEntity<Void> participateMeeting(
             @RequestBody @Valid MeetingParticipateRequest participateRequest) {
         meetingParticipantCommandUseCase.participateMeeting(participateRequest, currentUserId());
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

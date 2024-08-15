@@ -3,6 +3,8 @@ package com.boardgo.integration.meeting.controller;
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 import static com.boardgo.integration.fixture.MeetingFixture.getProgressMeetingEntity;
+import static com.boardgo.integration.fixture.MeetingParticipantFixture.getLeaderProgressMeetingEntity;
+import static com.boardgo.integration.fixture.UserInfoFixture.localUserInfoEntity;
 import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
 import static io.restassured.RestAssured.given;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -12,7 +14,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import com.boardgo.domain.meeting.controller.request.MeetingParticipateRequest;
+import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.entity.MeetingType;
+import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
 import com.boardgo.domain.user.entity.ProviderType;
 import com.boardgo.domain.user.entity.UserInfoEntity;
@@ -20,6 +24,7 @@ import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.integration.support.RestDocsTestSupport;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,16 +34,22 @@ import org.springframework.restdocs.payload.RequestFieldsSnippet;
 public class MeetingParticipantDocsTest extends RestDocsTestSupport {
     @Autowired private UserRepository userRepository;
     @Autowired private MeetingRepository meetingRepository;
+    @Autowired private MeetingParticipantRepository meetingParticipantRepository;
 
-    //    @Test
+    @Test
     @DisplayName("보드게임 모임 참가하기")
     void 보드게임_모임_참가하기() throws JsonProcessingException {
+        userRepository.save(socialUserInfoEntity(ProviderType.KAKAO));
+        UserInfoEntity user2 = userRepository.save(localUserInfoEntity());
+        MeetingEntity meeting =
+                meetingRepository.save(
+                        getProgressMeetingEntity(user2.getId(), MeetingType.FREE, 3));
+        meetingParticipantRepository.save(
+                getLeaderProgressMeetingEntity(meeting.getId(), user2.getId()));
+
         Long meetingId = 1L;
         MeetingParticipateRequest participateRequest = new MeetingParticipateRequest(meetingId);
         String requestJson = objectMapper.writeValueAsString(participateRequest);
-
-        UserInfoEntity userInfo = userRepository.save(socialUserInfoEntity(ProviderType.KAKAO));
-        meetingRepository.save(getProgressMeetingEntity(userInfo.getId(), MeetingType.FREE, 3));
 
         given(this.spec)
                 .port(port)
