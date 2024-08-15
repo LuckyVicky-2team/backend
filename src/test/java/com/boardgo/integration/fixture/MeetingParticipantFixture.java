@@ -14,7 +14,7 @@ public abstract class MeetingParticipantFixture {
                 .build();
     }
 
-    public static MeetingParticipantEntity getParticipantProgressMeetingEntity(
+    public static MeetingParticipantEntity getParticipantMeetingParticipantEntity(
             Long meetingId, Long userId) {
         return MeetingParticipantEntity.builder()
                 .meetingId(meetingId)

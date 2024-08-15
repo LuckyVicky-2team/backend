@@ -24,4 +24,22 @@ public abstract class MeetingFixture {
                 .state(MeetingState.PROGRESS)
                 .build();
     }
+
+    public static MeetingEntity getCompleteMeetingEntity(
+            Long userId, MeetingType type, int limitParticipant) {
+        return MeetingEntity.builder()
+                .userId(userId)
+                .title("강남역에서 보드게임 같이 하실분 구해요!")
+                .content("강남역 10번출구 앞에서 만나요")
+                .type(type)
+                .limitParticipant(limitParticipant)
+                .thumbnail("보드게임 강남점.jpg")
+                .city("서울시")
+                .county("강남구")
+                .latitude("5441.5429")
+                .longitude("434.5785")
+                .meetingDatetime(LocalDateTime.now().minusDays(5))
+                .state(MeetingState.COMPLETE)
+                .build();
+    }
 }
