@@ -3,9 +3,9 @@ package com.boardgo.domain.user.repository;
 import com.boardgo.domain.mapper.UserInfoMapper;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantEntity;
 import com.boardgo.domain.user.entity.QUserInfoEntity;
+import com.boardgo.domain.user.repository.projection.QUserParticipantProjection;
 import com.boardgo.domain.user.repository.projection.UserParticipantProjection;
 import com.boardgo.domain.user.repository.response.UserParticipantResponse;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
@@ -28,12 +28,8 @@ public class UserDslRepositoryImpl implements UserDslRepository {
         List<UserParticipantProjection> projectionList =
                 queryFactory
                         .select(
-                                Projections.constructor(
-                                        UserParticipantProjection.class,
-                                        u.id,
-                                        u.profileImage,
-                                        u.nickName,
-                                        mp.type.stringValue()))
+                                new QUserParticipantProjection(
+                                        u.id, u.profileImage, u.nickName, mp.type))
                         .from(u)
                         .innerJoin(mp)
                         .on(mp.userInfoId.eq(u.id))

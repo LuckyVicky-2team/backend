@@ -336,7 +336,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("userParticipantResponseList[].nickname")
                                                 .type(JsonFieldType.STRING)
                                                 .description("참가자 user 닉네임"),
-                                        fieldWithPath("userParticipantResponseList[].roleType")
+                                        fieldWithPath("userParticipantResponseList[].type")
                                                 .type(JsonFieldType.STRING)
                                                 .description(
                                                         "참가자 user 역할 타입: (LEADER - 모임 생성자, PARTICIPANT - 참여자)"),

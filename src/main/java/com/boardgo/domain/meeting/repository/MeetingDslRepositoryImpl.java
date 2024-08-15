@@ -13,6 +13,8 @@ import com.boardgo.domain.meeting.entity.QMeetingGenreMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantSubEntity;
 import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
+import com.boardgo.domain.meeting.repository.projection.QMeetingDetailProjection;
+import com.boardgo.domain.meeting.repository.projection.QMeetingSearchProjection;
 import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import com.boardgo.domain.user.entity.QUserInfoEntity;
@@ -21,7 +23,6 @@ import com.boardgo.domain.user.repository.response.UserParticipantResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -107,8 +108,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         MeetingDetailProjection meetingDetailProjection =
                 queryFactory
                         .select(
-                                Projections.constructor(
-                                        MeetingDetailProjection.class,
+                                new QMeetingDetailProjection(
                                         m.id,
                                         u.nickName,
                                         m.meetingDatetime,
@@ -141,8 +141,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
 
         return queryFactory
                 .select(
-                        Projections.constructor(
-                                MeetingSearchProjection.class,
+                        new QMeetingSearchProjection(
                                 m.id,
                                 m.title,
                                 m.city,
