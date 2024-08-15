@@ -4,4 +4,6 @@ import com.boardgo.domain.meeting.entity.MeetingParticipateWaitingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MeetingParticipateWaitingRepository
-        extends JpaRepository<MeetingParticipateWaitingEntity, Long> {}
+        extends JpaRepository<MeetingParticipateWaitingEntity, Long> {
+    boolean existsByUserInfoId(Long userId);
+}
