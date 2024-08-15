@@ -2,7 +2,7 @@ package com.boardgo.integration.meeting.service;
 
 import static com.boardgo.integration.fixture.MeetingFixture.getCompleteMeetingEntity;
 import static com.boardgo.integration.fixture.MeetingFixture.getProgressMeetingEntity;
-import static com.boardgo.integration.fixture.MeetingParticipantFixture.getLeaderProgressMeetingEntity;
+import static com.boardgo.integration.fixture.MeetingParticipantFixture.getLeaderMeetingParticipantEntity;
 import static com.boardgo.integration.fixture.MeetingParticipantFixture.getParticipantMeetingParticipantEntity;
 import static com.boardgo.integration.fixture.UserInfoFixture.localUserInfoEntity;
 import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
@@ -54,7 +54,7 @@ public class MeetingParticipantCommandServiceV1Test extends IntegrationTestSuppo
                 meetingRepository.save(
                         getProgressMeetingEntity(leader.getId(), MeetingType.FREE, 3));
         meetingParticipantRepository.save(
-                getLeaderProgressMeetingEntity(meeting.getId(), leader.getId()));
+                getLeaderMeetingParticipantEntity(meeting.getId(), leader.getId()));
 
         meetingParticipantRepository.save(
                 getParticipantMeetingParticipantEntity(meeting.getId(), participants.getId()));
@@ -85,7 +85,7 @@ public class MeetingParticipantCommandServiceV1Test extends IntegrationTestSuppo
                 meetingRepository.save(
                         getCompleteMeetingEntity(leader.getId(), MeetingType.FREE, 3));
         meetingParticipantRepository.save(
-                getLeaderProgressMeetingEntity(meeting.getId(), leader.getId()));
+                getLeaderMeetingParticipantEntity(meeting.getId(), leader.getId()));
 
         return participants;
     }
@@ -114,7 +114,7 @@ public class MeetingParticipantCommandServiceV1Test extends IntegrationTestSuppo
                 meetingRepository.save(
                         getProgressMeetingEntity(leader.getId(), MeetingType.FREE, 1));
         meetingParticipantRepository.save(
-                getLeaderProgressMeetingEntity(meeting.getId(), leader.getId()));
+                getLeaderMeetingParticipantEntity(meeting.getId(), leader.getId()));
 
         return participants;
     }
@@ -140,7 +140,7 @@ public class MeetingParticipantCommandServiceV1Test extends IntegrationTestSuppo
                 meetingRepository.save(
                         getProgressMeetingEntity(leader.getId(), MeetingType.ACCEPT, 5));
         meetingParticipantRepository.save(
-                getLeaderProgressMeetingEntity(meeting.getId(), leader.getId()));
+                getLeaderMeetingParticipantEntity(meeting.getId(), leader.getId()));
 
         return participants;
     }

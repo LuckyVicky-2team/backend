@@ -3,7 +3,7 @@ package com.boardgo.integration.meeting.controller;
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 import static com.boardgo.integration.fixture.MeetingFixture.getProgressMeetingEntity;
-import static com.boardgo.integration.fixture.MeetingParticipantFixture.getLeaderProgressMeetingEntity;
+import static com.boardgo.integration.fixture.MeetingParticipantFixture.getLeaderMeetingParticipantEntity;
 import static com.boardgo.integration.fixture.UserInfoFixture.localUserInfoEntity;
 import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
 import static io.restassured.RestAssured.given;
@@ -45,7 +45,7 @@ public class MeetingParticipantDocsTest extends RestDocsTestSupport {
                 meetingRepository.save(
                         getProgressMeetingEntity(user2.getId(), MeetingType.FREE, 3));
         meetingParticipantRepository.save(
-                getLeaderProgressMeetingEntity(meeting.getId(), user2.getId()));
+                getLeaderMeetingParticipantEntity(meeting.getId(), user2.getId()));
 
         Long meetingId = 1L;
         MeetingParticipateRequest participateRequest = new MeetingParticipateRequest(meetingId);

@@ -5,7 +5,7 @@ import com.boardgo.domain.meeting.entity.ParticipantType;
 
 public abstract class MeetingParticipantFixture {
 
-    public static MeetingParticipantEntity getLeaderProgressMeetingEntity(
+    public static MeetingParticipantEntity getLeaderMeetingParticipantEntity(
             Long meetingId, Long userId) {
         return MeetingParticipantEntity.builder()
                 .meetingId(meetingId)
