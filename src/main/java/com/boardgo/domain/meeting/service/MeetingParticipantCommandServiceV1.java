@@ -41,8 +41,8 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
         if (isAfterMeeting(meetingEntity.getMeetingDatetime())) {
             throw new CustomIllegalArgumentException("모임 날짜가 지난 모임으로 참가 불가능 합니다");
         }
-        if (meetingParticipateWaitingRepository.existsByUserInfoId(userId)) {
-            throw new CustomIllegalArgumentException("이미 참여한 모임 입니다");
+        if (meetingParticipantRepository.existsByUserInfoId(userId)) {
+            throw new CustomIllegalArgumentException("이미 참여된 모임 입니다");
         }
 
         MeetingParticipantSubEntity participantCount =
