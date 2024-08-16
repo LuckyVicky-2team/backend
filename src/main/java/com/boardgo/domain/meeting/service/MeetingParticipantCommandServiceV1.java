@@ -33,7 +33,6 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
 
     @Override
     public void participateMeeting(MeetingParticipateRequest participateRequest, Long userId) {
-        // TODO. 에러 문서화
         MeetingEntity meetingEntity =
                 meetingRepository
                         .findById(participateRequest.meetingId())
