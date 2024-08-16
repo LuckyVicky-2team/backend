@@ -1,5 +1,6 @@
 package com.boardgo.domain.meeting.entity;
 
+import com.boardgo.common.exception.CustomIllegalArgumentException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -28,4 +29,11 @@ public class MeetingParticipantSubEntity {
 
     @Column(name = "participantCount")
     private Integer participantCount;
+
+    public boolean checkParticipant(Integer limitCount) {
+        if (this.participantCount >= limitCount) {
+            throw new CustomIllegalArgumentException("모임 정원으로 참가 불가능 합니다");
+        }
+        return true;
+    }
 }

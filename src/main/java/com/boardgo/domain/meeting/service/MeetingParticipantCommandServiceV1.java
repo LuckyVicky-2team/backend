@@ -1,7 +1,5 @@
 package com.boardgo.domain.meeting.service;
 
-import static com.boardgo.domain.meeting.entity.MeetingState.COMPLETE;
-
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.mapper.MeetingParticipantMapper;
@@ -11,7 +9,6 @@ import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.entity.MeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.MeetingParticipantSubEntity;
 import com.boardgo.domain.meeting.entity.MeetingParticipateWaitingEntity;
-import com.boardgo.domain.meeting.entity.MeetingState;
 import com.boardgo.domain.meeting.entity.ParticipantType;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingParticipantSubRepository;
@@ -51,7 +48,8 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
                 meetingParticipantSubRepository
                         .findById(meetingEntity.getId())
                         .orElseThrow(() -> new CustomNullPointException("모임이 존재하지 않습니다"));
-        isParticipation(meetingEntity, participantCount);
+        participantCount.checkParticipant(meetingEntity.getLimitParticipant());
+        meetingEntity.checkCompleteState();
 
         // FIXME: 저장 기능 리팩토링 필요
         MeetingParticipantEntity participant =
@@ -70,21 +68,6 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
      */
     private boolean isAfterMeeting(LocalDateTime meetingDateTime) {
         return LocalDateTime.now().isAfter(meetingDateTime);
-    }
-
-    private boolean isParticipation(
-            MeetingEntity meetingEntity, MeetingParticipantSubEntity participantCount) {
-        Integer currentCount = participantCount.getParticipantCount();
-        Integer limitCount = meetingEntity.getLimitParticipant();
-        MeetingState currentState = meetingEntity.getState();
-
-        if (currentCount >= limitCount) {
-            throw new CustomIllegalArgumentException("모임 정원으로 참가 불가능 합니다");
-        }
-        if (COMPLETE == currentState) {
-            throw new CustomIllegalArgumentException("모집 완료된 모임으로 참가 불가능 합니다");
-        }
-        return true;
     }
 
     // FIXME MapStruct로 리팩토리 필요
