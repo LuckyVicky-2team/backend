@@ -79,6 +79,10 @@ public class NamingConventionTest {
                 .resideInAPackage("..service")
                 .and()
                 .haveSimpleNameContaining("Service")
+                .and()
+                .areNotAnonymousClasses()
+                .and()
+                .areNotMemberClasses()
                 .should()
                 .beAnnotatedWith(Service.class)
                 .check(javaClasses);
