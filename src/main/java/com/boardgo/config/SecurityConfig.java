@@ -57,13 +57,15 @@ public class SecurityConfig {
         AntPathRequestMatcher.antMatcher("/check-nickname"),
         AntPathRequestMatcher.antMatcher("/login/oauth2/**"),
         AntPathRequestMatcher.antMatcher("/token"),
+        AntPathRequestMatcher.antMatcher("/actuator/**"),
         AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/meeting/**"),
         AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/boardgame")
     };
 
     AntPathRequestMatcher[] permitUserUri = {
         AntPathRequestMatcher.antMatcher("/social/signup"),
-        AntPathRequestMatcher.antMatcher("/personal-info/**")
+        AntPathRequestMatcher.antMatcher("/personal-info/**"),
+        AntPathRequestMatcher.antMatcher("/meeting-participant/**")
     };
 
     @Bean
