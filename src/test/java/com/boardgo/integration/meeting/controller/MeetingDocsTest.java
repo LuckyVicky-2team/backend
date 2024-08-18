@@ -302,6 +302,9 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("content")
                                                 .type(JsonFieldType.STRING)
                                                 .description("모임 내용"),
+                                        fieldWithPath("likeStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 찜 상태"),
                                         fieldWithPath("city")
                                                 .type(JsonFieldType.STRING)
                                                 .description("도시"),
@@ -314,6 +317,15 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("latitude")
                                                 .type(JsonFieldType.STRING)
                                                 .description("위도"),
+                                        fieldWithPath("thumbnail")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 썸네일"),
+                                        fieldWithPath("detailAddress")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 장소의 상세주소"),
+                                        fieldWithPath("locationName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("모임 장소의 이름"),
                                         fieldWithPath("meetingDatetime")
                                                 .type(JsonFieldType.STRING)
                                                 .description("모임 시간"),
