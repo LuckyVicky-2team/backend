@@ -36,13 +36,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken =
                 jwtUtil.createJwt(
                         oAuth2User.getId(), oAuth2User.getRoleType(), ACCESS_TOKEN_DURATION);
-        // FIXME 첫번째 시도: 실패. 도메인을 지정해줬지만, 프론트와 서버의 도메인이 다르기 때문에 실패한듯?
-        // 프론트의 개발도메인을 서버와 동일하도록 레코드 등록. 테스트는 프론트에서 netlify 도메인 설정 후 가능
         //        Cookie cookies = createCookies(AUTHORIZATION, accessToken);
         //        cookies.setDomain(properties.domain());
         //        response.addCookie(cookies);
 
-        // FIXME 두번째 시도 코드
         ResponseCookie responseCookie =
                 createCookies(AUTHORIZATION, accessToken, properties.domain());
         response.setHeader("set-Cookie", responseCookie.toString());
