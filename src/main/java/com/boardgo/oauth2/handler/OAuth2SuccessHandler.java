@@ -42,7 +42,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ResponseCookie responseCookie =
                 createCookies(AUTHORIZATION, accessToken, properties.domain());
-        response.setHeader("set-Cookie", responseCookie.toString());
+        response.setHeader("Set-cookie", responseCookie.toString());
 
         String redirectUrl = properties.main();
         if (!existString(oAuth2User.getNickname())) {
