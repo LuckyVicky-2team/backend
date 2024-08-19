@@ -1,5 +1,6 @@
 package com.boardgo.domain.mapper;
 
+import com.boardgo.domain.user.controller.dto.OtherPersonalInfoResponse;
 import com.boardgo.domain.user.controller.dto.SignupRequest;
 import com.boardgo.domain.user.controller.dto.UserPersonalInfoResponse;
 import com.boardgo.domain.user.entity.UserInfoEntity;
@@ -28,4 +29,7 @@ public interface UserInfoMapper {
 
     UserParticipantResponse toUserParticipantResponse(
             UserParticipantProjection userParticipantProjection);
+
+    OtherPersonalInfoResponse toUserPersonalInfoResponse(
+            UserPersonalInfoResponse userPersonalInfoResponse, int meetingCount);
 }

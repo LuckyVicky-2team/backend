@@ -7,6 +7,7 @@ import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.mapper.UserInfoMapper;
 import com.boardgo.domain.user.controller.dto.EmailRequest;
 import com.boardgo.domain.user.controller.dto.NickNameRequest;
+import com.boardgo.domain.user.controller.dto.OtherPersonalInfoResponse;
 import com.boardgo.domain.user.controller.dto.UserPersonalInfoResponse;
 import com.boardgo.domain.user.entity.ProviderType;
 import com.boardgo.domain.user.entity.UserInfoEntity;
@@ -56,5 +57,13 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
                         .map(UserPrTagEntity::getTagName)
                         .collect(Collectors.toList());
         return UserInfoMapper.toUserPersonalInfoResponse(userInfoEntity, averageGrade, prTagList);
+    }
+
+    @Override
+    public OtherPersonalInfoResponse getOtherPersonalInfo(Long userId) {
+        // FIXME 리펙토링(USER_INFO - PR_TAG 쿼리DSL + 추후 리뷰까지)
+        UserPersonalInfoResponse userPersonalInfoResponse = getPersonalInfo(userId);
+        int meetingCount = 4;
+        return UserInfoMapper.toUserPersonalInfoResponse(userPersonalInfoResponse, meetingCount);
     }
 }
