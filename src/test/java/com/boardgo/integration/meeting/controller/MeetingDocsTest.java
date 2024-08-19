@@ -304,7 +304,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                                 .description("모임 내용"),
                                         fieldWithPath("likeStatus")
                                                 .type(JsonFieldType.STRING)
-                                                .description("모임 찜 상태"),
+                                                .description("모임 찜 상태 -> (Y, N)"),
                                         fieldWithPath("city")
                                                 .type(JsonFieldType.STRING)
                                                 .description("도시"),

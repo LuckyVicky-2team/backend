@@ -117,8 +117,8 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                         m.meetingDatetime,
                                         new CaseBuilder()
                                                 .when(ml.meetingId.isNotNull())
-                                                .then("LIKE")
-                                                .otherwise("NO")
+                                                .then("Y")
+                                                .otherwise("N")
                                                 .as("likeStatus"),
                                         m.thumbnail,
                                         m.title,
