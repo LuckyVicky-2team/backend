@@ -73,7 +73,7 @@ public class UserDslRepositoryImpl implements UserDslRepository {
         return personalInfoMap.keySet().stream()
                 .map(personalInfoMap::get)
                 .findFirst()
-                .orElseGet(
+                .orElseThrow(
                         () -> {
                             throw new CustomNullPointException("회원이 존재하지 않습니다");
                         });
