@@ -5,9 +5,9 @@ import com.boardgo.domain.user.controller.dto.SignupRequest;
 import com.boardgo.domain.user.controller.dto.UserPersonalInfoResponse;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.projection.UserParticipantProjection;
+import com.boardgo.domain.user.repository.response.PersonalInfoDto;
 import com.boardgo.domain.user.repository.response.UserParticipantResponse;
 import com.boardgo.oauth2.dto.OAuth2CreateUserRequest;
-import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -25,11 +25,11 @@ public interface UserInfoMapper {
     UserInfoEntity toUserInfoEntity(OAuth2CreateUserRequest oAuth2CreateUserRequest);
 
     UserPersonalInfoResponse toUserPersonalInfoResponse(
-            UserInfoEntity userInfo, Double averageGrade, List<String> prTags);
+            PersonalInfoDto userPersonalInfoResponse, Double averageGrade);
 
     UserParticipantResponse toUserParticipantResponse(
             UserParticipantProjection userParticipantProjection);
 
     OtherPersonalInfoResponse toUserPersonalInfoResponse(
-            UserPersonalInfoResponse userPersonalInfoResponse, int meetingCount);
+            PersonalInfoDto userPersonalInfoResponse, int meetingCount);
 }
