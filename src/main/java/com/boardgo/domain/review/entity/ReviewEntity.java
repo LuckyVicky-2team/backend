@@ -23,7 +23,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(
         name = "review",
         indexes = {
-            @Index(name = "idx_user_info_id", columnList = "user_info_id"),
+            @Index(name = "idx_reviewee_id", columnList = "reviewee_id"),
             @Index(name = "idx_reviewer_id", columnList = "reviewer_id")
         })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,8 +33,8 @@ public class ReviewEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_info_id", nullable = false)
-    private Long userInfoId;
+    @Column(name = "reviewee_id", nullable = false)
+    private Long revieweeId;
 
     @Column(name = "reviewer_id", nullable = false)
     private Long reviewerId;
@@ -46,7 +46,8 @@ public class ReviewEntity extends BaseEntity {
     private Integer rating;
 
     @Convert(converter = DelimiterConverter.class)
-    private List<String> evaluationTagList = new ArrayList<>();
+    @Column(name = "evaluation_tags", length = 60)
+    private List<String> evaluationTags = new ArrayList<>();
 
     @Convert(converter = BooleanConverter.class)
     @ColumnDefault("N")
