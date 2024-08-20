@@ -25,7 +25,7 @@ public interface UserInfoMapper {
     UserInfoEntity toUserInfoEntity(OAuth2CreateUserRequest oAuth2CreateUserRequest);
 
     UserPersonalInfoResponse toUserPersonalInfoResponse(
-            PersonalInfoDto userPersonalInfoResponse, Double averageGrade);
+            PersonalInfoDto userPersonalInfoResponse, Double averageRating);
 
     UserParticipantResponse toUserParticipantResponse(
             UserParticipantProjection userParticipantProjection);

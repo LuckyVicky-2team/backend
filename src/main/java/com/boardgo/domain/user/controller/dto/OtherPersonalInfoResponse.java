@@ -5,6 +5,6 @@ import java.util.List;
 public record OtherPersonalInfoResponse(
         String nickName,
         String profileImage,
-        Double averageGrade,
+        Double averageRating,
         List<String> prTags,
         int meetingCount) {}

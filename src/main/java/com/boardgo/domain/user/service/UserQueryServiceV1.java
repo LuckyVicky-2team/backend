@@ -50,8 +50,8 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
             throw new CustomNullPointException("회원이 존재하지 않습니다");
         }
         PersonalInfoDto personalInfoDto = userRepository.findByUserInfoId(userId);
-        Double averageGrade = 4.3;
-        return UserInfoMapper.toUserPersonalInfoResponse(personalInfoDto, averageGrade);
+        Double averageRating = 4.3;
+        return UserInfoMapper.toUserPersonalInfoResponse(personalInfoDto, averageRating);
     }
 
     @Override

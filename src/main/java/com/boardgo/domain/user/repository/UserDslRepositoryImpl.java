@@ -57,8 +57,8 @@ public class UserDslRepositoryImpl implements UserDslRepository {
                         .selectFrom(u)
                         .leftJoin(up)
                         .on(u.id.eq(up.userInfoId))
-                        .leftJoin(r)
-                        .on(u.id.eq(r.userInfoId))
+                        //                        .leftJoin(r)
+                        //                        .on(u.id.eq(r.userInfoId))
                         .where(u.id.eq(userId))
                         .transform(
                                 groupBy(u.id)

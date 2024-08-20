@@ -36,8 +36,10 @@ import org.springframework.restdocs.request.RequestPartsSnippet;
 
 public class PersonalInfoDocsTest extends RestDocsTestSupport {
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private UserPrTagRepository userPrTagRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserPrTagRepository userPrTagRepository;
 
     @Test
     @DisplayName("내 개인정보 조회하기")
@@ -69,7 +71,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 fieldWithPath("email").type(JsonFieldType.STRING).description("회원 고유 ID"),
                 fieldWithPath("nickName").type(JsonFieldType.STRING).description("닉네임"),
                 fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 이미지"),
-                fieldWithPath("averageGrade").type(JsonFieldType.NUMBER).description("평균 별점"),
+                fieldWithPath("averageRating").type(JsonFieldType.NUMBER).description("평균 별점"),
                 fieldWithPath("prTags")
                         .type(JsonFieldType.ARRAY)
                         .description("PR태그 (없을 경우 빈배열 반환)"));
@@ -169,4 +171,30 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
     RequestPartsSnippet getProfileImageRequestPartBodySnippet() {
         return requestParts(partWithName("profileImage").description("회원 프로필 이미지"));
     }
+
+    @Test
+    @DisplayName("다른 사람 개인정보 조회하기")
+    void 다른_사람_조회하기() {
+        UserInfoEntity userInfo = userRepository.save(socialUserInfoEntity(ProviderType.KAKAO));
+        userPrTagRepository.save(userPrTagEntity(userInfo.getId(), "가나다"));
+        userPrTagRepository.save(userPrTagEntity(userInfo.getId(), "456"));
+
+        given(this.spec)
+                .log()
+                .all()
+                .port(port)
+                .header(API_VERSION_HEADER, "1")
+                .header(AUTHORIZATION, testAccessToken)
+                .filter(
+                        document(
+                                "get-personal-info",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                getPersonalInfoResponseFieldsSnippet()))
+                .when()
+                .get("/personal-info")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
 }

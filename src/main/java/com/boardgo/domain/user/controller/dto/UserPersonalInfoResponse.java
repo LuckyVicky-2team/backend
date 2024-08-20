@@ -6,5 +6,5 @@ public record UserPersonalInfoResponse(
         String email,
         String nickName,
         String profileImage,
-        Double averageGrade,
+        Double averageRating,
         List<String> prTags) {}

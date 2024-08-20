@@ -110,7 +110,7 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
         assertThat(personalInfo.email()).isEqualTo(userInfo.getEmail());
         assertThat(personalInfo.nickName()).isEqualTo(userInfo.getNickName());
         assertThat(personalInfo.profileImage()).isEqualTo(userInfo.getProfileImage());
-        assertThat(personalInfo.averageGrade()).isEqualTo(4.3); // TODO 리뷰 기능 구현 필요
+        assertThat(personalInfo.averageRating()).isEqualTo(4.3); // TODO 리뷰 기능 구현 필요
         assertThat(personalInfo.prTags())
                 .containsAll(
                         List.of(
