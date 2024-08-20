@@ -153,6 +153,23 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
     }
 
     @Test
+    @DisplayName("페이징하여 목록을 조회할 수 있다 (데이터 없음)")
+    void 페이징하여_목록을_조회할_수_있다_데이터_X() {
+        // given
+        int page = 0;
+        long count = 10L;
+        MeetingSearchRequest meetingSearchRequest =
+                new MeetingSearchRequest(
+                        count, null, null, null, null, null, null, null, page, null, null);
+        // when
+        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        // then
+        assertThat(searchResult.getTotalElements()).isEqualTo(10);
+        assertThat(searchResult.getTotalPages()).isEqualTo(1);
+        assertThat(searchResult.getNumberOfElements()).isEqualTo(0);
+    }
+
+    @Test
     @DisplayName("페이징한 요소들의 내용들이 일치한다")
     void 페이징한_요소들의_내용들이_일치한다() {
         // given
