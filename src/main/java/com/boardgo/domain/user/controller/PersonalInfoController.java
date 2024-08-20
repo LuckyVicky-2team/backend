@@ -8,7 +8,6 @@ import com.boardgo.domain.user.controller.dto.UserPersonalInfoResponse;
 import com.boardgo.domain.user.controller.dto.UserPersonalInfoUpdateRequest;
 import com.boardgo.domain.user.service.UserCommandUseCase;
 import com.boardgo.domain.user.service.UserQueryUseCase;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
@@ -57,7 +56,8 @@ public class PersonalInfoController {
     }
 
     @PatchMapping(value = "/prTags", headers = API_VERSION_HEADER1)
-    public ResponseEntity<Void> updatePrTags(@RequestParam("prTags") @Valid List<String> prTags) {
+    public ResponseEntity<Void> updatePrTags(
+            @RequestParam(name = "prTags", required = false) List<String> prTags) {
         userCommandUseCase.updatePrTags(prTags, currentUserId());
         return ResponseEntity.ok().build();
     }
