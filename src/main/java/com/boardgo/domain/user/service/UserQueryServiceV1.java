@@ -5,7 +5,6 @@ import static com.boardgo.domain.meeting.entity.ParticipantType.LEADER;
 import static com.boardgo.domain.meeting.entity.ParticipantType.PARTICIPANT;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
-import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.mapper.UserInfoMapper;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.user.controller.dto.EmailRequest;
@@ -46,9 +45,6 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
 
     @Override
     public UserPersonalInfoResponse getPersonalInfo(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new CustomNullPointException("회원이 존재하지 않습니다");
-        }
         PersonalInfoDto personalInfoDto = userRepository.findByUserInfoId(userId);
         Double averageRating = 4.3;
         return UserInfoMapper.toUserPersonalInfoResponse(personalInfoDto, averageRating);
@@ -60,6 +56,6 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
         int meetingCount =
                 meetingParticipantRepository.countByTypeAndUserInfoId(
                         List.of(LEADER.toString(), PARTICIPANT.toString()), userId);
-        return UserInfoMapper.toUserPersonalInfoResponse(personalInfoDto, meetingCount);
+        return UserInfoMapper.toUserPersonalInfoResponse(personalInfoDto, 4.5, meetingCount);
     }
 }

@@ -11,6 +11,4 @@ public interface UserRepository extends JpaRepository<UserInfoEntity, Long>, Use
     boolean existsByEmailAndProviderType(String email, ProviderType providerType);
 
     boolean existsByNickName(String nickName);
-
-    boolean existsById(Long userInfoId);
 }

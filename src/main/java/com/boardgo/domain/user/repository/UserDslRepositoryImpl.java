@@ -3,6 +3,7 @@ package com.boardgo.domain.user.repository;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
+import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.mapper.UserInfoMapper;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantEntity;
 import com.boardgo.domain.review.entity.QReviewEntity;
@@ -72,6 +73,9 @@ public class UserDslRepositoryImpl implements UserDslRepository {
         return personalInfoMap.keySet().stream()
                 .map(personalInfoMap::get)
                 .findFirst()
-                .orElseGet(null);
+                .orElseGet(
+                        () -> {
+                            throw new CustomNullPointException("회원이 존재하지 않습니다");
+                        });
     }
 }

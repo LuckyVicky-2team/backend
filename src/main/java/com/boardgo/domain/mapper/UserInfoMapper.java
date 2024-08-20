@@ -31,5 +31,5 @@ public interface UserInfoMapper {
             UserParticipantProjection userParticipantProjection);
 
     OtherPersonalInfoResponse toUserPersonalInfoResponse(
-            PersonalInfoDto userPersonalInfoResponse, int meetingCount);
+            PersonalInfoDto userPersonalInfoResponse, Double averageRating, int meetingCount);
 }

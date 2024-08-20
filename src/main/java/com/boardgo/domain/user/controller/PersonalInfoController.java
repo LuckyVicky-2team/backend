@@ -10,6 +10,7 @@ import com.boardgo.domain.user.service.UserCommandUseCase;
 import com.boardgo.domain.user.service.UserQueryUseCase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class PersonalInfoController {
 
     @GetMapping(value = "/{userId}", headers = API_VERSION_HEADER1)
     public ResponseEntity<OtherPersonalInfoResponse> getOtherPersonalInfo(
-            @PathVariable("userId") @NotNull Long userId) {
+            @PathVariable("userId") @Positive @NotNull long userId) {
         return ResponseEntity.ok(userQueryUseCase.getOtherPersonalInfo(userId));
     }
 
