@@ -2,7 +2,6 @@ package com.boardgo.integration.meeting.service;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.boardgo.domain.boardgame.repository.BoardGameGenreRepository;
 import com.boardgo.domain.boardgame.repository.response.BoardGameListResponse;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
@@ -18,7 +17,10 @@ import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import com.boardgo.domain.meeting.service.MeetingCreateFactory;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
+import com.boardgo.domain.user.entity.UserInfoEntity;
+import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.repository.response.UserParticipantResponse;
+import com.boardgo.domain.user.service.dto.CustomUserDetails;
 import com.boardgo.integration.init.TestBoardGameInitializer;
 import com.boardgo.integration.init.TestMeetingInitializer;
 import com.boardgo.integration.init.TestUserInfoInitializer;
@@ -30,6 +32,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
     @Autowired private MeetingRepository meetingRepository;
@@ -38,18 +44,40 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
     @Autowired private MeetingGameMatchRepository meetingGameMatchRepository;
     @Autowired private MeetingGenreMatchRepository meetingGenreMatchRepository;
     @Autowired private MeetingCreateFactory meetingCreateFactory;
-    @Autowired private BoardGameGenreRepository boardGameGenreRepository;
+    @Autowired private UserRepository userRepository;
 
     @Autowired private TestUserInfoInitializer testUserInfoInitializer;
     @Autowired private TestBoardGameInitializer testBoardGameInitializer;
     @Autowired private TestMeetingInitializer testMeetingInitializer;
 
     @Test
+    @DisplayName("유저컨텍스트 테스트")
+    void 유저컨텍스트_테스트() {
+        // given
+        setSecurityContext();
+        // when
+        CustomUserDetails result =
+                (CustomUserDetails)
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // then
+        assertThat(result.getId()).isEqualTo(1L);
+    }
+
+    @Test
     @DisplayName("모임 상세조회를 할 수 있다")
     void 모임_상세조회를_할_수_있다() {
         // given
         testBoardGameInitializer.generateBoardGameData();
-        testUserInfoInitializer.generateUserData();
+        setSecurityContext();
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        UserInfoEntity userInfoEntity = userRepository.findById(1L).get();
+        CustomUserDetails customUserDetails = new CustomUserDetails(userInfoEntity);
+        Authentication auth =
+                new UsernamePasswordAuthenticationToken(
+                        customUserDetails, "password1", customUserDetails.getAuthorities());
+        context.setAuthentication(auth);
+
         LocalDateTime meetingDatetime = LocalDateTime.now().plusDays(1);
         MeetingEntity meetingEntity =
                 MeetingEntity.builder()
@@ -95,6 +123,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         assertThat(result.latitude()).isEqualTo(meetingEntity.getLatitude());
         assertThat(result.limitParticipant()).isEqualTo(meetingEntity.getLimitParticipant());
         assertThat(result.state()).isEqualTo(meetingEntity.getState());
+        assertThat(result.shareCount()).isEqualTo(0L);
+        assertThat(result.createMeetingCount()).isEqualTo(1L);
         assertThat(result.userParticipantResponseList())
                 .extracting(UserParticipantResponse::userId)
                 .containsExactlyInAnyOrder(1L, 2L);
@@ -350,5 +380,22 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         testBoardGameInitializer.generateBoardGameData();
         testUserInfoInitializer.generateUserData();
         testMeetingInitializer.generateMeetingData();
+    }
+
+    private void setSecurityContext() {
+        testUserInfoInitializer.generateUserData();
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+
+        UserInfoEntity userInfoEntity =
+                userRepository
+                        .findById(1L)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+        CustomUserDetails customUserDetails = new CustomUserDetails(userInfoEntity);
+
+        Authentication auth =
+                new UsernamePasswordAuthenticationToken(
+                        customUserDetails, "password1", customUserDetails.getAuthorities());
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
     }
 }

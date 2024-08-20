@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record MeetingDetailProjection(
         Long meetingId,
         String userNickName,
+        Long userId,
         LocalDateTime meetingDatetime,
         String likeStatus,
         String thumbnail,
@@ -19,7 +20,8 @@ public record MeetingDetailProjection(
         String locationName,
         String detailAddress,
         Integer limitParticipant,
-        MeetingState state
+        MeetingState state,
+        Long shareCount
         // TODO: 찜 여부 추가
         ) {
     @QueryProjection
