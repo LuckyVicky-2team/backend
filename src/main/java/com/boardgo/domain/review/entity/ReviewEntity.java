@@ -16,7 +16,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -50,6 +49,6 @@ public class ReviewEntity extends BaseEntity {
     private List<String> evaluationTags = new ArrayList<>();
 
     @Convert(converter = BooleanConverter.class)
-    @ColumnDefault("N")
-    private boolean idDeleted;
+    @Column(columnDefinition = "varchar(1)")
+    private boolean isDeleted;
 }
