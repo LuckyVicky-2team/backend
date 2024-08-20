@@ -6,13 +6,12 @@ import static com.boardgo.integration.fixture.UserInfoFixture.localUserInfoEntit
 import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
 import static com.boardgo.integration.fixture.UserPrTagFixture.userPrTagEntity;
 import static io.restassured.RestAssured.given;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
@@ -32,14 +31,13 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
+import org.springframework.restdocs.request.PathParametersSnippet;
 import org.springframework.restdocs.request.RequestPartsSnippet;
 
 public class PersonalInfoDocsTest extends RestDocsTestSupport {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserPrTagRepository userPrTagRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private UserPrTagRepository userPrTagRepository;
 
     @Test
     @DisplayName("내 개인정보 조회하기")
@@ -54,12 +52,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .port(port)
                 .header(API_VERSION_HEADER, "1")
                 .header(AUTHORIZATION, testAccessToken)
-                .filter(
-                        document(
-                                "get-personal-info",
-                                preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                getPersonalInfoResponseFieldsSnippet()))
+                .filter(document("get-personal-info", getPersonalInfoResponseFieldsSnippet()))
                 .when()
                 .get("/personal-info")
                 .then()
@@ -94,9 +87,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .contentType(ContentType.JSON)
                 .filter(
                         document(
-                                "patch-personal-info",
-                                preprocessResponse(prettyPrint()),
-                                getPersonalInfoUpdateRequestFieldsSnippet()))
+                                "patch-personal-info", getPersonalInfoUpdateRequestFieldsSnippet()))
                 .body(jsonValue)
                 .when()
                 .patch("/personal-info")
@@ -129,11 +120,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .header(AUTHORIZATION, testAccessToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .multiPart("prTags", "ENFJ")
-                .filter(
-                        document(
-                                "patch-prtag",
-                                preprocessResponse(prettyPrint()),
-                                getPrTagsRequestPartBodySnippet()))
+                .filter(document("patch-prtag", getPrTagsRequestPartBodySnippet()))
                 .when()
                 .patch("/personal-info/prTags")
                 .then()
@@ -141,7 +128,8 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
     }
 
     RequestPartsSnippet getPrTagsRequestPartBodySnippet() {
-        return requestParts(partWithName("prTags").description("PR태그 목록(ARRAY)"));
+        return requestParts(
+                partWithName("prTags").attributes(constraints("ARRAY")).description("PR태그 목록"));
     }
 
     @Test
@@ -157,11 +145,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .header(AUTHORIZATION, testAccessToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .multiPart("profileImage", "profileImage.jpg", "image/jpeg".getBytes())
-                .filter(
-                        document(
-                                "patch-profile",
-                                preprocessResponse(prettyPrint()),
-                                getProfileImageRequestPartBodySnippet()))
+                .filter(document("patch-profile", getProfileImageRequestPartBodySnippet()))
                 .when()
                 .patch("/personal-info/profile")
                 .then()
@@ -169,15 +153,19 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
     }
 
     RequestPartsSnippet getProfileImageRequestPartBodySnippet() {
-        return requestParts(partWithName("profileImage").description("회원 프로필 이미지"));
+        return requestParts(
+                partWithName("profileImage")
+                        .attributes(constraints("multipart/form-data"))
+                        .description("회원 프로필 이미지"));
     }
 
     @Test
-    @DisplayName("다른 사람 개인정보 조회하기")
-    void 다른_사람_조회하기() {
+    @DisplayName("다른 사람 프로필 조회하기")
+    void 다른_사람_프로필_조회하기() {
         UserInfoEntity userInfo = userRepository.save(socialUserInfoEntity(ProviderType.KAKAO));
-        userPrTagRepository.save(userPrTagEntity(userInfo.getId(), "가나다"));
-        userPrTagRepository.save(userPrTagEntity(userInfo.getId(), "456"));
+        userPrTagRepository.save(userPrTagEntity(userInfo.getId(), "ISTP"));
+        userPrTagRepository.save(userPrTagEntity(userInfo.getId(), "보드게임 좋아"));
+        userPrTagRepository.save(userPrTagEntity(userInfo.getId(), "눈치빠름"));
 
         given(this.spec)
                 .log()
@@ -185,16 +173,30 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                 .port(port)
                 .header(API_VERSION_HEADER, "1")
                 .header(AUTHORIZATION, testAccessToken)
+                .pathParam("userId", userInfo.getId())
                 .filter(
                         document(
-                                "get-personal-info",
-                                preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                getPersonalInfoResponseFieldsSnippet()))
+                                "get-other-personal-info",
+                                getPathParametersSnippet(),
+                                getOtherPersonalInfoResponseFieldsSnippet()))
                 .when()
-                .get("/personal-info")
+                .get("/personal-info/{userId}", userInfo.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }
 
+    private PathParametersSnippet getPathParametersSnippet() {
+        return pathParameters(parameterWithName("userId").description("회원 고유ID"));
+    }
+
+    private ResponseFieldsSnippet getOtherPersonalInfoResponseFieldsSnippet() {
+        return responseFields(
+                fieldWithPath("nickName").type(JsonFieldType.STRING).description("닉네임"),
+                fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 이미지"),
+                fieldWithPath("averageRating").type(JsonFieldType.NUMBER).description("평균 별점"),
+                fieldWithPath("meetingCount").type(JsonFieldType.NUMBER).description("모임 참가 횟수"),
+                fieldWithPath("prTags")
+                        .type(JsonFieldType.ARRAY)
+                        .description("PR태그(없을 경우 빈배열 반환)"));
+    }
 }
