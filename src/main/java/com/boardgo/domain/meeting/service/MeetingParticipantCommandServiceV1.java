@@ -39,16 +39,19 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
                         .orElseThrow(() -> new CustomNullPointException("모임이 존재하지 않습니다"));
         validateParticipateMeeting(meetingEntity, userId);
 
-        MeetingParticipantEntity participant =
-                meetingParticipantMapper.toMeetingParticipantEntity(
-                        meetingEntity.getId(), userId, ParticipantType.PARTICIPANT);
-        MeetingParticipateWaitingEntity participateWaitingEntity =
-                meetingParticipateWaitingMapper.toMeetingParticipateWaitingEntity(
-                        meetingEntity.getId(), userId, AcceptState.WAIT);
-
         switch (meetingEntity.getType()) {
-            case FREE -> meetingParticipantRepository.save(participant);
-            case ACCEPT -> meetingParticipateWaitingRepository.save(participateWaitingEntity);
+            case FREE -> {
+                MeetingParticipantEntity participant =
+                        meetingParticipantMapper.toMeetingParticipantEntity(
+                                meetingEntity.getId(), userId, ParticipantType.PARTICIPANT);
+                meetingParticipantRepository.save(participant);
+            }
+            case ACCEPT -> {
+                MeetingParticipateWaitingEntity participateWaitingEntity =
+                        meetingParticipateWaitingMapper.toMeetingParticipateWaitingEntity(
+                                meetingEntity.getId(), userId, AcceptState.WAIT);
+                meetingParticipateWaitingRepository.save(participateWaitingEntity);
+            }
         }
     }
 
