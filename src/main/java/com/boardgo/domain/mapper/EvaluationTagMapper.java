@@ -16,5 +16,6 @@ public interface EvaluationTagMapper {
             List<EvaluationTagEntity> evaluationTagEntities);
 
     @Mapping(source = "id", target = "evaluationTagId")
+    @Mapping(source = "evaluationType", target = "evaluationType")
     EvaluationTagResponse toEvaluationTagResponse(EvaluationTagEntity evaluationTagEntity);
 }
