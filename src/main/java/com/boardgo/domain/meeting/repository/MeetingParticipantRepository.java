@@ -10,10 +10,11 @@ public interface MeetingParticipantRepository
         extends JpaRepository<MeetingParticipantEntity, Long> {
     List<MeetingParticipantEntity> findByMeetingId(Long meetingId);
 
-    boolean existsByUserInfoId(Long userId);
-
     @Query(
             "SELECT COUNT(*) FROM MeetingParticipantEntity ep WHERE ep.type IN (:types) AND ep.userInfoId = :userId")
     Integer countByTypeAndUserInfoId(
             @Param("types") List<String> types, @Param("userId") Long userId);
+
+    boolean existsByUserInfoIdAndMeetingId(Long userId, Long meetingId);
+  
 }
