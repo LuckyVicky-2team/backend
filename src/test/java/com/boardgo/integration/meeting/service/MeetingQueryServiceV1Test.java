@@ -51,24 +51,10 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
     @Autowired private TestMeetingInitializer testMeetingInitializer;
 
     @Test
-    @DisplayName("유저컨텍스트 테스트")
-    void 유저컨텍스트_테스트() {
-        // given
-        setSecurityContext();
-        // when
-        CustomUserDetails result =
-                (CustomUserDetails)
-                        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        // then
-        assertThat(result.getId()).isEqualTo(1L);
-    }
-
-    @Test
     @DisplayName("모임 상세조회를 할 수 있다")
     void 모임_상세조회를_할_수_있다() {
         // given
         testBoardGameInitializer.generateBoardGameData();
-        setSecurityContext();
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         UserInfoEntity userInfoEntity = userRepository.findById(1L).get();
@@ -397,22 +383,5 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         testBoardGameInitializer.generateBoardGameData();
         testUserInfoInitializer.generateUserData();
         testMeetingInitializer.generateMeetingData();
-    }
-
-    private void setSecurityContext() {
-        testUserInfoInitializer.generateUserData();
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-
-        UserInfoEntity userInfoEntity =
-                userRepository
-                        .findById(1L)
-                        .orElseThrow(() -> new RuntimeException("User not found"));
-        CustomUserDetails customUserDetails = new CustomUserDetails(userInfoEntity);
-
-        Authentication auth =
-                new UsernamePasswordAuthenticationToken(
-                        customUserDetails, "password1", customUserDetails.getAuthorities());
-        context.setAuthentication(auth);
-        SecurityContextHolder.setContext(context);
     }
 }
