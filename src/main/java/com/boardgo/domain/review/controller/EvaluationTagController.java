@@ -1,6 +1,6 @@
 package com.boardgo.domain.review.controller;
 
-import com.boardgo.domain.review.controller.dto.EvaluationTagsResponse;
+import com.boardgo.domain.review.controller.dto.EvaluationTagListResponse;
 import com.boardgo.domain.review.service.EvaluationTagUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ public class EvaluationTagController {
     private final EvaluationTagUseCase evaluationTagUseCase;
 
     @GetMapping("/evaluationTags")
-    public ResponseEntity<EvaluationTagsResponse> getEvaluationTags() {
+    public ResponseEntity<EvaluationTagListResponse> getEvaluationTags() {
         return ResponseEntity.ok(evaluationTagUseCase.getEvaluationTags());
     }
 }
