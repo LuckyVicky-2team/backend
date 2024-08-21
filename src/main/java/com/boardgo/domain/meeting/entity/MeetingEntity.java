@@ -81,7 +81,7 @@ public class MeetingEntity extends BaseEntity {
 
     @Column
     @ColumnDefault("0")
-    private Long shareCount;
+    private Integer shareCount;
 
     @Builder
     public MeetingEntity(
@@ -101,7 +101,7 @@ public class MeetingEntity extends BaseEntity {
             LocalDateTime meetingDatetime,
             Long hit,
             MeetingState state,
-            Long shareCount) {
+            Integer shareCount) {
         this.id = id;
         this.userId = userId;
         this.title = title;

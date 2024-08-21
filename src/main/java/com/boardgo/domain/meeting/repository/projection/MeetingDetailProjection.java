@@ -21,7 +21,7 @@ public record MeetingDetailProjection(
         String detailAddress,
         Integer limitParticipant,
         MeetingState state,
-        Long shareCount
+        Integer shareCount
         // TODO: 찜 여부 추가
         ) {
     @QueryProjection
