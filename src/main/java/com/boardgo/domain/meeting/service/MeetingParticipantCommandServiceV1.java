@@ -54,7 +54,8 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
 
     private void validateParticipateMeeting(MeetingEntity meetingEntity, Long userId) {
         meetingEntity.isAfterMeeting();
-        if (meetingParticipantRepository.existsByUserInfoId(userId)) {
+        if (meetingParticipantRepository.existsByUserInfoIdAndMeetingId(
+                userId, meetingEntity.getId())) {
             throw new CustomIllegalArgumentException("이미 참여된 모임 입니다");
         }
 
