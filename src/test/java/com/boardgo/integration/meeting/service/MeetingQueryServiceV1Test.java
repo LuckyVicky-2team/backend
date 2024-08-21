@@ -17,10 +17,8 @@ import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import com.boardgo.domain.meeting.service.MeetingCreateFactory;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
-import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.repository.response.UserParticipantResponse;
-import com.boardgo.domain.user.service.dto.CustomUserDetails;
 import com.boardgo.integration.init.TestBoardGameInitializer;
 import com.boardgo.integration.init.TestMeetingInitializer;
 import com.boardgo.integration.init.TestUserInfoInitializer;
@@ -32,10 +30,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
     @Autowired private MeetingRepository meetingRepository;
@@ -55,14 +49,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
     void 모임_상세조회를_할_수_있다() {
         // given
         testBoardGameInitializer.generateBoardGameData();
-
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        UserInfoEntity userInfoEntity = userRepository.findById(1L).get();
-        CustomUserDetails customUserDetails = new CustomUserDetails(userInfoEntity);
-        Authentication auth =
-                new UsernamePasswordAuthenticationToken(
-                        customUserDetails, "password1", customUserDetails.getAuthorities());
-        context.setAuthentication(auth);
+        testUserInfoInitializer.generateUserData();
 
         LocalDateTime meetingDatetime = LocalDateTime.now().plusDays(1);
         MeetingEntity meetingEntity =
