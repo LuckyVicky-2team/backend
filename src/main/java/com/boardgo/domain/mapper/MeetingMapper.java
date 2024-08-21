@@ -43,7 +43,8 @@ public interface MeetingMapper {
     default MeetingDetailResponse toMeetingDetailResponse(
             MeetingDetailProjection meetingDetailProjection,
             List<UserParticipantResponse> userParticipantResponseList,
-            List<BoardGameByMeetingIdResponse> boardGameByMeetingIdResponseList) {
+            List<BoardGameByMeetingIdResponse> boardGameByMeetingIdResponseList,
+            Long createMeetingCount) {
         Set<String> genres =
                 boardGameByMeetingIdResponseList.stream()
                         .flatMap(response -> response.genres().stream())
@@ -64,6 +65,8 @@ public interface MeetingMapper {
                 meetingDetailProjection.detailAddress(),
                 meetingDetailProjection.limitParticipant(),
                 meetingDetailProjection.state(),
+                meetingDetailProjection.shareCount(),
+                createMeetingCount,
                 genres.stream().toList(),
                 (long) userParticipantResponseList.size(),
                 userParticipantResponseList,

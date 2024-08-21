@@ -68,6 +68,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         this.boardGameRepository = boardGameRepository;
     }
 
+    @Override
     public Page<MeetingSearchResponse> findByFilters(MeetingSearchRequest searchRequest) {
 
         MeetingState finishState = MeetingState.valueOf("FINISH");
@@ -114,6 +115,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                 new QMeetingDetailProjection(
                                         m.id,
                                         u.nickName,
+                                        u.id,
                                         m.meetingDatetime,
                                         new CaseBuilder()
                                                 .when(ml.meetingId.isNotNull())
@@ -130,7 +132,8 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                         m.locationName,
                                         m.detailAddress,
                                         m.limitParticipant,
-                                        m.state))
+                                        m.state,
+                                        m.shareCount))
                         .from(m)
                         .innerJoin(u)
                         .on(m.userId.eq(u.id))
@@ -138,11 +141,13 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                         .on(m.id.eq(ml.meetingId).and(u.id.eq(ml.userId)))
                         .where(m.id.eq(meetingId))
                         .fetchOne();
+        Long createMeetingCount = getCreateMeetingCount(meetingDetailProjection.userId());
 
         return meetingMapper.toMeetingDetailResponse(
                 meetingDetailProjection,
                 userParticipantResponseList,
-                boardGameByMeetingIdResponseList);
+                boardGameByMeetingIdResponseList,
+                createMeetingCount);
     }
 
     private List<MeetingSearchProjection> getMeetingSearchDtoList(
@@ -181,6 +186,10 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                 .offset(offset)
                 .limit(size)
                 .fetch();
+    }
+
+    private Long getCreateMeetingCount(Long userId) {
+        return queryFactory.select(m.id.count()).from(m).where(m.userId.eq(userId)).fetchOne();
     }
 
     private Map<Long, List<String>> findGamesForMeetings(List<Long> meetingIds) {

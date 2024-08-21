@@ -9,6 +9,9 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.*;
 
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
+import com.boardgo.domain.user.entity.UserInfoEntity;
+import com.boardgo.domain.user.repository.UserRepository;
+import com.boardgo.domain.user.service.dto.CustomUserDetails;
 import com.boardgo.integration.init.TestBoardGameInitializer;
 import com.boardgo.integration.init.TestMeetingInitializer;
 import com.boardgo.integration.init.TestUserInfoInitializer;
@@ -24,12 +27,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class MeetingDocsTest extends RestDocsTestSupport {
 
     @Autowired private TestUserInfoInitializer testUserInfoInitializer;
     @Autowired private TestBoardGameInitializer testBoardGameInitializer;
     @Autowired private TestMeetingInitializer testMeetingInitializer;
+    @Autowired private UserRepository userRepository;
 
     @Test
     @DisplayName("사용자는 모임을 만들 수 있다")
@@ -304,7 +312,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                                 .description("모임 내용"),
                                         fieldWithPath("likeStatus")
                                                 .type(JsonFieldType.STRING)
-                                                .description("모임 찜 상태 -> (Y, N)"),
+                                                .description("모임 찜 상태 -> (Y, N) 둘 중 하나"),
                                         fieldWithPath("city")
                                                 .type(JsonFieldType.STRING)
                                                 .description("도시"),
@@ -344,6 +352,12 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("totalParticipantCount")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("모임 참가자 수"),
+                                        fieldWithPath("shareCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("모임 공유 수"),
+                                        fieldWithPath("createMeetingCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("작성자의 모임 개설 횟수"),
                                         fieldWithPath("userParticipantResponseList")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("참가자들 중 유저 목록"),
@@ -382,5 +396,21 @@ public class MeetingDocsTest extends RestDocsTestSupport {
         testBoardGameInitializer.generateBoardGameData();
         testUserInfoInitializer.generateUserData();
         testMeetingInitializer.generateMeetingData();
+    }
+
+    private void setSecurityContext() {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+
+        UserInfoEntity userInfoEntity =
+                userRepository
+                        .findById(1L)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+        CustomUserDetails customUserDetails = new CustomUserDetails(userInfoEntity);
+
+        Authentication auth =
+                new UsernamePasswordAuthenticationToken(
+                        customUserDetails, "password1", customUserDetails.getAuthorities());
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
     }
 }

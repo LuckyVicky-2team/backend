@@ -1,6 +1,6 @@
 package com.boardgo.config;
 
-import static com.boardgo.common.constant.HeaderConstant.*;
+import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
 
 import com.boardgo.domain.user.entity.RoleType;
 import com.boardgo.jwt.JWTFilter;
@@ -45,7 +45,7 @@ public class SecurityConfig {
     @Value("${spring.cors.headers}")
     private String corsHeaders;
 
-    AntPathRequestMatcher[] permitAllUri = {
+    final AntPathRequestMatcher[] permitAllUri = {
         AntPathRequestMatcher.antMatcher("/h2-console/**"),
         AntPathRequestMatcher.antMatcher("/resources/**"),
         AntPathRequestMatcher.antMatcher("/health"),
@@ -59,10 +59,11 @@ public class SecurityConfig {
         AntPathRequestMatcher.antMatcher("/token"),
         AntPathRequestMatcher.antMatcher("/actuator/**"),
         AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/meeting/**"),
-        AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/boardgame")
+        AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/boardgame"),
+        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/personal-info/{userId}")
     };
 
-    AntPathRequestMatcher[] permitUserUri = {
+    final AntPathRequestMatcher[] permitUserUri = {
         AntPathRequestMatcher.antMatcher("/social/signup"),
         AntPathRequestMatcher.antMatcher("/personal-info/**"),
         AntPathRequestMatcher.antMatcher("/meeting-participant/**")

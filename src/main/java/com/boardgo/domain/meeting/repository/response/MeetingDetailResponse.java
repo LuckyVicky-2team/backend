@@ -22,6 +22,8 @@ public record MeetingDetailResponse(
         String detailAddress,
         Integer limitParticipant,
         MeetingState state,
+        Integer shareCount,
+        Long createMeetingCount,
         // TODO: 찜 여부 추가
         List<String> genres,
         Long totalParticipantCount,
