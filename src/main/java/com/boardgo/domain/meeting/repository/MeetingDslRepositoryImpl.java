@@ -180,7 +180,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                 m.city,
                                 m.county,
                                 m.thumbnail,
-                                m.hit,
+                                m.viewCount,
                                 m.meetingDatetime.as("meetingDatetime"),
                                 m.limitParticipant.as("limitParticipant"),
                                 u.nickName,
