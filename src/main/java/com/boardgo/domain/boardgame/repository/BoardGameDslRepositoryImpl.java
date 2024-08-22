@@ -4,6 +4,8 @@ import com.boardgo.domain.boardgame.controller.request.BoardGameSearchRequest;
 import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
 import com.boardgo.domain.boardgame.entity.QGameGenreMatchEntity;
+import com.boardgo.domain.boardgame.repository.dto.QSituationBoardGameDto;
+import com.boardgo.domain.boardgame.repository.dto.SituationBoardGameDto;
 import com.boardgo.domain.boardgame.repository.projection.BoardGameByMeetingIdProjection;
 import com.boardgo.domain.boardgame.repository.projection.BoardGameSearchProjection;
 import com.boardgo.domain.boardgame.repository.projection.GenreSearchProjection;
@@ -155,5 +157,35 @@ public class BoardGameDslRepositoryImpl implements BoardGameDslRepository {
         return Objects.nonNull(searchWord)
                 ? b.title.toLowerCase().contains(searchWord.toLowerCase())
                 : null;
+    }
+
+    @Override
+    public List<SituationBoardGameDto> findByMaxPeopleBetween(int maxPeople) {
+        return queryFactory
+                .select(
+                        new QSituationBoardGameDto(
+                                b.title, b.thumbnail, b.minPlaytime, b.maxPlaytime, bgg.genre))
+                .from(ggm)
+                .innerJoin(b)
+                .on(ggm.boardGameId.eq(b.id))
+                .innerJoin(bgg)
+                .on(ggm.boardGameGenreId.eq(bgg.id))
+                .where(loeOrgoe(maxPeople))
+                .orderBy(b.minPlaytime.asc())
+                .fetch();
+    }
+
+    private BooleanExpression loeOrgoe(int maxPeople) {
+        switch (maxPeople) {
+            case 2, 3 -> {
+                // x > y and x<= y
+                return b.maxPeople.gt(maxPeople - 1).and(b.maxPeople.loe(maxPeople));
+            }
+            case 4 -> {
+                // x >= y
+                return b.maxPeople.goe(maxPeople);
+            }
+        }
+        return null;
     }
 }
