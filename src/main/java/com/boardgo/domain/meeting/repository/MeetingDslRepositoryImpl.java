@@ -10,7 +10,7 @@ import com.boardgo.domain.meeting.entity.MeetingState;
 import com.boardgo.domain.meeting.entity.QMeetingEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGameMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGenreMatchEntity;
-import com.boardgo.domain.meeting.entity.QMeetingLike;
+import com.boardgo.domain.meeting.entity.QMeetingLikeEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantSubEntity;
 import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
@@ -57,7 +57,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     private final QBoardGameGenreEntity bgg = QBoardGameGenreEntity.boardGameGenreEntity;
     private final QMeetingParticipantSubEntity mpSub =
             QMeetingParticipantSubEntity.meetingParticipantSubEntity;
-    private final QMeetingLike ml = QMeetingLike.meetingLike;
+    private final QMeetingLikeEntity ml = QMeetingLikeEntity.meetingLikeEntity;
 
     public MeetingDslRepositoryImpl(
             EntityManager entityManager,
