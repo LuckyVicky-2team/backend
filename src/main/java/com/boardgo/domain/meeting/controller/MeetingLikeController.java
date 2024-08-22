@@ -1,4 +1,4 @@
-package com.boardgo.domain.meeting;
+package com.boardgo.domain.meeting.controller;
 
 import com.boardgo.domain.meeting.service.MeetingLikeCommandUseCase;
 import java.util.List;
