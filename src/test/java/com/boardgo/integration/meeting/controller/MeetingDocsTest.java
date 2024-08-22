@@ -9,9 +9,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.*;
 
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
-import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
-import com.boardgo.domain.user.service.dto.CustomUserDetails;
 import com.boardgo.integration.init.TestBoardGameInitializer;
 import com.boardgo.integration.init.TestMeetingInitializer;
 import com.boardgo.integration.init.TestUserInfoInitializer;
@@ -27,10 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class MeetingDocsTest extends RestDocsTestSupport {
 
@@ -141,7 +135,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
     @Test
     @DisplayName("사용자는 모임 목록을 조회할 수 있다")
     void 사용자는_모임_목록을_조회할_수_있다() {
-        initDataWithSecurityContext();
+        initEssentialData();
         given(this.spec)
                 .log()
                 .all()
@@ -293,7 +287,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
     @Test
     @DisplayName("사용자는 모임 상세 조회를 할 수 있다")
     void 사용자는_모임_상세_조회를_할_수_있다() {
-        initDataWithSecurityContext();
+        initEssentialData();
         given(this.spec)
                 .log()
                 .all()
@@ -402,28 +396,5 @@ public class MeetingDocsTest extends RestDocsTestSupport {
         testBoardGameInitializer.generateBoardGameData();
         testUserInfoInitializer.generateUserData();
         testMeetingInitializer.generateMeetingData();
-    }
-
-    private void initDataWithSecurityContext() {
-        testBoardGameInitializer.generateBoardGameData();
-        setSecurityContext();
-        testMeetingInitializer.generateMeetingData();
-    }
-
-    private void setSecurityContext() {
-        testUserInfoInitializer.generateUserData();
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-
-        UserInfoEntity userInfoEntity =
-                userRepository
-                        .findById(1L)
-                        .orElseThrow(() -> new RuntimeException("User not found"));
-        CustomUserDetails customUserDetails = new CustomUserDetails(userInfoEntity);
-
-        Authentication auth =
-                new UsernamePasswordAuthenticationToken(
-                        customUserDetails, "password1", customUserDetails.getAuthorities());
-        context.setAuthentication(auth);
-        SecurityContextHolder.setContext(context);
     }
 }
