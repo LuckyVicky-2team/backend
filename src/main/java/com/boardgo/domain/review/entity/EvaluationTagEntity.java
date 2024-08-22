@@ -32,7 +32,7 @@ public class EvaluationTagEntity {
     private String tagPhrase;
 
     @Builder
-    public EvaluationTagEntity(EvaluationType evaluationType, String tagPhrase) {
+    private EvaluationTagEntity(EvaluationType evaluationType, String tagPhrase) {
         this.evaluationType = evaluationType;
         this.tagPhrase = tagPhrase;
     }

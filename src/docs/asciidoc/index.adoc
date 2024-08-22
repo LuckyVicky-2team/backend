@@ -96,7 +96,7 @@ PR태그 글자 수는 10자 까지 가능합니다 +
 |
 |===
 
----
+'''
 
 === *개인정보 조회*
 
@@ -119,7 +119,7 @@ include::{snippets}/get-personal-info/response-fields.adoc[]
 | 회원이 존재하지 않습니다
 |===
 
----
+'''
 
 === *개인정보 수정*
 
@@ -133,7 +133,7 @@ include::{snippets}/patch-personal-info/request-fields.adoc[]
 
 include::{snippets}/patch-personal-info/http-response.adoc[]
 
----
+'''
 
 === *프로필 수정*
 
@@ -161,7 +161,7 @@ include::{snippets}/patch-profile/http-response.adoc[]
 |
 |===
 
----
+'''
 
 === *PR태그 수정*
 
@@ -186,7 +186,7 @@ PR태그 글자 수는 10자 까지 가능합니다 +
 한글,영문,숫자,스페이스만 입력 가능합니다
 |===
 
----
+'''
 
 === *다른 사람 프로필 조회*
 
@@ -213,7 +213,7 @@ include::{snippets}/get-other-personal-info/response-fields.adoc[]
 |유효하지 않는 데이터 입니다 (요청데이터가 형식에 맞지 않을 경우)
 |===
 
----
+'''
 
 === *이메일 중복체크*
 
@@ -330,7 +330,7 @@ include::{snippets}/meeting-participation/http-response.adoc[]
 
 |===
 
----
+'''
 
 === *보드게임 등록*
 
@@ -367,7 +367,7 @@ include::{snippets}/boardgame-list/http-response.adoc[]
 - Response Body
 include::{snippets}/boardgame-list/response-fields.adoc[]
 
----
+'''
 
 === *평가태그 목록 조회*
 
