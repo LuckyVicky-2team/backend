@@ -141,7 +141,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
     @Test
     @DisplayName("사용자는 모임 목록을 조회할 수 있다")
     void 사용자는_모임_목록을_조회할_수_있다() {
-        initEssentialData();
+        initDataWithSecurityContext();
         given(this.spec)
                 .log()
                 .all()
@@ -221,6 +221,12 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("content[].participantCount")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("현재 참가자 수"),
+                                        fieldWithPath("content[].likeStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("찜 상태 여부 -> (Y, N)"),
+                                        fieldWithPath("content[].hit")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("조회 수"),
                                         fieldWithPath("totalElements")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("전체 개수 (요청 때 count에 넣어주시면 캐싱 됩니다..!)"),
@@ -287,7 +293,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
     @Test
     @DisplayName("사용자는 모임 상세 조회를 할 수 있다")
     void 사용자는_모임_상세_조회를_할_수_있다() {
-        initEssentialData();
+        initDataWithSecurityContext();
         given(this.spec)
                 .log()
                 .all()
@@ -398,7 +404,14 @@ public class MeetingDocsTest extends RestDocsTestSupport {
         testMeetingInitializer.generateMeetingData();
     }
 
+    private void initDataWithSecurityContext() {
+        testBoardGameInitializer.generateBoardGameData();
+        setSecurityContext();
+        testMeetingInitializer.generateMeetingData();
+    }
+
     private void setSecurityContext() {
+        testUserInfoInitializer.generateUserData();
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         UserInfoEntity userInfoEntity =
