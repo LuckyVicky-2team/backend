@@ -49,7 +49,6 @@ public class BoardGameCommandServiceV1 implements BoardGameCommandUseCase {
 
     private void saveUniqueGenres(BoardGameCreateRequest request) {
         Set<String> genres = new HashSet<>(request.genres());
-        System.out.println(genres.stream().toList());
 
         boardGameGenreRepository.bulkInsert(genres.stream().toList());
     }
