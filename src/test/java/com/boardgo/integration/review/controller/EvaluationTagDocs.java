@@ -2,6 +2,7 @@ package com.boardgo.integration.review.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
 import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
+import static com.boardgo.integration.fixture.EvaluationTagFixture.getEvaluationTagEntity;
 import static io.restassured.RestAssured.given;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -23,7 +24,7 @@ public class EvaluationTagDocs extends RestDocsTestSupport {
     @Test
     @DisplayName("평가태그 목록 조회하기")
     void 평가태그_목록_조회하기() {
-        //        evaluationTagRepository.saveAll(getEvaluationTagEntity());
+        evaluationTagRepository.saveAll(getEvaluationTagEntity());
 
         given(this.spec)
                 .log()
