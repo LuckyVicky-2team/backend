@@ -5,6 +5,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.mo
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.RestAssured;
@@ -35,10 +36,19 @@ public abstract class RestDocsTestSupport {
 
     @LocalServerPort protected int port;
 
-    protected ObjectMapper objectMapper = new ObjectMapper();
+    // FIXME: 접근제어자 private 로 변경하고 커스텀한 writeValueAsString 메소드 사용하도록 변경하는게 어떤가요?
+    protected static ObjectMapper objectMapper = new ObjectMapper();
 
     protected static Attribute constraints(final String value) {
         return new Attribute("constraints", value);
+    }
+
+    protected static String writeValueAsString(Object value) {
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException je) {
+        }
+        return null;
     }
 
     @BeforeEach
