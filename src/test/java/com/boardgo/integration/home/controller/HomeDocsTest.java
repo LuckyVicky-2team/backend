@@ -8,10 +8,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import com.boardgo.domain.home.controller.request.SituationRequest;
+import com.boardgo.integration.init.TestBoardGameInitializer;
 import com.boardgo.integration.support.RestDocsTestSupport;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -19,11 +21,13 @@ import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 
 public class HomeDocsTest extends RestDocsTestSupport {
+    @Autowired TestBoardGameInitializer testBoardGameInitializer;
 
     @Test
     @DisplayName("메인홈 상황별 추천 보드게임")
     void 메인홈_상황별_추천_보드게임() {
         String requestJson = writeValueAsString(new SituationRequest("ALL"));
+        testBoardGameInitializer.generateBoardGameData();
 
         given(this.spec)
                 .log()
