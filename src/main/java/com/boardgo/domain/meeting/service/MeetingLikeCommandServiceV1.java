@@ -34,19 +34,14 @@ public class MeetingLikeCommandServiceV1 implements MeetingLikeCommandUseCase {
 
     private void checkMeetingIdListExist(List<Long> meetingIdList) {
         List<MeetingEntity> meetingEntities = meetingRepository.findByIdIn(meetingIdList);
-        if (meetingEntities.size() != meetingIdList.size()) {
-            throw new CustomIllegalArgumentException("모임 ID 중 존재하지 않는 모임이 있습니다.");
-        }
         Set<Long> meetingIdSet = new HashSet<>(meetingIdList);
-        meetingEntities.stream()
-                .map(MeetingEntity::getId)
-                .filter(id -> !meetingIdSet.contains(id))
-                .findFirst()
-                .ifPresent(
-                        id -> {
-                            throw new CustomIllegalArgumentException(
-                                    "모임 ID 중 존재하지 않는 모임이 있습니다: " + id);
-                        });
+        if (meetingEntities.size() != meetingIdList.size()) {
+            throw new CustomIllegalArgumentException("모임 ID 중 없는 모임이 존재합니다.");
+        }
+
+        if (meetingEntities.size() != meetingIdSet.size()) {
+            throw new CustomIllegalArgumentException("모임 ID 중 중복된 모임이 있습니다.");
+        }
     }
 
     private void checkUserExist() {
