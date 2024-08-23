@@ -6,5 +6,5 @@ public interface MeetingLikeCommandUseCase {
 
     void createMany(List<Long> meetingIdList);
 
-    void delete(Long id);
+    void deleteByMeetingId(Long meetingId);
 }

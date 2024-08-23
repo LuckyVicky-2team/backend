@@ -4,7 +4,6 @@ import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.common.utils.SecurityUtils;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
-import com.boardgo.domain.meeting.entity.MeetingLikeEntity;
 import com.boardgo.domain.meeting.repository.MeetingLikeRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
 import com.boardgo.domain.user.repository.UserRepository;
@@ -13,8 +12,10 @@ import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MeetingLikeCommandServiceV1 implements MeetingLikeCommandUseCase {
 
@@ -29,17 +30,16 @@ public class MeetingLikeCommandServiceV1 implements MeetingLikeCommandUseCase {
     }
 
     @Override
-    public void delete(Long id) {
-        checkDeleteLikeValidation(id);
-        meetingLikeRepository.deleteById(id);
+    public void deleteByMeetingId(Long meetingId) {
+        Long userId = SecurityUtils.currentUserId();
+        checkDeleteLikeValidation(meetingId, userId);
+        meetingLikeRepository.deleteByUserIdAndMeetingId(userId, meetingId);
     }
 
-    private void checkDeleteLikeValidation(Long id) {
-        MeetingLikeEntity meetingLikeEntity =
-                meetingLikeRepository
-                        .findById(id)
-                        .orElseThrow(() -> new CustomNoSuchElementException("찜"));
-        meetingLikeEntity.checkUserId(SecurityUtils.currentUserId());
+    private void checkDeleteLikeValidation(Long meetingId, Long userId) {
+        meetingLikeRepository
+                .findByUserIdAndMeetingId(userId, meetingId)
+                .orElseThrow(() -> new CustomNoSuchElementException("찜"));
     }
 
     private void checkCreateLikeValidation(List<Long> meetingIdList) {

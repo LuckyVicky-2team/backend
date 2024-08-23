@@ -1,6 +1,5 @@
 package com.boardgo.integration.meeting.service;
 
-import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.domain.meeting.entity.MeetingLikeEntity;
 import com.boardgo.domain.meeting.repository.MeetingLikeRepository;
@@ -67,7 +66,7 @@ public class MeetingLikeCommandServiceV1Test extends IntegrationTestSupport {
                         .findFirst()
                         .orElseThrow(() -> new CustomNoSuchElementException("찜"));
         // when
-        meetingLikeCommandUseCase.delete(first.getId());
+        meetingLikeCommandUseCase.deleteByMeetingId(1L);
         // then
         Optional<MeetingLikeEntity> deletedEntity = meetingLikeRepository.findById(first.getId());
         Assertions.assertThat(deletedEntity).isEmpty();
@@ -93,9 +92,9 @@ public class MeetingLikeCommandServiceV1Test extends IntegrationTestSupport {
         // then
         Assertions.assertThatThrownBy(
                         () -> {
-                            meetingLikeCommandUseCase.delete(first.getId());
+                            meetingLikeCommandUseCase.deleteByMeetingId(1L);
                         })
-                .isInstanceOf(CustomIllegalArgumentException.class);
+                .isInstanceOf(CustomNoSuchElementException.class);
     }
 
     private void setSecurityContext(Long userId) {
