@@ -2,7 +2,6 @@ package com.boardgo.domain.home.service;
 
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.boardgame.repository.dto.SituationBoardGameDto;
-import com.boardgo.domain.home.controller.request.SituationRequest;
 import com.boardgo.domain.home.controller.response.SituationBoardGameResponse;
 import com.boardgo.domain.home.enums.SituationType;
 import com.boardgo.domain.mapper.HomeMapper;
@@ -21,9 +20,8 @@ public class HomeQueryServiceV1 implements HomeQueryUseCase {
     private final HomeMapper homeMapper;
 
     @Override
-    public List<SituationBoardGameResponse> getSituationBoardGame(
-            SituationRequest situationRequest) {
-        SituationType situationType = SituationType.valueOf(situationRequest.situationType());
+    public List<SituationBoardGameResponse> getSituationBoardGame(String situationRequest) {
+        SituationType situationType = SituationType.valueOf(situationRequest);
         List<SituationBoardGameDto> situationBoardGames =
                 boardGameRepository.findByMaxPeopleBetween(situationType.getPeople());
 
