@@ -136,7 +136,8 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                         m.detailAddress,
                                         m.limitParticipant,
                                         m.state,
-                                        m.shareCount))
+                                        m.shareCount,
+                                        m.viewCount))
                         .from(m)
                         .innerJoin(u)
                         .on(m.userId.eq(u.id))
@@ -180,7 +181,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                 m.city,
                                 m.county,
                                 m.thumbnail,
-                                m.hit,
+                                m.viewCount,
                                 m.meetingDatetime.as("meetingDatetime"),
                                 m.limitParticipant.as("limitParticipant"),
                                 u.nickName,
