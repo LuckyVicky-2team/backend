@@ -1,4 +1,4 @@
-package com.boardgo.domain.home.enums;
+package com.boardgo.domain.home.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
