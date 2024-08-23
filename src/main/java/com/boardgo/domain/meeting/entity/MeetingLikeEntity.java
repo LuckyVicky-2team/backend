@@ -1,6 +1,7 @@
 package com.boardgo.domain.meeting.entity;
 
 import com.boardgo.common.domain.BaseEntity;
+import com.boardgo.common.exception.CustomIllegalArgumentException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,5 +34,11 @@ public class MeetingLikeEntity extends BaseEntity {
         this.id = id;
         this.userId = userId;
         this.meetingId = meetingId;
+    }
+
+    public void checkUserId(Long userId) {
+        if (!this.userId.equals(userId)) {
+            throw new CustomIllegalArgumentException("다른 유저의 찜을 삭제할 수 없습니다.");
+        }
     }
 }

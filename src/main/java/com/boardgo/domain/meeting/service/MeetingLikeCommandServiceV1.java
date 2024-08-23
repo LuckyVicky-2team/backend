@@ -4,6 +4,7 @@ import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.common.utils.SecurityUtils;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
+import com.boardgo.domain.meeting.entity.MeetingLikeEntity;
 import com.boardgo.domain.meeting.repository.MeetingLikeRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
 import com.boardgo.domain.user.repository.UserRepository;
@@ -23,11 +24,25 @@ public class MeetingLikeCommandServiceV1 implements MeetingLikeCommandUseCase {
 
     @Override
     public void createMany(List<Long> meetingIdList) {
-        checkLikeValidation(meetingIdList);
+        checkCreateLikeValidation(meetingIdList);
         meetingLikeRepository.bulkInsert(meetingIdList, SecurityUtils.currentUserId());
     }
 
-    private void checkLikeValidation(List<Long> meetingIdList) {
+    @Override
+    public void delete(Long id) {
+        checkDeleteLikeValidation(id);
+        meetingLikeRepository.deleteById(id);
+    }
+
+    private void checkDeleteLikeValidation(Long id) {
+        MeetingLikeEntity meetingLikeEntity =
+                meetingLikeRepository
+                        .findById(id)
+                        .orElseThrow(() -> new CustomNoSuchElementException("찜"));
+        meetingLikeEntity.checkUserId(SecurityUtils.currentUserId());
+    }
+
+    private void checkCreateLikeValidation(List<Long> meetingIdList) {
         checkUserExist();
         checkMeetingIdListExist(meetingIdList);
     }
