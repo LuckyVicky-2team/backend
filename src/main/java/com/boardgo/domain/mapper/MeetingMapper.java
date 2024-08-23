@@ -25,7 +25,7 @@ public interface MeetingMapper {
 
         return MeetingEntity.builder()
                 .state(MeetingState.PROGRESS)
-                .hit(0L)
+                .viewCount(0L)
                 .userId(userId)
                 .title(meetingCreateRequest.title())
                 .city(meetingCreateRequest.city())

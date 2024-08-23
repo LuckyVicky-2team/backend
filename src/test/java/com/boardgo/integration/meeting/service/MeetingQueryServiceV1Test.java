@@ -63,7 +63,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         LocalDateTime meetingDatetime = LocalDateTime.now().plusDays(1);
         MeetingEntity meetingEntity =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(1L)
                         .latitude("12312312")
                         .longitude("12321")
@@ -130,7 +130,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         long userId = 1L;
         MeetingEntity meetingEntity =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
@@ -200,7 +200,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         long userId = 2L;
         MeetingEntity meetingEntity =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
@@ -512,7 +512,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
 
         MeetingEntity meetingEntity1 =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(1L)
                         .latitude("12312312")
                         .longitude("12321")
@@ -535,7 +535,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         meetingEntity1, boardGameIdList1, boardGameGenreIdList1);
         MeetingEntity meetingEntity2 =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(1L)
                         .latitude("12312312")
                         .longitude("12321")
@@ -558,7 +558,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         meetingEntity2, boardGameIdList2, boardGameGenreIdList2);
         MeetingEntity meetingEntity3 =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(1L)
                         .latitude("12312312")
                         .longitude("12321")
@@ -602,7 +602,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
 
         MeetingEntity meetingEntity1 =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(1L)
                         .latitude("12312312")
                         .longitude("12321")
@@ -625,7 +625,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         meetingEntity1, boardGameIdList1, boardGameGenreIdList1);
         MeetingEntity meetingEntity2 =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(1L)
                         .latitude("12312312")
                         .longitude("12321")
@@ -648,7 +648,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         meetingEntity2, boardGameIdList2, boardGameGenreIdList2);
         MeetingEntity meetingEntity3 =
                 MeetingEntity.builder()
-                        .hit(0L)
+                        .viewCount(0L)
                         .userId(1L)
                         .latitude("12312312")
                         .longitude("12321")
