@@ -62,7 +62,6 @@ public class TestMeetingInitializer {
                                     LocalDateTime.now().plusDays(rotationNumber),
                                     boardGameIdList,
                                     genreIdList),
-                            getMeetingState(i),
                             userId,
                             "thumbnail" + i);
 
@@ -88,15 +87,14 @@ public class TestMeetingInitializer {
     }
 
     /** 모임 상태 여러 상태로 바꾸고 싶을 때 사용 * */
-    private static MeetingState getMeetingState(int i) {
+    private static void getMeetingState(int i) {
         MeetingState state;
         if (i % 2 == 0) {
-            state = MeetingState.COMPLETE;
-        } else if (i % 3 == 1) {
-            state = MeetingState.FINISH;
-        } else {
             state = MeetingState.PROGRESS;
+        } else if (i % 3 == 1) {
+            state = MeetingState.COMPLETE;
+        } else {
+            state = MeetingState.FINISH;
         }
-        return state;
     }
 }
