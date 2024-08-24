@@ -1,4 +1,4 @@
-package com.boardgo.domain.home.service.dto;
+package com.boardgo.domain.boardgame.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

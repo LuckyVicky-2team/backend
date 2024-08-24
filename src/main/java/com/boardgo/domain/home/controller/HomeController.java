@@ -2,7 +2,7 @@ package com.boardgo.domain.home.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER1;
 
-import com.boardgo.common.validator.annotation.AllowedValues;
+import com.boardgo.domain.boardgame.entity.SituationType;
 import com.boardgo.domain.home.controller.response.SituationBoardGameResponse;
 import com.boardgo.domain.home.service.HomeQueryUseCase;
 import jakarta.validation.constraints.NotNull;
@@ -23,10 +23,13 @@ public class HomeController {
 
     @GetMapping(value = "/situation", headers = API_VERSION_HEADER1)
     public ResponseEntity<List<SituationBoardGameResponse>> getSituationBoardGame(
-            @RequestParam("situationType")
-                    @NotNull
-                    @AllowedValues(values = {"TWO", "THREE", "MANY", "ALL"})
-                    String situationType) {
+            @RequestParam("situationType") @NotNull SituationType situationType) {
         return ResponseEntity.ok().body(homeQueryUseCase.getSituationBoardGame(situationType));
     }
+
+    // FIXME: 보드게임 도메인으로 이동
+    //    @GetMapping(value = "/cumulative-popularity", headers = API_VERSION_HEADER1)
+    //    public ResponseEntity<List<CumulativePopularityResponse>> getCumulativePopularity() {
+    //        return ResponseEntity.ok().body(homeQueryUseCase.getCumulativePopularity());
+    //    }
 }

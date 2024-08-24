@@ -36,8 +36,7 @@ public abstract class RestDocsTestSupport {
 
     @LocalServerPort protected int port;
 
-    // FIXME: 접근제어자 private 로 변경하고 커스텀한 writeValueAsString 메소드 사용하도록 변경하는게 어떤가요?
-    protected static ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     protected static Attribute constraints(final String value) {
         return new Attribute("constraints", value);
