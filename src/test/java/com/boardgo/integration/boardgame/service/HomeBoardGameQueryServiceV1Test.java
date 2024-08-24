@@ -1,4 +1,4 @@
-package com.boardgo.integration.home.service;
+package com.boardgo.integration.boardgame.service;
 
 import static com.boardgo.domain.boardgame.entity.SituationType.ALL;
 import static com.boardgo.domain.boardgame.entity.SituationType.MANY;
@@ -8,8 +8,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.boardgo.domain.boardgame.entity.BoardGameEntity;
 import com.boardgo.domain.boardgame.entity.SituationType;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
-import com.boardgo.domain.home.controller.response.SituationBoardGameResponse;
-import com.boardgo.domain.home.service.HomeQueryUseCase;
+import com.boardgo.domain.boardgame.service.HomeBoardGameQueryUseCase;
+import com.boardgo.domain.boardgame.service.response.SituationBoardGameResponse;
 import com.boardgo.integration.init.TestBoardGameInitializer;
 import com.boardgo.integration.support.IntegrationTestSupport;
 import java.util.List;
@@ -21,10 +21,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class HomeQueryServiceV1Test extends IntegrationTestSupport {
+public class HomeBoardGameQueryServiceV1Test extends IntegrationTestSupport {
 
     @Autowired private BoardGameRepository boardGameRepository;
-    @Autowired private HomeQueryUseCase homeQueryUseCase;
+    @Autowired private HomeBoardGameQueryUseCase homeBoardGameQueryUseCase;
     @Autowired TestBoardGameInitializer testBoardGameInitializer;
 
     @BeforeEach
@@ -39,7 +39,7 @@ public class HomeQueryServiceV1Test extends IntegrationTestSupport {
         // given
         // when
         List<SituationBoardGameResponse> situationBoardGames =
-                homeQueryUseCase.getSituationBoardGame(situationType);
+                homeBoardGameQueryUseCase.getSituationBoardGame(situationType);
 
         // then
         for (SituationBoardGameResponse boardGame : situationBoardGames) {

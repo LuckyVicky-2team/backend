@@ -1,4 +1,4 @@
-package com.boardgo.integration.home.controller;
+package com.boardgo.integration.boardgame.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
 import static io.restassured.RestAssured.given;
@@ -20,7 +20,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.RequestPartsSnippet;
 
-public class HomeDocsTest extends RestDocsTestSupport {
+public class HomeBoardGameDocsTest extends RestDocsTestSupport {
     @Autowired TestBoardGameInitializer testBoardGameInitializer;
 
     @Test

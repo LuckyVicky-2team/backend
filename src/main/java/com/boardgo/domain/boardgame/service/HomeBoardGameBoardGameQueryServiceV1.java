@@ -1,9 +1,9 @@
-package com.boardgo.domain.home.service;
+package com.boardgo.domain.boardgame.service;
 
 import com.boardgo.domain.boardgame.entity.SituationType;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
-import com.boardgo.domain.boardgame.repository.dto.SituationBoardGameDto;
-import com.boardgo.domain.home.controller.response.SituationBoardGameResponse;
+import com.boardgo.domain.boardgame.repository.projection.SituationBoardGameProjection;
+import com.boardgo.domain.boardgame.service.response.SituationBoardGameResponse;
 import com.boardgo.domain.mapper.HomeMapper;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class HomeQueryServiceV1 implements HomeQueryUseCase {
+public class HomeBoardGameBoardGameQueryServiceV1 implements HomeBoardGameQueryUseCase {
 
     private final BoardGameRepository boardGameRepository;
     private final MeetingRepository meetingRepository;
@@ -23,11 +23,11 @@ public class HomeQueryServiceV1 implements HomeQueryUseCase {
 
     @Override
     public List<SituationBoardGameResponse> getSituationBoardGame(SituationType situationType) {
-        List<SituationBoardGameDto> situationBoardGames =
+        List<SituationBoardGameProjection> situationBoardGames =
                 boardGameRepository.findByMaxPeopleBetween(situationType.getPeople());
 
         Map<String, SituationBoardGameResponse> boardGameMap = new HashMap<>();
-        for (SituationBoardGameDto gameDto : situationBoardGames) {
+        for (SituationBoardGameProjection gameDto : situationBoardGames) {
             boardGameMap.merge(
                     gameDto.title(),
                     homeMapper.toSituationBoardGameResponse(gameDto),

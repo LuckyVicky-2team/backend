@@ -1,10 +1,10 @@
-package com.boardgo.domain.home.service;
+package com.boardgo.domain.boardgame.service;
 
 import com.boardgo.domain.boardgame.entity.SituationType;
-import com.boardgo.domain.home.controller.response.SituationBoardGameResponse;
+import com.boardgo.domain.boardgame.service.response.SituationBoardGameResponse;
 import java.util.List;
 
-public interface HomeQueryUseCase {
+public interface HomeBoardGameQueryUseCase {
 
     List<SituationBoardGameResponse> getSituationBoardGame(SituationType situationType);
 

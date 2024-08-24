@@ -1,4 +1,4 @@
-package com.boardgo.domain.home.controller.response;
+package com.boardgo.domain.boardgame.service.response;
 
 import java.util.List;
 

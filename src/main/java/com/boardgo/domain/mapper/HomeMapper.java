@@ -1,7 +1,7 @@
 package com.boardgo.domain.mapper;
 
-import com.boardgo.domain.boardgame.repository.dto.SituationBoardGameDto;
-import com.boardgo.domain.home.controller.response.SituationBoardGameResponse;
+import com.boardgo.domain.boardgame.repository.projection.SituationBoardGameProjection;
+import com.boardgo.domain.boardgame.service.response.SituationBoardGameResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +17,7 @@ public interface HomeMapper {
 
     @Mapping(target = "genres", source = "genre")
     SituationBoardGameResponse toSituationBoardGameResponse(
-            SituationBoardGameDto situationBoardGameDto);
+            SituationBoardGameProjection situationBoardGameProjection);
 
     default List<String> listMapping(String value) {
         if (value != null && !value.isEmpty()) {

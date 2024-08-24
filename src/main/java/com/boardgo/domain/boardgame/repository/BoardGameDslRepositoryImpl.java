@@ -4,14 +4,14 @@ import com.boardgo.domain.boardgame.controller.request.BoardGameSearchRequest;
 import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
 import com.boardgo.domain.boardgame.entity.QGameGenreMatchEntity;
-import com.boardgo.domain.boardgame.repository.dto.QSituationBoardGameDto;
-import com.boardgo.domain.boardgame.repository.dto.SituationBoardGameDto;
 import com.boardgo.domain.boardgame.repository.projection.BoardGameByMeetingIdProjection;
 import com.boardgo.domain.boardgame.repository.projection.BoardGameSearchProjection;
 import com.boardgo.domain.boardgame.repository.projection.GenreSearchProjection;
 import com.boardgo.domain.boardgame.repository.projection.QBoardGameByMeetingIdProjection;
 import com.boardgo.domain.boardgame.repository.projection.QBoardGameSearchProjection;
 import com.boardgo.domain.boardgame.repository.projection.QGenreSearchProjection;
+import com.boardgo.domain.boardgame.repository.projection.QSituationBoardGameProjection;
+import com.boardgo.domain.boardgame.repository.projection.SituationBoardGameProjection;
 import com.boardgo.domain.boardgame.repository.response.BoardGameByMeetingIdResponse;
 import com.boardgo.domain.boardgame.repository.response.BoardGameSearchResponse;
 import com.boardgo.domain.boardgame.repository.response.GenreSearchResponse;
@@ -160,10 +160,10 @@ public class BoardGameDslRepositoryImpl implements BoardGameDslRepository {
     }
 
     @Override
-    public List<SituationBoardGameDto> findByMaxPeopleBetween(int maxPeople) {
+    public List<SituationBoardGameProjection> findByMaxPeopleBetween(int maxPeople) {
         return queryFactory
                 .select(
-                        new QSituationBoardGameDto(
+                        new QSituationBoardGameProjection(
                                 b.title, b.thumbnail, b.minPlaytime, b.maxPlaytime, bgg.genre))
                 .from(ggm)
                 .innerJoin(b)
