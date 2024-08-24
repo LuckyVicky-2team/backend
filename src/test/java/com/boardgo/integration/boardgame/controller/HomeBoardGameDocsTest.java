@@ -9,6 +9,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import com.boardgo.integration.init.TestBoardGameInitializer;
+import com.boardgo.integration.init.TestMeetingInitializer;
 import com.boardgo.integration.support.RestDocsTestSupport;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,7 @@ import org.springframework.restdocs.request.RequestPartsSnippet;
 
 public class HomeBoardGameDocsTest extends RestDocsTestSupport {
     @Autowired TestBoardGameInitializer testBoardGameInitializer;
+    @Autowired TestMeetingInitializer testMeetingInitializer;
 
     @Test
     @DisplayName("메인홈 상황별 추천 보드게임")
@@ -69,5 +71,42 @@ public class HomeBoardGameDocsTest extends RestDocsTestSupport {
                                 .type(JsonFieldType.NUMBER)
                                 .description("최대 시간"),
                         fieldWithPath("[].genres").type(JsonFieldType.ARRAY).description("장르 목록")));
+    }
+
+    @Test
+    @DisplayName("메인 홈 누적 인기 보드게임")
+    void 메인홈_누적_인기_보드게임() {
+        testBoardGameInitializer.generateBoardGameData();
+        testMeetingInitializer.generateMeetingData();
+
+        given(this.spec)
+                .log()
+                .all()
+                .port(port)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(API_VERSION_HEADER, "1")
+                .filter(
+                        document(
+                                "get-home-cumulative-popularity",
+                                getCumulativePopularityResponseFieldsSnippet()))
+                .when()
+                .get("/home/cumulative-popularity")
+                .then()
+                .log()
+                .ifError()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    private ResponseFieldsSnippet getCumulativePopularityResponseFieldsSnippet() {
+        return responseFields(
+                List.of(
+                        fieldWithPath("[].boardGameId").ignored(),
+                        fieldWithPath("[].title").type(JsonFieldType.STRING).description("보드게임 제목"),
+                        fieldWithPath("[].thumbnail")
+                                .type(JsonFieldType.STRING)
+                                .description("보드게임 썸네일"),
+                        fieldWithPath("[].cumulativeCount")
+                                .type(JsonFieldType.NUMBER)
+                                .description("누적 횟수")));
     }
 }
