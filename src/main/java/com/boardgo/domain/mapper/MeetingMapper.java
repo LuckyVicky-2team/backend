@@ -42,6 +42,31 @@ public interface MeetingMapper {
                 .build();
     }
 
+    default MeetingEntity toMeetingEntity(
+            MeetingCreateRequest meetingCreateRequest,
+            MeetingState meetingState,
+            Long userId,
+            String imageUri) {
+
+        return MeetingEntity.builder()
+                .state(meetingState)
+                .viewCount(0L)
+                .userId(userId)
+                .title(meetingCreateRequest.title())
+                .city(meetingCreateRequest.city())
+                .type(MeetingType.valueOf(meetingCreateRequest.type().toUpperCase()))
+                .meetingDatetime(meetingCreateRequest.meetingDatetime())
+                .county(meetingCreateRequest.county())
+                .content(meetingCreateRequest.content())
+                .latitude(meetingCreateRequest.latitude())
+                .longitude(meetingCreateRequest.longitude())
+                .detailAddress(meetingCreateRequest.detailAddress())
+                .locationName(meetingCreateRequest.locationName())
+                .limitParticipant(meetingCreateRequest.limitParticipant())
+                .thumbnail(imageUri)
+                .build();
+    }
+
     default MeetingDetailResponse toMeetingDetailResponse(
             MeetingDetailProjection meetingDetailProjection,
             List<UserParticipantResponse> userParticipantResponseList,
