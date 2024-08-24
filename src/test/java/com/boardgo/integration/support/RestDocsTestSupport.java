@@ -5,6 +5,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.mo
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
+import com.boardgo.common.exception.CustomJsonProcessingException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -46,8 +47,9 @@ public abstract class RestDocsTestSupport {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException je) {
+            je.printStackTrace();
+            throw new CustomJsonProcessingException(je.getMessage());
         }
-        return null;
     }
 
     @BeforeEach
