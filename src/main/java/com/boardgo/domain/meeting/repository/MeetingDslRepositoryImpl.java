@@ -1,21 +1,28 @@
 package com.boardgo.domain.meeting.repository;
 
+import static com.boardgo.domain.meeting.entity.enums.ParticipantType.*;
+
+import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.boardgame.repository.response.BoardGameByMeetingIdResponse;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
-import com.boardgo.domain.meeting.entity.MeetingState;
 import com.boardgo.domain.meeting.entity.QMeetingEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGameMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGenreMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingLikeEntity;
+import com.boardgo.domain.meeting.entity.QMeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantSubEntity;
+import com.boardgo.domain.meeting.entity.enums.MeetingState;
+import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
 import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
+import com.boardgo.domain.meeting.repository.projection.MyPageMeetingProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingSearchProjection;
+import com.boardgo.domain.meeting.repository.projection.QMyPageMeetingProjection;
 import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import com.boardgo.domain.user.entity.QUserInfoEntity;
@@ -58,6 +65,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     private final QMeetingParticipantSubEntity mpSub =
             QMeetingParticipantSubEntity.meetingParticipantSubEntity;
     private final QMeetingLikeEntity ml = QMeetingLikeEntity.meetingLikeEntity;
+    private final QMeetingParticipantEntity mp = QMeetingParticipantEntity.meetingParticipantEntity;
 
     public MeetingDslRepositoryImpl(
             EntityManager entityManager,
@@ -152,6 +160,39 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                 userParticipantResponseList,
                 boardGameByMeetingIdResponseList,
                 createMeetingCount);
+    }
+
+    @Override
+    public List<MyPageMeetingProjection> findMyPageByFilter(
+            MyPageMeetingFilter filter, Long userId) {
+        return queryFactory
+                .select(
+                        new QMyPageMeetingProjection(
+                                m.id,
+                                m.title,
+                                m.thumbnail,
+                                m.detailAddress,
+                                m.meetingDatetime,
+                                m.limitParticipant))
+                .from(m)
+                .innerJoin(mp)
+                .on(mp.meetingId.eq(m.id))
+                .where(mp.userInfoId.eq(userId).and(myPageFilter(filter)))
+                .orderBy(m.meetingDatetime.asc())
+                .fetch();
+    }
+
+    private BooleanExpression myPageFilter(MyPageMeetingFilter filter) {
+        if (Objects.isNull(filter)) {
+            throw new CustomNullPointException("myPageMeetingFilter가 Null입니다.");
+        }
+        if (filter == MyPageMeetingFilter.CREATE) {
+            return mp.type.eq(LEADER);
+        } else if (filter == MyPageMeetingFilter.PARTICIPANT) {
+            return mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT));
+        } else {
+            return m.state.eq(MeetingState.FINISH);
+        }
     }
 
     private BooleanExpression userIdEqualsFilter(Long userId) {
@@ -280,7 +321,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         // 동적 조건 추가 메서드 호출
         builder.and(genreFilter(searchRequest.tag()))
                 .and(meetingDateBetween(searchRequest.startDate(), searchRequest.endDate()))
-                .and(searchKeyword(searchRequest.searchWord(), searchRequest.searchType()))
+                .and(searchKeywordFilter(searchRequest.searchWord(), searchRequest.searchType()))
                 .and(cityFilter(searchRequest.city()))
                 .and(countyFilter(searchRequest.county()));
         return builder;
@@ -312,7 +353,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                 : null;
     }
 
-    private BooleanExpression searchKeyword(String searchWord, String searchType) {
+    private BooleanExpression searchKeywordFilter(String searchWord, String searchType) {
         if (Objects.isNull(searchWord)) {
             return null;
         } else if (searchType.equals("TITLE")) {

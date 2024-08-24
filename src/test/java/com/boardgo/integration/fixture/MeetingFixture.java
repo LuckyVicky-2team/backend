@@ -1,8 +1,8 @@
 package com.boardgo.integration.fixture;
 
 import com.boardgo.domain.meeting.entity.MeetingEntity;
-import com.boardgo.domain.meeting.entity.MeetingState;
-import com.boardgo.domain.meeting.entity.MeetingType;
+import com.boardgo.domain.meeting.entity.enums.MeetingState;
+import com.boardgo.domain.meeting.entity.enums.MeetingType;
 import java.time.LocalDateTime;
 
 public abstract class MeetingFixture {
