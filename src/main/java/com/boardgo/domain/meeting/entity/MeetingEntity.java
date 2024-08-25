@@ -1,6 +1,7 @@
 package com.boardgo.domain.meeting.entity;
 
-import static com.boardgo.domain.meeting.entity.MeetingState.*;
+import static com.boardgo.domain.meeting.entity.MeetingState.COMPLETE;
+import static com.boardgo.domain.meeting.entity.MeetingState.FINISH;
 
 import com.boardgo.common.domain.BaseEntity;
 import com.boardgo.common.exception.CustomIllegalArgumentException;
@@ -126,6 +127,13 @@ public class MeetingEntity extends BaseEntity {
             throw new CustomIllegalArgumentException("모집 완료된 모임으로 참가 불가능 합니다");
         }
         return true;
+    }
+
+    public boolean isFinishState() {
+        if (FINISH == this.state) {
+            return true;
+        }
+        return false;
     }
 
     /**

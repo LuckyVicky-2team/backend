@@ -3,17 +3,23 @@ package com.boardgo.domain.review.service;
 import static com.boardgo.domain.meeting.entity.ParticipantType.LEADER;
 import static com.boardgo.domain.meeting.entity.ParticipantType.PARTICIPANT;
 
+import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNoSuchElementException;
+import com.boardgo.common.exception.CustomNullPointException;
+import com.boardgo.common.exception.DuplicateException;
 import com.boardgo.domain.mapper.ReviewMapper;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
 import com.boardgo.domain.meeting.repository.projection.MeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.projection.ParticipationCountProjection;
+import com.boardgo.domain.review.controller.request.ReviewCreateRequest;
+import com.boardgo.domain.review.entity.ReviewEntity;
 import com.boardgo.domain.review.entity.enums.ReviewType;
 import com.boardgo.domain.review.repository.ReviewRepository;
 import com.boardgo.domain.review.repository.projection.ReviewCountProjection;
 import com.boardgo.domain.review.service.response.ReviewMeetingResponse;
+import com.boardgo.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +34,14 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
     private final ReviewRepository reviewRepository;
     private final MeetingRepository meetingRepository;
     private final MeetingParticipantRepository meetingParticipantRepository;
+    private final UserRepository userRepository;
     private final ReviewMapper reviewMapper;
 
     @Override
     public List<ReviewMeetingResponse> getReviewMeetings(ReviewType reviewType, Long userId) {
         switch (reviewType) {
             case PRE_PROGRESS -> {
-                List<Long> reviewFinishedMeetings = getReviewFinishedList(userId);
+                List<Long> reviewFinishedMeetings = findReviewFinishedList(userId);
                 List<MeetingReviewProjection> meetingPreProgressReview =
                         meetingRepository.findMeetingPreProgressReview(
                                 userId, reviewFinishedMeetings);
@@ -56,7 +63,7 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
      * @param userId
      * @return 리뷰 작성 완료 모임 ID 목록
      */
-    private List<Long> getReviewFinishedList(Long userId) {
+    private List<Long> findReviewFinishedList(Long userId) {
         List<ReviewCountProjection> reviewCountList =
                 reviewRepository.countReviewByReviewerId(userId);
         Map<Long, Long> reviewCountMap =
@@ -80,5 +87,37 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
             }
         }
         return reviewFinished;
+    }
+
+    @Override
+    public void create(ReviewCreateRequest createRequest, Long reviewerId) {
+        validateCreateReview(createRequest.meetingId(), createRequest.revieweeId(), reviewerId);
+        ReviewEntity reviewEntity =
+                reviewMapper.toReviewEntity(
+                        createRequest, createRequest.evaluationTagList(), reviewerId);
+        reviewRepository.save(reviewEntity);
+    }
+
+    private void validateCreateReview(Long meetingId, Long revieweeId, Long reviewerId) {
+        MeetingEntity meetingEntity =
+                meetingRepository
+                        .findById(meetingId)
+                        .orElseThrow(() -> new CustomNullPointException("모임이 존재하지 않습니다"));
+        if (!meetingEntity.isFinishState()) {
+            throw new CustomIllegalArgumentException("종료된 모임만 리뷰 작성이 가능합니다");
+        }
+        if (!userRepository.existsById(revieweeId)) {
+            throw new CustomNullPointException("회원이 존재하지 않습니다");
+        }
+
+        boolean written =
+                reviewRepository.existsByReviewerIdAndMeetingIdAndRevieweeId(
+                        reviewerId, meetingId, revieweeId);
+        if (written) {
+            throw new DuplicateException("이미 작성된 리뷰 입니다");
+        }
+
+        // TODO 모임을 함께 참여한 사람이 맞는지 체크 meetingparticipate 에서 where meetingid and userid IN,
+
     }
 }

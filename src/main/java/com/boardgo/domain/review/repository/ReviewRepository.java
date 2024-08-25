@@ -24,4 +24,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
                     + "WHERE r.revieweeId = :reviewerId "
                     + "GROUP BY r.meetingId")
     List<ReviewCountProjection> countReviewByReviewerId(@Param("reviewerId") Long reviewerId);
+
+    boolean existsByReviewerIdAndMeetingIdAndRevieweeId(
+            Long reviewerId, Long meetingId, Long revieweeId);
 }
