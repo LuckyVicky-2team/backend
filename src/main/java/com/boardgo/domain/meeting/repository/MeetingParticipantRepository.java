@@ -1,7 +1,7 @@
 package com.boardgo.domain.meeting.repository;
 
 import com.boardgo.domain.meeting.entity.MeetingParticipantEntity;
-import com.boardgo.domain.meeting.entity.ParticipantType;
+import com.boardgo.domain.meeting.entity.enums.ParticipantType;
 import com.boardgo.domain.meeting.repository.projection.ParticipationCountProjection;
 import java.util.List;
 import java.util.Set;

@@ -1,7 +1,7 @@
 package com.boardgo.domain.review.service;
 
-import static com.boardgo.domain.meeting.entity.ParticipantType.LEADER;
-import static com.boardgo.domain.meeting.entity.ParticipantType.PARTICIPANT;
+import static com.boardgo.domain.meeting.entity.enums.ParticipantType.LEADER;
+import static com.boardgo.domain.meeting.entity.enums.ParticipantType.PARTICIPANT;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNoSuchElementException;

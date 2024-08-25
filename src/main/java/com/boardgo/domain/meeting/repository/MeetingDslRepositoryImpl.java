@@ -1,28 +1,32 @@
 package com.boardgo.domain.meeting.repository;
 
-import static com.boardgo.domain.meeting.entity.MeetingState.FINISH;
-import static com.boardgo.domain.meeting.entity.ParticipantType.LEADER;
-import static com.boardgo.domain.meeting.entity.ParticipantType.PARTICIPANT;
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.*;
+import static com.boardgo.domain.meeting.entity.enums.ParticipantType.*;
 
 import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
+import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityCountProjection;
+import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityProjection;
 import com.boardgo.domain.boardgame.repository.response.BoardGameByMeetingIdResponse;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
-import com.boardgo.domain.meeting.entity.MeetingState;
 import com.boardgo.domain.meeting.entity.QMeetingEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGameMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGenreMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingLikeEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantSubEntity;
+import com.boardgo.domain.meeting.entity.enums.MeetingState;
+import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
 import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
+import com.boardgo.domain.meeting.repository.projection.MyPageMeetingProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingSearchProjection;
+import com.boardgo.domain.meeting.repository.projection.QMyPageMeetingProjection;
 import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import com.boardgo.domain.user.entity.QUserInfoEntity;
@@ -31,6 +35,7 @@ import com.boardgo.domain.user.repository.response.UserParticipantResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
@@ -43,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
@@ -84,7 +90,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
 
         MeetingState finishState = FINISH;
 
-        BooleanBuilder filters = getRequireFilters(searchRequest, bgg, m);
+        BooleanBuilder filters = getRequireFilters(searchRequest);
 
         // 페이지네이션 처리
         int size = getSize(searchRequest.size());
@@ -160,6 +166,36 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                 userParticipantResponseList,
                 boardGameByMeetingIdResponseList,
                 createMeetingCount);
+    }
+
+    @Override
+    public List<MyPageMeetingProjection> findMyPageByFilter(
+            MyPageMeetingFilter filter, Long userId) {
+        return queryFactory
+                .select(
+                        new QMyPageMeetingProjection(
+                                m.id,
+                                m.title,
+                                m.thumbnail,
+                                m.detailAddress,
+                                m.meetingDatetime,
+                                m.limitParticipant))
+                .from(m)
+                .innerJoin(mp)
+                .on(mp.meetingId.eq(m.id))
+                .where(mp.userInfoId.eq(userId).and(myPageFilter(filter)))
+                .orderBy(m.meetingDatetime.asc())
+                .fetch();
+    }
+
+    private BooleanExpression myPageFilter(MyPageMeetingFilter filter) {
+        if (filter == MyPageMeetingFilter.CREATE) {
+            return mp.type.eq(LEADER).and(m.state.ne(FINISH));
+        } else if (filter == MyPageMeetingFilter.PARTICIPANT) {
+            return (mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT))).and(m.state.ne(FINISH));
+        } else {
+            return (mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT))).and(m.state.eq(FINISH));
+        }
     }
 
     private BooleanExpression userIdEqualsFilter(Long userId) {
@@ -281,14 +317,13 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         return total;
     }
 
-    private BooleanBuilder getRequireFilters(
-            MeetingSearchRequest searchRequest, QBoardGameGenreEntity g, QMeetingEntity m) {
+    private BooleanBuilder getRequireFilters(MeetingSearchRequest searchRequest) {
         BooleanBuilder builder = new BooleanBuilder();
 
         // 동적 조건 추가 메서드 호출
         builder.and(genreFilter(searchRequest.tag()))
                 .and(meetingDateBetween(searchRequest.startDate(), searchRequest.endDate()))
-                .and(searchKeyword(searchRequest.searchWord(), searchRequest.searchType()))
+                .and(searchKeywordFilter(searchRequest.searchWord(), searchRequest.searchType()))
                 .and(cityFilter(searchRequest.city()))
                 .and(countyFilter(searchRequest.county()));
         return builder;
@@ -320,7 +355,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                 : null;
     }
 
-    private BooleanExpression searchKeyword(String searchWord, String searchType) {
+    private BooleanExpression searchKeywordFilter(String searchWord, String searchType) {
         if (Objects.isNull(searchWord)) {
             return null;
         } else if (searchType.equals("TITLE")) {
@@ -349,6 +384,39 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         } else {
             return m.meetingDatetime.asc();
         }
+    }
+
+    @Override
+    public List<CumulativePopularityProjection> findBoardGameOrderByRank(Set<Long> rankList) {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                CumulativePopularityProjection.class,
+                                bg.id,
+                                bg.title,
+                                bg.thumbnail))
+                .from(bg)
+                .where(bg.id.in(rankList))
+                .fetch();
+    }
+
+    /** 누적 게임순위 7위까지 조회 */
+    @Override
+    public List<CumulativePopularityCountProjection> findCumulativePopularityBoardGameRank(
+            int rank) {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                CumulativePopularityCountProjection.class,
+                                mgam.boardGameId,
+                                mgam.boardGameId.count()))
+                .from(mgam)
+                .innerJoin(m)
+                .on(mgam.meetingId.eq(m.id))
+                .where(m.state.eq(FINISH))
+                .groupBy(mgam.boardGameId)
+                .limit(rank)
+                .fetch();
     }
 
     @Override

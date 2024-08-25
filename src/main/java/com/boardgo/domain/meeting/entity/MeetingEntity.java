@@ -1,10 +1,11 @@
 package com.boardgo.domain.meeting.entity;
 
-import static com.boardgo.domain.meeting.entity.MeetingState.COMPLETE;
-import static com.boardgo.domain.meeting.entity.MeetingState.FINISH;
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.*;
 
 import com.boardgo.common.domain.BaseEntity;
 import com.boardgo.common.exception.CustomIllegalArgumentException;
+import com.boardgo.domain.meeting.entity.enums.MeetingState;
+import com.boardgo.domain.meeting.entity.enums.MeetingType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -144,5 +145,9 @@ public class MeetingEntity extends BaseEntity {
             throw new CustomIllegalArgumentException("모임 날짜가 지난 모임으로 참가 불가능 합니다");
         }
         return false;
+    }
+
+    public void updateMeetingState(MeetingState meetingState) {
+        this.state = meetingState;
     }
 }
