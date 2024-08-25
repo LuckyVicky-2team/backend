@@ -3,6 +3,7 @@ package com.boardgo.domain.boardgame.service;
 import com.boardgo.domain.boardgame.entity.enums.SituationType;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityCountProjection;
+import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityProjection;
 import com.boardgo.domain.boardgame.repository.projection.SituationBoardGameProjection;
 import com.boardgo.domain.boardgame.service.response.CumulativePopularityResponse;
 import com.boardgo.domain.boardgame.service.response.SituationBoardGameResponse;
@@ -55,16 +56,20 @@ public class HomeBoardGameBoardGameQueryServiceV1 implements HomeBoardGameQueryU
                                         CumulativePopularityCountProjection::boardGameId,
                                         CumulativePopularityCountProjection::cumulativeCount));
 
-        List<CumulativePopularityResponse> boardGames =
+        List<CumulativePopularityProjection> boardGames =
                 meetingRepository.findBoardGameOrderByRank(rankMap.keySet());
-        for (CumulativePopularityResponse game : boardGames) {
-            Long boardGameId = game.getBoardGameId();
-            game.updateCumulativeCount(rankMap.get(boardGameId));
+        List<CumulativePopularityResponse> cumulativePopularityList = new ArrayList<>();
+
+        for (CumulativePopularityProjection game : boardGames) {
+            Long boardGameId = game.boardGameId();
+            CumulativePopularityResponse cumulativePopularity =
+                    homeMapper.toCumulativePopularityResponse(game, rankMap.get(boardGameId));
+            cumulativePopularityList.add(cumulativePopularity);
         }
+
         Collections.sort(
-                boardGames,
-                Comparator.comparingLong(CumulativePopularityResponse::getCumulativeCount)
-                        .reversed());
-        return boardGames;
+                cumulativePopularityList,
+                Comparator.comparingLong(CumulativePopularityResponse::cumulativeCount).reversed());
+        return cumulativePopularityList;
     }
 }

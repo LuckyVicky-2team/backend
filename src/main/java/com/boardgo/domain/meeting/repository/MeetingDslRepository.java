@@ -1,7 +1,7 @@
 package com.boardgo.domain.meeting.repository;
 
 import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityCountProjection;
-import com.boardgo.domain.boardgame.service.response.CumulativePopularityResponse;
+import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityProjection;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
 import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
@@ -16,5 +16,5 @@ public interface MeetingDslRepository {
 
     List<CumulativePopularityCountProjection> findCumulativePopularityBoardGameRank(int rank);
 
-    List<CumulativePopularityResponse> findBoardGameOrderByRank(Set<Long> rankList);
+    List<CumulativePopularityProjection> findBoardGameOrderByRank(Set<Long> rankList);
 }

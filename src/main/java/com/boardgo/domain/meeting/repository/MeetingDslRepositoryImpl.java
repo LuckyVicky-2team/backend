@@ -6,8 +6,8 @@ import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityCountProjection;
+import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityProjection;
 import com.boardgo.domain.boardgame.repository.response.BoardGameByMeetingIdResponse;
-import com.boardgo.domain.boardgame.service.response.CumulativePopularityResponse;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
 import com.boardgo.domain.meeting.entity.MeetingState;
@@ -350,11 +350,14 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     }
 
     @Override
-    public List<CumulativePopularityResponse> findBoardGameOrderByRank(Set<Long> rankList) {
+    public List<CumulativePopularityProjection> findBoardGameOrderByRank(Set<Long> rankList) {
         return queryFactory
                 .select(
                         Projections.constructor(
-                                CumulativePopularityResponse.class, bg.id, bg.title, bg.thumbnail))
+                                CumulativePopularityProjection.class,
+                                bg.id,
+                                bg.title,
+                                bg.thumbnail))
                 .from(bg)
                 .where(bg.id.in(rankList))
                 .fetch();
