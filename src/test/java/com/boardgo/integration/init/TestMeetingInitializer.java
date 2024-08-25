@@ -39,6 +39,7 @@ public class TestMeetingInitializer {
         MeetingMapper meetingMapper = MeetingMapper.INSTANCE;
 
         for (int i = 0; i < 30; i++) {
+
             int limitNumber = Math.max(i % 10, 2);
 
             long userId = (long) (i % 30) + 1;
@@ -46,6 +47,16 @@ public class TestMeetingInitializer {
 
             List<Long> boardGameIdList = List.of(rotationNumber);
             List<Long> genreIdList = gameGenreMatchRepository.findByBoardGameIdIn(boardGameIdList);
+            if (i == 0) {
+                createBeforeMeetingDate(
+                        meetingMapper,
+                        rotationNumber,
+                        limitNumber,
+                        i,
+                        boardGameIdList,
+                        genreIdList,
+                        userId);
+            }
             MeetingEntity meetingEntity =
                     meetingMapper.toMeetingEntity(
                             new MeetingCreateRequest(
@@ -83,6 +94,36 @@ public class TestMeetingInitializer {
                                 .build());
             }
         }
+    }
+
+    private void createBeforeMeetingDate(
+            MeetingMapper meetingMapper,
+            long rotationNumber,
+            int limitNumber,
+            int i,
+            List<Long> boardGameIdList,
+            List<Long> genreIdList,
+            long userId) {
+        MeetingEntity meetingEntity =
+                meetingMapper.toMeetingEntity(
+                        new MeetingCreateRequest(
+                                "content" + rotationNumber,
+                                "FREE",
+                                limitNumber,
+                                "title" + rotationNumber,
+                                "city" + limitNumber,
+                                "county" + limitNumber,
+                                i + ".12321321",
+                                i + ".787878",
+                                "detailAddress" + i,
+                                "location" + i,
+                                LocalDateTime.now().minusDays(1),
+                                boardGameIdList,
+                                genreIdList),
+                        userId,
+                        "thumbnail" + i);
+        Long savedMeetingId =
+                meetingCreateFactory.create(meetingEntity, boardGameIdList, genreIdList);
     }
 
     /** 모임 상태 여러 상태로 바꾸고 싶을 때 사용 * */
