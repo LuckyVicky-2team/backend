@@ -1,3 +1,7 @@
 package com.boardgo.domain.meeting.repository.projection;
 
-public record ParticipationCountProjection(Long meetingId, Long participationCount) {}
+public interface ParticipationCountProjection {
+    Long getMeetingId();
+
+    Integer getParticipationCount();
+}

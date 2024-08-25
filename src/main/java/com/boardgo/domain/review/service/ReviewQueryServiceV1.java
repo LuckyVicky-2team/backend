@@ -66,12 +66,13 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
     private List<Long> findReviewFinishedList(Long userId) {
         List<ReviewCountProjection> reviewCountList =
                 reviewRepository.countReviewByReviewerId(userId);
-        Map<Long, Long> reviewCountMap =
+
+        Map<Long, Integer> reviewCountMap =
                 reviewCountList.stream()
                         .collect(
                                 Collectors.toMap(
-                                        ReviewCountProjection::meetingId,
-                                        ReviewCountProjection::reviewCount));
+                                        ReviewCountProjection::getMeetingId,
+                                        ReviewCountProjection::getReviewCount));
 
         List<ParticipationCountProjection> participationCountList =
                 meetingParticipantRepository.countMeetingParticipation(
@@ -79,9 +80,9 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
 
         List<Long> reviewFinished = new ArrayList<>();
         for (ParticipationCountProjection participationCount : participationCountList) {
-            Long meetingId = participationCount.meetingId();
-            Long reviewCount = reviewCountMap.get(meetingId);
-            Long participantCount = participationCount.participationCount() - 1; // 본인 제외
+            Long meetingId = participationCount.getMeetingId();
+            Integer reviewCount = reviewCountMap.get(meetingId);
+            Integer participantCount = participationCount.getParticipationCount() - 1; // 본인 제외
             if (reviewCount == participantCount) {
                 reviewFinished.add(meetingId);
             }

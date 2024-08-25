@@ -19,9 +19,9 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     List<Long> findFinishedReview(@Param("reviewerId") Long reviewerId);
 
     @Query(
-            "SELECT r.meetingId, COUNT(*) reviewCount "
+            "SELECT r.meetingId AS meetingId, COUNT(*) AS reviewCount "
                     + "FROM ReviewEntity r "
-                    + "WHERE r.revieweeId = :reviewerId "
+                    + "WHERE r.reviewerId = :reviewerId "
                     + "GROUP BY r.meetingId")
     List<ReviewCountProjection> countReviewByReviewerId(@Param("reviewerId") Long reviewerId);
 

@@ -23,7 +23,7 @@ public interface MeetingParticipantRepository
     boolean existsByUserInfoIdAndMeetingId(Long userId, Long meetingId);
 
     @Query(
-            "SELECT mp.meetingId, COUNT(*) participationCount "
+            "SELECT mp.meetingId AS meetingId, COUNT(*) AS participationCount "
                     + "FROM MeetingParticipantEntity mp "
                     + "WHERE mp.meetingId IN (:meetingIds) AND mp.type IN (:types) "
                     + "GROUP BY mp.meetingId")
