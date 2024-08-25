@@ -8,6 +8,9 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
+import com.boardgo.domain.meeting.entity.MeetingEntity;
+import com.boardgo.domain.meeting.entity.MeetingState;
+import com.boardgo.domain.meeting.repository.MeetingRepository;
 import com.boardgo.integration.init.TestBoardGameInitializer;
 import com.boardgo.integration.init.TestMeetingInitializer;
 import com.boardgo.integration.support.RestDocsTestSupport;
@@ -24,6 +27,7 @@ import org.springframework.restdocs.request.RequestPartsSnippet;
 public class HomeBoardGameDocsTest extends RestDocsTestSupport {
     @Autowired TestBoardGameInitializer testBoardGameInitializer;
     @Autowired TestMeetingInitializer testMeetingInitializer;
+    @Autowired MeetingRepository meetingRepository;
 
     @Test
     @DisplayName("메인홈 상황별 추천 보드게임")
@@ -77,7 +81,13 @@ public class HomeBoardGameDocsTest extends RestDocsTestSupport {
     @DisplayName("메인 홈 누적 인기 보드게임")
     void 메인홈_누적_인기_보드게임() {
         testBoardGameInitializer.generateBoardGameData();
-        testMeetingInitializer.generateMeetingData();
+        List<Long> meetingIds = testMeetingInitializer.generateMeetingData();
+        List<MeetingEntity> meetingEntities = meetingRepository.findByIdIn(meetingIds);
+        for (int i = 0; i < meetingEntities.size() / 5; i++) {
+            MeetingEntity meeting = meetingEntities.get(i);
+            meeting.updateMeetingState(MeetingState.FINISH);
+            meetingRepository.save(meeting);
+        }
 
         given(this.spec)
                 .log()
