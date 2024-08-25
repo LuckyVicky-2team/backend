@@ -4,12 +4,12 @@ import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDateTime;
 
 public record MeetingReviewProjection(
-        Long meetingId,
+        Long id,
         String title,
         String thumbnail,
         String city,
-        String country,
-        LocalDateTime meetingDate) {
+        String county,
+        LocalDateTime meetingDatetime) {
     @QueryProjection
     public MeetingReviewProjection {}
 }
