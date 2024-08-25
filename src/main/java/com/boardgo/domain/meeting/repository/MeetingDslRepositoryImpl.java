@@ -1,7 +1,7 @@
 package com.boardgo.domain.meeting.repository;
 
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.*;
 import static com.boardgo.domain.meeting.entity.enums.ParticipantType.*;
-import static com.boardgo.domain.meeting.entity.MeetingState.FINISH;
 
 import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
@@ -188,13 +188,11 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
 
     private BooleanExpression myPageFilter(MyPageMeetingFilter filter) {
         if (filter == MyPageMeetingFilter.CREATE) {
-            return mp.type.eq(LEADER).and(m.state.ne(MeetingState.FINISH));
+            return mp.type.eq(LEADER).and(m.state.ne(FINISH));
         } else if (filter == MyPageMeetingFilter.PARTICIPANT) {
-            return (mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT)))
-                    .and(m.state.ne(MeetingState.FINISH));
+            return (mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT))).and(m.state.ne(FINISH));
         } else {
-            return (mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT)))
-                    .and(m.state.eq(MeetingState.FINISH));
+            return (mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT))).and(m.state.eq(FINISH));
         }
     }
 
