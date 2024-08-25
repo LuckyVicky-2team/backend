@@ -14,6 +14,7 @@ import com.boardgo.domain.meeting.entity.QMeetingLikeEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantSubEntity;
 import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
+import com.boardgo.domain.meeting.repository.projection.ParticipationCountProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingSearchProjection;
 import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
@@ -341,5 +342,10 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         } else {
             return m.meetingDatetime.asc();
         }
+    }
+
+    @Override
+    public ParticipationCountProjection countMeetingParticipation(List<Long> meetingId) {
+        return null;
     }
 }
