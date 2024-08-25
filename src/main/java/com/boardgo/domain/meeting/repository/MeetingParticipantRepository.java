@@ -16,11 +16,9 @@ public interface MeetingParticipantRepository
     List<MeetingParticipantEntity> findByMeetingId(Long meetingId);
 
     @Query(
-            "SELECT COUNT(*) FROM MeetingParticipantEntity ep WHERE ep.type IN (:types) AND ep.userInfoId = :userId")
+            "SELECT COUNT(*) FROM MeetingParticipantEntity mp WHERE mp.type IN (:types) AND mp.userInfoId = :userId")
     Integer countByTypeAndUserInfoId(
-            @Param("types") List<String> types, @Param("userId") Long userId);
-
-    // FIXME List<ParticipantType> types 수정
+            @Param("types") List<ParticipantType> types, @Param("userId") Long userId);
 
     boolean existsByUserInfoIdAndMeetingId(Long userId, Long meetingId);
 

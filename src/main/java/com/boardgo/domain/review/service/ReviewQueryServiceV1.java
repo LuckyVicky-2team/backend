@@ -66,7 +66,6 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
                                         ReviewCountProjection::meetingId,
                                         ReviewCountProjection::reviewCount));
 
-        // TODO 현재 종료된 모임만 리뷰를 작성해야할 목록에 있다
         List<ParticipationCountProjection> participationCountList =
                 meetingParticipantRepository.countMeetingParticipation(
                         reviewCountMap.keySet(), List.of(LEADER, PARTICIPANT));
