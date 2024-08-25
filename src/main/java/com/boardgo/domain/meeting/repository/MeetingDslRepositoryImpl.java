@@ -16,9 +16,11 @@ import com.boardgo.domain.meeting.entity.QMeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantSubEntity;
 import com.boardgo.domain.meeting.entity.enums.MeetingState;
 import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
+import com.boardgo.domain.meeting.repository.projection.LikedMeetingMyPageProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
 import com.boardgo.domain.meeting.repository.projection.MyPageMeetingProjection;
+import com.boardgo.domain.meeting.repository.projection.QLikedMeetingMyPageProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingDetailProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingSearchProjection;
 import com.boardgo.domain.meeting.repository.projection.QMyPageMeetingProjection;
@@ -178,6 +180,24 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                 .on(mp.meetingId.eq(m.id))
                 .where(mp.userInfoId.eq(userId).and(myPageFilter(filter)))
                 .orderBy(m.meetingDatetime.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<LikedMeetingMyPageProjection> findLikedMeeting(List<Long> meetingIdList) {
+        return queryFactory
+                .select(
+                        new QLikedMeetingMyPageProjection(
+                                m.id,
+                                m.thumbnail,
+                                m.title,
+                                m.locationName,
+                                m.meetingDatetime,
+                                m.limitParticipant,
+                                mpSub.participantCount))
+                .from(m)
+                .innerJoin(mpSub)
+                .on(mpSub.id.eq(m.id).and(mpSub.id.in(meetingIdList)))
                 .fetch();
     }
 
