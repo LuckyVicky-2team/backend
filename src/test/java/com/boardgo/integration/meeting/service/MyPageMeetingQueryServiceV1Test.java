@@ -1,5 +1,7 @@
 package com.boardgo.integration.meeting.service;
 
+import static org.assertj.core.api.Assertions.*;
+
 import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.entity.MeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.enums.MeetingType;
@@ -17,7 +19,6 @@ import com.boardgo.integration.fixture.MeetingParticipantFixture;
 import com.boardgo.integration.fixture.UserInfoFixture;
 import com.boardgo.integration.support.IntegrationTestSupport;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,12 +64,103 @@ public class MyPageMeetingQueryServiceV1Test extends IntegrationTestSupport {
         List<MeetingMyPageResponse> result =
                 myPageMeetingQueryUseCase.findByFilter(MyPageMeetingFilter.CREATE);
         // then
-        Assertions.assertThat(result)
-                .extracting(MeetingMyPageResponse::id)
+        assertThat(result)
+                .extracting(MeetingMyPageResponse::meetingId)
                 .containsExactlyInAnyOrder(savedMeeting1.getId(), savedMeeting2.getId());
-        Assertions.assertThat(result)
+        assertThat(result)
                 .extracting(MeetingMyPageResponse::currentParticipant)
                 .containsExactlyInAnyOrder(1, 2);
+    }
+
+    @Test
+    @DisplayName("내가 참여한 모임을 가져올 수 있다")
+    void 내가_참여한_모임을_가져올_수_있다() {
+        // given
+        UserInfoEntity userInfoEntity = UserInfoFixture.localUserInfoEntity();
+        UserInfoEntity savedUser = userRepository.save(userInfoEntity);
+        UserInfoEntity userInfoEntity2 = UserInfoFixture.socialUserInfoEntity(ProviderType.KAKAO);
+        UserInfoEntity savedUser2 = userRepository.save(userInfoEntity2);
+        setSecurityContext(savedUser2.getId(), savedUser2.getPassword());
+        MeetingEntity meetingEntity1 =
+                MeetingFixture.getProgressMeetingEntity(savedUser.getId(), MeetingType.FREE, 5);
+        MeetingEntity meetingEntity2 =
+                MeetingFixture.getProgressMeetingEntity(savedUser.getId(), MeetingType.FREE, 10);
+        MeetingEntity savedMeeting1 = meetingRepository.save(meetingEntity1);
+        MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
+        MeetingParticipantEntity leaderMeetingParticipantEntity1 =
+                MeetingParticipantFixture.getLeaderMeetingParticipantEntity(
+                        savedMeeting1.getId(), savedUser.getId());
+        MeetingParticipantEntity leaderMeetingParticipantEntity2 =
+                MeetingParticipantFixture.getLeaderMeetingParticipantEntity(
+                        savedMeeting2.getId(), savedUser.getId());
+        MeetingParticipantEntity participantMeetingParticipantEntity =
+                MeetingParticipantFixture.getParticipantMeetingParticipantEntity(
+                        savedMeeting1.getId(), savedUser2.getId());
+        meetingParticipantRepository.save(leaderMeetingParticipantEntity1);
+        meetingParticipantRepository.save(leaderMeetingParticipantEntity2);
+        meetingParticipantRepository.save(participantMeetingParticipantEntity);
+        // when
+        List<MeetingMyPageResponse> result =
+                myPageMeetingQueryUseCase.findByFilter(MyPageMeetingFilter.PARTICIPANT);
+        // then
+        assertThat(result)
+                .extracting(MeetingMyPageResponse::meetingId)
+                .containsExactlyInAnyOrder(savedMeeting1.getId());
+        assertThat(result)
+                .extracting(MeetingMyPageResponse::currentParticipant)
+                .containsExactlyInAnyOrder(2);
+    }
+
+    @Test
+    @DisplayName("종료된 모임을 가져올 수 있다")
+    void 종료된_모임을_가져올_수_있다() {
+        UserInfoEntity userInfoEntity = UserInfoFixture.localUserInfoEntity();
+        UserInfoEntity savedUser = userRepository.save(userInfoEntity);
+        UserInfoEntity userInfoEntity2 = UserInfoFixture.socialUserInfoEntity(ProviderType.KAKAO);
+        UserInfoEntity savedUser2 = userRepository.save(userInfoEntity2);
+        setSecurityContext(savedUser.getId(), savedUser.getPassword());
+        MeetingEntity meetingEntity1 =
+                MeetingFixture.getFinishMeetingEntity(savedUser.getId(), MeetingType.FREE, 5);
+        MeetingEntity meetingEntity2 =
+                MeetingFixture.getProgressMeetingEntity(savedUser.getId(), MeetingType.FREE, 10);
+        MeetingEntity savedMeeting1 = meetingRepository.save(meetingEntity1);
+        MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
+        MeetingParticipantEntity leaderMeetingParticipantEntity1 =
+                MeetingParticipantFixture.getLeaderMeetingParticipantEntity(
+                        savedMeeting1.getId(), savedUser.getId());
+        MeetingParticipantEntity leaderMeetingParticipantEntity2 =
+                MeetingParticipantFixture.getLeaderMeetingParticipantEntity(
+                        savedMeeting2.getId(), savedUser.getId());
+        MeetingParticipantEntity participantMeetingParticipantEntity =
+                MeetingParticipantFixture.getParticipantMeetingParticipantEntity(
+                        savedMeeting1.getId(), savedUser2.getId());
+        meetingParticipantRepository.save(leaderMeetingParticipantEntity1);
+        meetingParticipantRepository.save(leaderMeetingParticipantEntity2);
+        meetingParticipantRepository.save(participantMeetingParticipantEntity);
+        // when
+        List<MeetingMyPageResponse> result =
+                myPageMeetingQueryUseCase.findByFilter(MyPageMeetingFilter.FINISH);
+        // then
+        assertThat(result)
+                .extracting(MeetingMyPageResponse::meetingId)
+                .containsExactlyInAnyOrder(savedMeeting1.getId());
+        assertThat(result)
+                .extracting(MeetingMyPageResponse::currentParticipant)
+                .containsExactlyInAnyOrder(2);
+    }
+
+    @Test
+    @DisplayName("마이페이지에 있는 모임 조회 중 없으면 표시할 데이터가 없으면 빈 리스트를 반환한다")
+    void 마이페이지에_있는_모임_조회_중_없으면_표시할_데이터가_없으면_빈_리스트를_반환한다() {
+        // given
+        UserInfoEntity userInfoEntity = UserInfoFixture.localUserInfoEntity();
+        UserInfoEntity savedUser = userRepository.save(userInfoEntity);
+        setSecurityContext(savedUser.getId(), savedUser.getPassword());
+        // when
+        List<MeetingMyPageResponse> result =
+                myPageMeetingQueryUseCase.findByFilter(MyPageMeetingFilter.FINISH);
+        // then
+        assertThat(result).isEmpty();
     }
 
     private void setSecurityContext(Long userId, String password) {

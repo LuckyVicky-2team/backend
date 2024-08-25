@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDateTime;
 
 public record MyPageMeetingProjection(
-        Long id,
+        Long meetingId,
         String title,
         String thumbnail,
         String detailAddress,

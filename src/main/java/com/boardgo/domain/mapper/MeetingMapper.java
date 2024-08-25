@@ -110,7 +110,8 @@ public interface MeetingMapper {
                 .map(
                         item ->
                                 toMeetingMyPageResponse(
-                                        item, entityMap.get(item.id()).getParticipantCount()))
+                                        item,
+                                        entityMap.get(item.meetingId()).getParticipantCount()))
                 .toList();
     }
 }

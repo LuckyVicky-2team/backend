@@ -31,7 +31,9 @@ public class MyPageMeetingQueryServiceV1 implements MyPageMeetingQueryUseCase {
                 meetingRepository.findMyPageByFilter(filter, SecurityUtils.currentUserId());
 
         List<Long> meetingIdList =
-                myPageMeetingProjectionList.stream().map(MyPageMeetingProjection::id).toList();
+                myPageMeetingProjectionList.stream()
+                        .map(MyPageMeetingProjection::meetingId)
+                        .toList();
 
         return meetingMapper.toMeetingMyPageResponseList(
                 myPageMeetingProjectionList, getLongMeetingParticipantSubEntityMap(meetingIdList));

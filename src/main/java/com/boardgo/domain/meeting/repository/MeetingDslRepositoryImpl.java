@@ -187,11 +187,13 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
             throw new CustomNullPointException("myPageMeetingFilter가 Null입니다.");
         }
         if (filter == MyPageMeetingFilter.CREATE) {
-            return mp.type.eq(LEADER);
+            return mp.type.eq(LEADER).and(m.state.ne(MeetingState.FINISH));
         } else if (filter == MyPageMeetingFilter.PARTICIPANT) {
-            return mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT));
+            return (mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT)))
+                    .and(m.state.ne(MeetingState.FINISH));
         } else {
-            return m.state.eq(MeetingState.FINISH);
+            return (mp.type.eq(LEADER).or(mp.type.eq(PARTICIPANT)))
+                    .and(m.state.eq(MeetingState.FINISH));
         }
     }
 
