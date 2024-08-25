@@ -29,4 +29,11 @@ public interface MeetingParticipantRepository
                     + "GROUP BY mp.meetingId")
     List<ParticipationCountProjection> countMeetingParticipation(
             @Param("meetingIds") Set<Long> meetingIds, @Param("types") List<ParticipantType> types);
+
+    @Query(
+            "SELECT COUNT(*) "
+                    + "FROM MeetingParticipantEntity mp "
+                    + "WHERE mp.meetingId = :meetingId AND mp.userInfoId IN (:userIds)")
+    Long countMeetingParticipant(
+            @Param("meetingId") Long meetingId, @Param("userIds") List<Long> userIds);
 }

@@ -104,7 +104,7 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
                         .findById(meetingId)
                         .orElseThrow(() -> new CustomNullPointException("모임이 존재하지 않습니다"));
         if (!meetingEntity.isFinishState()) {
-            throw new CustomIllegalArgumentException("종료된 모임만 리뷰 작성이 가능합니다");
+            throw new CustomIllegalArgumentException("종료된 모임이 아닙니다");
         }
         if (!userRepository.existsById(revieweeId)) {
             throw new CustomNullPointException("회원이 존재하지 않습니다");
@@ -117,7 +117,12 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
             throw new DuplicateException("이미 작성된 리뷰 입니다");
         }
 
-        // TODO 모임을 함께 참여한 사람이 맞는지 체크 meetingparticipate 에서 where meetingid and userid IN,
-
+        Long meetingParticipantCount =
+                meetingParticipantRepository.countMeetingParticipant(
+                        meetingId, List.of(revieweeId, reviewerId));
+        final int TOGETHER = 2;
+        if (meetingParticipantCount != TOGETHER) {
+            throw new CustomIllegalArgumentException("모임을 함께 참여하지 않았습니다");
+        }
     }
 }
