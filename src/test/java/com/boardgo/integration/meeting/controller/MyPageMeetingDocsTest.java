@@ -152,7 +152,7 @@ public class MyPageMeetingDocsTest extends RestDocsTestSupport {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .filter(
                         document(
-                                "my-meeting",
+                                "my-liked-meeting",
                                 responseFields(
                                         fieldWithPath("[].meetingId")
                                                 .type(JsonFieldType.NUMBER)
