@@ -1,6 +1,6 @@
 package com.boardgo.domain.boardgame.service;
 
-import com.boardgo.domain.boardgame.entity.SituationType;
+import com.boardgo.domain.boardgame.entity.enums.SituationType;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityCountProjection;
 import com.boardgo.domain.boardgame.repository.projection.SituationBoardGameProjection;

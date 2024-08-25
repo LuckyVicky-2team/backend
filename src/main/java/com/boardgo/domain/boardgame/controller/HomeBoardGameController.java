@@ -2,7 +2,7 @@ package com.boardgo.domain.boardgame.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER1;
 
-import com.boardgo.domain.boardgame.entity.SituationType;
+import com.boardgo.domain.boardgame.entity.enums.SituationType;
 import com.boardgo.domain.boardgame.service.HomeBoardGameQueryUseCase;
 import com.boardgo.domain.boardgame.service.response.CumulativePopularityResponse;
 import com.boardgo.domain.boardgame.service.response.SituationBoardGameResponse;
