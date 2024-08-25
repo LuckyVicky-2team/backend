@@ -2,7 +2,6 @@ package com.boardgo.domain.meeting.repository;
 
 import static com.boardgo.domain.meeting.entity.enums.ParticipantType.*;
 
-import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
@@ -84,7 +83,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
 
         MeetingState finishState = MeetingState.valueOf("FINISH");
 
-        BooleanBuilder filters = getRequireFilters(searchRequest, bgg, m);
+        BooleanBuilder filters = getRequireFilters(searchRequest);
 
         // 페이지네이션 처리
         int size = getSize(searchRequest.size());
@@ -183,9 +182,6 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     }
 
     private BooleanExpression myPageFilter(MyPageMeetingFilter filter) {
-        if (Objects.isNull(filter)) {
-            throw new CustomNullPointException("myPageMeetingFilter가 Null입니다.");
-        }
         if (filter == MyPageMeetingFilter.CREATE) {
             return mp.type.eq(LEADER).and(m.state.ne(MeetingState.FINISH));
         } else if (filter == MyPageMeetingFilter.PARTICIPANT) {
@@ -316,8 +312,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         return total;
     }
 
-    private BooleanBuilder getRequireFilters(
-            MeetingSearchRequest searchRequest, QBoardGameGenreEntity g, QMeetingEntity m) {
+    private BooleanBuilder getRequireFilters(MeetingSearchRequest searchRequest) {
         BooleanBuilder builder = new BooleanBuilder();
 
         // 동적 조건 추가 메서드 호출

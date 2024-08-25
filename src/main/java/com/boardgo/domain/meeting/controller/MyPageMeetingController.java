@@ -5,6 +5,7 @@ import static com.boardgo.common.constant.HeaderConstant.*;
 import com.boardgo.domain.meeting.controller.request.MyPageMeetingFilterRequest;
 import com.boardgo.domain.meeting.service.MyPageMeetingQueryUseCase;
 import com.boardgo.domain.meeting.service.response.MeetingMyPageResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class MyPageMeetingController {
 
     @GetMapping(value = "/my/meeting", headers = API_VERSION_HEADER1)
     public ResponseEntity<List<MeetingMyPageResponse>> getMyPageMeetingByFilter(
-            MyPageMeetingFilterRequest filter) {
+            @Valid MyPageMeetingFilterRequest filter) {
         List<MeetingMyPageResponse> result =
                 myPageMeetingQueryUseCase.findByFilter(filter.filter());
         if (result.isEmpty()) {
