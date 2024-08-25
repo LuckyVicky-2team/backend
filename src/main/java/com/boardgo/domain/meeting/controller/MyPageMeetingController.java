@@ -1,4 +1,4 @@
-package com.boardgo.domain.meeting;
+package com.boardgo.domain.meeting.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.*;
 

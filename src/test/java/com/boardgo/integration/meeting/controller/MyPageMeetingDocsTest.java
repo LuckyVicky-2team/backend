@@ -73,7 +73,7 @@ public class MyPageMeetingDocsTest extends RestDocsTestSupport {
                                 queryParameters(
                                         parameterWithName("filter")
                                                 .description(
-                                                        "모임 필터\n참여 중 모임 : PARTICIPANT\n종료된 모임 : FINISH\n내가 만든 모임: CREATE")),
+                                                        "모임 필터 > 참여 중 모임 : PARTICIPANT / 종료된 모임 : FINISH / 내가 만든 모임: CREATE")),
                                 responseFields(
                                         fieldWithPath("[].meetingId")
                                                 .type(JsonFieldType.NUMBER)
