@@ -477,3 +477,16 @@ include::{snippets}/my-meeting/http-response.adoc[]
 |인증 정보가 존재하지 않습니다. +
 인증된 사용자가 아닙니다.
 |===
+
+'''
+
+=== *메인 홈 누적 인기 보드게임*
+
+==== *요청*
+
+include::{snippets}/get-home-cumulative-popularity/http-request.adoc[]
+
+==== *응답*
+
+include::{snippets}/get-home-cumulative-popularity/http-response.adoc[]
+include::{snippets}/get-home-cumulative-popularity/response-fields.adoc[]
