@@ -5,7 +5,7 @@ import static com.boardgo.common.utils.SecurityUtils.currentUserId;
 
 import com.boardgo.domain.review.entity.enums.ReviewType;
 import com.boardgo.domain.review.service.ReviewUseCase;
-import com.boardgo.domain.review.service.response.ReviewMeetingsResponse;
+import com.boardgo.domain.review.service.response.ReviewMeetingResponse;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class ReviewController {
     private final ReviewUseCase reviewUseCase;
 
     @GetMapping(value = "/meetings", headers = API_VERSION_HEADER1)
-    public ResponseEntity<List<ReviewMeetingsResponse>> getReviewMeetings(
+    public ResponseEntity<List<ReviewMeetingResponse>> getReviewMeetings(
             @RequestParam("reviewType") @NotNull ReviewType reviewType) {
         return ResponseEntity.ok(reviewUseCase.getReviewMeetings(reviewType, currentUserId()));
     }

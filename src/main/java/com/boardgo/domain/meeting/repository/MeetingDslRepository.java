@@ -1,7 +1,7 @@
 package com.boardgo.domain.meeting.repository;
 
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
-import com.boardgo.domain.meeting.repository.projection.ParticipationCountProjection;
+import com.boardgo.domain.meeting.repository.projection.MeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import java.util.List;
@@ -12,5 +12,6 @@ public interface MeetingDslRepository {
 
     MeetingDetailResponse findDetailById(Long meetingId, Long userId);
 
-    ParticipationCountProjection countMeetingParticipation(List<Long> meetingId);
+    List<MeetingReviewProjection> findMeetingPreProgressReview(
+            Long reviewer, List<Long> reviewFinishedMeetings);
 }

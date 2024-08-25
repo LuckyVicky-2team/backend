@@ -2,7 +2,7 @@ package com.boardgo.domain.review.service.response;
 
 import java.time.LocalDateTime;
 
-public record ReviewMeetingsResponse(
+public record ReviewMeetingResponse(
         Long meetingId,
         String title,
         String thumbnail,

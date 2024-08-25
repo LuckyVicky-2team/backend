@@ -1,5 +1,9 @@
 package com.boardgo.domain.meeting.repository;
 
+import static com.boardgo.domain.meeting.entity.MeetingState.FINISH;
+import static com.boardgo.domain.meeting.entity.ParticipantType.LEADER;
+import static com.boardgo.domain.meeting.entity.ParticipantType.PARTICIPANT;
+
 import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
@@ -11,11 +15,13 @@ import com.boardgo.domain.meeting.entity.QMeetingEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGameMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingGenreMatchEntity;
 import com.boardgo.domain.meeting.entity.QMeetingLikeEntity;
+import com.boardgo.domain.meeting.entity.QMeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.QMeetingParticipantSubEntity;
 import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
+import com.boardgo.domain.meeting.repository.projection.MeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
-import com.boardgo.domain.meeting.repository.projection.ParticipationCountProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingDetailProjection;
+import com.boardgo.domain.meeting.repository.projection.QMeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.projection.QMeetingSearchProjection;
 import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
@@ -59,6 +65,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     private final QMeetingParticipantSubEntity mpSub =
             QMeetingParticipantSubEntity.meetingParticipantSubEntity;
     private final QMeetingLikeEntity ml = QMeetingLikeEntity.meetingLikeEntity;
+    private final QMeetingParticipantEntity mp = QMeetingParticipantEntity.meetingParticipantEntity;
 
     public MeetingDslRepositoryImpl(
             EntityManager entityManager,
@@ -75,7 +82,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     public Page<MeetingSearchResponse> findByFilters(
             MeetingSearchRequest searchRequest, Long userId) {
 
-        MeetingState finishState = MeetingState.valueOf("FINISH");
+        MeetingState finishState = FINISH;
 
         BooleanBuilder filters = getRequireFilters(searchRequest, bgg, m);
 
@@ -345,7 +352,21 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     }
 
     @Override
-    public ParticipationCountProjection countMeetingParticipation(List<Long> meetingId) {
-        return null;
+    public List<MeetingReviewProjection> findMeetingPreProgressReview(
+            Long reviewerId, List<Long> reviewFinishedMeetings) {
+        return queryFactory
+                .select(
+                        new QMeetingReviewProjection(
+                                m.id, m.title, m.thumbnail, m.city, m.county, m.meetingDatetime))
+                .from(mp)
+                .innerJoin(m)
+                .on(mp.meetingId.eq(m.id))
+                .where(
+                        mp.userInfoId
+                                .eq(reviewerId)
+                                .and(mp.type.in(List.of(PARTICIPANT, LEADER)))
+                                .and(m.state.eq(FINISH))
+                                .and(m.id.notIn(reviewFinishedMeetings)))
+                .fetch();
     }
 }
