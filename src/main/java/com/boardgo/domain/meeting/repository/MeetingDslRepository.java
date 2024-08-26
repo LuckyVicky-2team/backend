@@ -5,6 +5,7 @@ import com.boardgo.domain.boardgame.repository.projection.CumulativePopularityPr
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
 import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
 import com.boardgo.domain.meeting.repository.projection.LikedMeetingMyPageProjection;
+import com.boardgo.domain.meeting.repository.projection.MeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.projection.MyPageMeetingProjection;
 import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;

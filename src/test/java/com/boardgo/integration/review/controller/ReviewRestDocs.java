@@ -68,7 +68,7 @@ public class ReviewRestDocs extends RestDocsTestSupport {
                                 getReviewTypeRequestPartBodySnippet(),
                                 getReviewMeetingsResponseFieldsSnippet()))
                 .when()
-                .get("/review/meetings")
+                .get("/my/review/meetings")
                 .then()
                 .log()
                 .ifError()
@@ -122,7 +122,7 @@ public class ReviewRestDocs extends RestDocsTestSupport {
                 .body(writeValueAsString(request))
                 .urlEncodingEnabled(false)
                 .when()
-                .post("/review")
+                .post("/my/review")
                 .then()
                 .log()
                 .ifError()
