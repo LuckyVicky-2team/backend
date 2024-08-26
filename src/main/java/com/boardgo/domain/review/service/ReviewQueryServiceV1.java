@@ -143,18 +143,18 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
 
         List<ReviewMeetingParticipantsProjection> reviewMeetingParticipants =
                 meetingParticipantRepository.findReviewMeetingParticipants(revieweeIds, meetingId);
-        List<ReviewMeetingParticipantsResponse> reviewMeetingParticipantsResponseList =
-                reviewMapper.toReviewMeetingParticipantsList(reviewMeetingParticipants);
-        if (reviewMeetingParticipantsResponseList.isEmpty()) {
+        if (reviewMeetingParticipants.isEmpty()) {
             throw new CustomNoSuchElementException("리뷰를 작성할 참여자");
         }
+
+        List<ReviewMeetingParticipantsResponse> reviewMeetingParticipantsResponseList =
+                reviewMapper.toReviewMeetingParticipantsList(reviewMeetingParticipants);
         return reviewMeetingParticipantsResponseList;
     }
 
     @Override
     public List<ReviewMeetingReviewsResponse> getReviewMeetingReviews(
             Long meetingId, Long reviewerId) {
-        // review 테이블에서 where meetingId, reviewerId + tag 테이블 조인해서 List 로 받아오기
         List<ReviewMeetingReviewsProjection> meetingReviews =
                 reviewRepository.findMeetingReviews(meetingId, reviewerId);
         if (meetingReviews.isEmpty()) {
@@ -162,33 +162,35 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
         }
 
         List<ReviewMeetingReviewsResponse> reviewMeetingReviewsResponses = new ArrayList<>();
-
         List<List<String>> collect =
                 meetingReviews.stream()
                         .map(ReviewMeetingReviewsProjection::evaluationTagIds)
                         .collect(Collectors.toList());
         int i = 0;
         for (ReviewMeetingReviewsProjection meetingReviewsProjection : meetingReviews) {
-            List<Long> longs = stringToLongList(collect.get(i));
-            List<EvaluationTagEntity> evaluationTagEntities =
-                    evaluationTagRepository.findAllById(longs);
-
-            List<String> positiveTags = new ArrayList<>();
-            List<String> negativeTags = new ArrayList<>();
-            for (EvaluationTagEntity evaluationTag : evaluationTagEntities) {
-                switch (evaluationTag.getEvaluationType()) {
-                    case POSITIVE -> positiveTags.add(evaluationTag.getTagPhrase());
-                    case NEGATIVE -> negativeTags.add(evaluationTag.getTagPhrase());
-                }
-            }
-
-            i++;
             ReviewMeetingReviewsResponse reviewMeetingReviewsResponse =
-                    reviewMapper.toReviewMeetingReviewsResponse(
-                            meetingReviewsProjection, positiveTags, negativeTags);
+                    getMeetingReviews(collect.get(i), meetingReviewsProjection);
             reviewMeetingReviewsResponses.add(reviewMeetingReviewsResponse);
+            i++;
         }
-
         return reviewMeetingReviewsResponses;
+    }
+
+    private ReviewMeetingReviewsResponse getMeetingReviews(
+            List<String> strings, ReviewMeetingReviewsProjection meetingReviewsProjection) {
+        List<Long> longs = stringToLongList(strings);
+        List<EvaluationTagEntity> evaluationTagEntities =
+                evaluationTagRepository.findAllById(longs);
+
+        List<String> positiveTags = new ArrayList<>();
+        List<String> negativeTags = new ArrayList<>();
+        for (EvaluationTagEntity evaluationTag : evaluationTagEntities) {
+            switch (evaluationTag.getEvaluationType()) {
+                case POSITIVE -> positiveTags.add(evaluationTag.getTagPhrase());
+                case NEGATIVE -> negativeTags.add(evaluationTag.getTagPhrase());
+            }
+        }
+        return reviewMapper.toReviewMeetingReviewsResponse(
+                meetingReviewsProjection, positiveTags, negativeTags);
     }
 }
