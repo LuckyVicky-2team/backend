@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MeetingParticipantRepository
-        extends JpaRepository<MeetingParticipantEntity, Long> {
+        extends JpaRepository<MeetingParticipantEntity, Long>, MeetingParticipantDslRepository {
     List<MeetingParticipantEntity> findByMeetingId(Long meetingId);
 
     @Query(
