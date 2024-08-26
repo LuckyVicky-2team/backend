@@ -16,7 +16,8 @@ public interface MeetingParticipantRepository
         extends JpaRepository<MeetingParticipantEntity, Long> {
     List<MeetingParticipantEntity> findByMeetingId(Long meetingId);
 
-    Optional<MeetingParticipantEntity> findByMeetingIdAndUserInfoId(Long meetingId, Long userId);
+    Optional<MeetingParticipantEntity> findByMeetingIdAndUserInfoIdAndType(
+            Long meetingId, Long userId, ParticipantType type);
 
     @Query(
             "SELECT COUNT(*) FROM MeetingParticipantEntity mp WHERE mp.type IN (:types) AND mp.userInfoId = :userId")

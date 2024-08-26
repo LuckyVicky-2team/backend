@@ -24,14 +24,10 @@ public class MeetingParticipantQueryServiceV1 implements MeetingParticipantQuery
         checkMeetingExist(meetingId);
 
         Optional<MeetingParticipantEntity> participantEntity =
-                meetingParticipantRepository.findByMeetingIdAndUserInfoId(
-                        meetingId, SecurityUtils.currentUserId());
+                meetingParticipantRepository.findByMeetingIdAndUserInfoIdAndType(
+                        meetingId, SecurityUtils.currentUserId(), ParticipantType.OUT);
 
-        return participantEntity
-                        .filter(
-                                meetingParticipantEntity ->
-                                        meetingParticipantEntity.getType() == ParticipantType.OUT)
-                        .isPresent()
+        return participantEntity.isPresent()
                 ? new ParticipantOutResponse("OUT")
                 : new ParticipantOutResponse(null);
     }
