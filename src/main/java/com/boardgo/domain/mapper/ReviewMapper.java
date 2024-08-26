@@ -1,12 +1,13 @@
 package com.boardgo.domain.mapper;
 
+import static com.boardgo.common.utils.CustomStringUtils.longToStringList;
+
 import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.repository.projection.MeetingReviewProjection;
 import com.boardgo.domain.review.controller.request.ReviewCreateRequest;
 import com.boardgo.domain.review.entity.ReviewEntity;
 import com.boardgo.domain.review.service.response.ReviewMeetingResponse;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -31,6 +32,6 @@ public interface ReviewMapper {
 
     @Named("LongToString")
     static List<String> longToString(List<Long> evaluationTagList) {
-        return evaluationTagList.stream().map(Object::toString).collect(Collectors.toList());
+        return longToStringList(evaluationTagList);
     }
 }
