@@ -9,12 +9,12 @@ import com.boardgo.domain.review.service.ReviewUseCase;
 import com.boardgo.domain.review.service.response.ReviewMeetingParticipantsResponse;
 import com.boardgo.domain.review.service.response.ReviewMeetingResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,13 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/my/review")
 @RequiredArgsConstructor
+@Validated
 public class ReviewController {
 
     private final ReviewUseCase reviewUseCase;
 
     @GetMapping(value = "/meetings", headers = API_VERSION_HEADER1)
     public ResponseEntity<List<ReviewMeetingResponse>> getReviewMeetings(
-            @RequestParam("reviewType") @Valid @NotNull ReviewType reviewType) {
+            @RequestParam("reviewType") ReviewType reviewType) {
         List<ReviewMeetingResponse> reviewMeetings =
                 reviewUseCase.getReviewMeetings(reviewType, currentUserId());
         if (reviewMeetings.isEmpty()) {
