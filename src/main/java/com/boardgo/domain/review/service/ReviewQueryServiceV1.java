@@ -4,7 +4,6 @@ import static com.boardgo.domain.meeting.entity.enums.ParticipantType.LEADER;
 import static com.boardgo.domain.meeting.entity.enums.ParticipantType.PARTICIPANT;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
-import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.common.exception.DuplicateException;
 import com.boardgo.domain.mapper.ReviewMapper;
@@ -55,7 +54,7 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
             }
         }
 
-        throw new CustomNoSuchElementException("리뷰");
+        return List.of();
     }
 
     /***

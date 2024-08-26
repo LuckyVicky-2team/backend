@@ -30,7 +30,12 @@ public class ReviewController {
     @GetMapping(value = "/meetings", headers = API_VERSION_HEADER1)
     public ResponseEntity<List<ReviewMeetingResponse>> getReviewMeetings(
             @RequestParam("reviewType") @Valid @NotNull ReviewType reviewType) {
-        return ResponseEntity.ok(reviewUseCase.getReviewMeetings(reviewType, currentUserId()));
+        List<ReviewMeetingResponse> reviewMeetings =
+                reviewUseCase.getReviewMeetings(reviewType, currentUserId());
+        if (reviewMeetings.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reviewMeetings);
     }
 
     @PostMapping(value = "", headers = API_VERSION_HEADER1)
