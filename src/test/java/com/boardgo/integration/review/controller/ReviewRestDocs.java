@@ -221,11 +221,11 @@ public class ReviewRestDocs extends RestDocsTestSupport {
                 .pathParam("meetingId", meetingId)
                 .filter(
                         document(
-                                "get-review-meeting-reviews",
+                                "get-review-meeting",
                                 getPathParametersSnippet(),
                                 getReviewsResponseFieldsSnippet()))
                 .when()
-                .get("/my/review/meetings/{meetingId}/reviews", meetingId)
+                .get("/my/review/meetings/{meetingId}", meetingId)
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }

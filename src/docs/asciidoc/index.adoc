@@ -676,13 +676,13 @@ include::{snippets}/get-review-meeting-participants/response-fields.adoc[]
 
 ==== *요청*
 
-include::{snippets}/get-review-meeting-reviews/http-request.adoc[]
-include::{snippets}/get-review-meeting-reviews/path-parameters.adoc[]
+include::{snippets}/get-review-meeting/http-request.adoc[]
+include::{snippets}/get-review-meeting/path-parameters.adoc[]
 
 ==== *응답*
 
-include::{snippets}/get-review-meeting-reviews/http-response.adoc[]
-include::{snippets}/get-review-meeting-reviews/response-fields.adoc[]
+include::{snippets}/get-review-meeting/http-response.adoc[]
+include::{snippets}/get-review-meeting/response-fields.adoc[]
 
 - HTTP 에러 상태 코드
 

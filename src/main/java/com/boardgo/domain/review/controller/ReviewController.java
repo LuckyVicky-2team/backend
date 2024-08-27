@@ -57,7 +57,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviewMeetingParticipants);
     }
 
-    @GetMapping(value = "/meetings/{meetingId}/reviews", headers = API_VERSION_HEADER1)
+    @GetMapping(value = "/meetings/{meetingId}", headers = API_VERSION_HEADER1)
     public ResponseEntity<List<ReviewMeetingReviewsResponse>> getReviewMeetingReviews(
             @PathVariable("meetingId") @Positive Long meetingId) {
         List<ReviewMeetingReviewsResponse> reviewMeetingReviews =
