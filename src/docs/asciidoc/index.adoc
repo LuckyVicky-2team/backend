@@ -442,6 +442,8 @@ include::{snippets}/meeting-like-delete/http-response.adoc[]
 
 '''
 
+== 보드게임
+
 === *보드게임 등록*
 
 ==== *요청*
@@ -472,19 +474,6 @@ include::{snippets}/boardgame-list/http-response.adoc[]
 
 - Response Body
 include::{snippets}/boardgame-list/response-fields.adoc[]
-
-'''
-
-=== *평가태그 목록 조회*
-
-==== *요청*
-
-include::{snippets}/get-evaluation-tags/http-request.adoc[]
-
-==== *응답*
-
-include::{snippets}/get-evaluation-tags/http-response.adoc[]
-include::{snippets}/get-evaluation-tags/response-fields.adoc[]
 
 '''
 
@@ -603,6 +592,19 @@ include::{snippets}/my-liked-meeting/http-response.adoc[]
 '''
 
 == 리뷰
+
+=== *평가태그 목록 조회*
+
+==== *요청*
+
+include::{snippets}/get-evaluation-tags/http-request.adoc[]
+
+==== *응답*
+
+include::{snippets}/get-evaluation-tags/http-response.adoc[]
+include::{snippets}/get-evaluation-tags/response-fields.adoc[]
+
+'''
 
 === *(작성할/작성한) 리뷰 모임 목록 조회*
 

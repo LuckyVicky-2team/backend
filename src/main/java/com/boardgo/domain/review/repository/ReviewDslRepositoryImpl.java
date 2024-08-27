@@ -12,7 +12,9 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class ReviewDslRepositoryImpl implements ReviewDslRepository {
 
     private final JPAQueryFactory queryFactory;
