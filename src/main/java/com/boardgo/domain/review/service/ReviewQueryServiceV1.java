@@ -158,7 +158,7 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
         List<ReviewMeetingReviewsProjection> meetingReviews =
                 reviewRepository.findMeetingReviews(meetingId, reviewerId);
         if (meetingReviews.isEmpty()) {
-            throw new CustomNoSuchElementException("리뷰를 작성한 참여자");
+            throw new CustomNoSuchElementException("작성한 모임의 리뷰");
         }
 
         List<ReviewMeetingReviewsResponse> reviewMeetingReviewsResponses = new ArrayList<>();
