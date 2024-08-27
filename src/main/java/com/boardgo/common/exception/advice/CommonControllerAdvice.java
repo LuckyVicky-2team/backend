@@ -47,7 +47,6 @@ public class CommonControllerAdvice {
     /** Request Dto Validation Error */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> validExHandler(MethodArgumentNotValidException e) {
-        log.info("MethodArgumentNotValidException");
         BindingResult bindingResult = e.getBindingResult();
         List<FieldErrorResponse> fieldErrorResponses =
                 bindingResult.getFieldErrors().stream()
@@ -67,7 +66,6 @@ public class CommonControllerAdvice {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> constraintValidExHandler(ConstraintViolationException e) {
-        log.info("ConstraintViolationException");
         return ResponseEntity.badRequest()
                 .body(
                         ErrorResponse.builder()
