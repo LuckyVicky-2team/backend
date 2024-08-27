@@ -1,7 +1,6 @@
 package com.boardgo.common.exception.advice;
 
-import static com.boardgo.common.exception.advice.dto.ErrorCode.INTERNAL_SERVER_ERROR;
-import static com.boardgo.common.exception.advice.dto.ErrorCode.UNSUPPORTED_HTTP_METHOD;
+import static com.boardgo.common.exception.advice.dto.ErrorCode.*;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNoSuchElementException;
@@ -48,6 +47,7 @@ public class CommonControllerAdvice {
     /** Request Dto Validation Error */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> validExHandler(MethodArgumentNotValidException e) {
+        log.info("MethodArgumentNotValidException");
         BindingResult bindingResult = e.getBindingResult();
         List<FieldErrorResponse> fieldErrorResponses =
                 bindingResult.getFieldErrors().stream()
@@ -67,6 +67,7 @@ public class CommonControllerAdvice {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> constraintValidExHandler(ConstraintViolationException e) {
+        log.info("ConstraintViolationException");
         return ResponseEntity.badRequest()
                 .body(
                         ErrorResponse.builder()
