@@ -479,6 +479,8 @@ include::{snippets}/boardgame-list/response-fields.adoc[]
 
 == 메인 홈
 
+== 메인 홈
+
 === *메인 홈 상황별 추천 보드게임*
 
 ==== *요청*
