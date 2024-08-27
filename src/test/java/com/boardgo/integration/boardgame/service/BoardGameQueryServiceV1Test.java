@@ -56,7 +56,7 @@ public class BoardGameQueryServiceV1Test extends IntegrationTestSupport {
     void 보드게임_타이틀로_검색할_수_있다() {
         // given
         testBoardGameInitializer.generateBoardGameDataMany();
-        String boardGameTitle10 = "boardTitle1";
+        String boardGameTitle10 = "boardTitle10";
         BoardGameSearchRequest boardGameSearchRequest =
                 new BoardGameSearchRequest(null, boardGameTitle10, null, null);
 
