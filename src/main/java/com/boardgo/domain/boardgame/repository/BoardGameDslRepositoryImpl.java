@@ -115,9 +115,9 @@ public class BoardGameDslRepositoryImpl implements BoardGameDslRepository {
                 .select(new QGenreSearchProjection(ggm.boardGameId, bgg.id, bgg.genre))
                 .from(bgg)
                 .innerJoin(ggm)
-                .on(bgg.id.eq(ggm.boardGameId))
+                .on(bgg.id.eq(ggm.boardGameGenreId))
                 .where(
-                        bgg.id.in(
+                        ggm.boardGameId.in(
                                 boardGameList.stream().map(BoardGameSearchProjection::id).toList()))
                 .fetch();
     }
@@ -172,7 +172,13 @@ public class BoardGameDslRepositoryImpl implements BoardGameDslRepository {
         return queryFactory
                 .select(
                         new QSituationBoardGameProjection(
-                                b.title, b.thumbnail, b.minPlaytime, b.maxPlaytime, bgg.genre))
+                                b.title,
+                                b.thumbnail,
+                                b.minPlaytime,
+                                b.maxPlaytime,
+                                bgg.genre,
+                                b.minPeople,
+                                b.maxPeople))
                 .from(ggm)
                 .innerJoin(b)
                 .on(ggm.boardGameId.eq(b.id))
