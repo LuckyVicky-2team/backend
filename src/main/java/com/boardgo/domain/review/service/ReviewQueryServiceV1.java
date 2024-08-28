@@ -213,7 +213,7 @@ public class ReviewQueryServiceV1 implements ReviewUseCase {
     @Override
     public MyReviewsResponse getMyReviews(Long userId) {
         Double averageRating = reviewRepository.findRatingAvgByRevieweeId(userId);
-        List<List<String>> evaluationTags = reviewRepository.findEvaluationTags(userId);
+        List<List<String>> evaluationTags = reviewRepository.findMyEvaluationTags(userId);
         // FIXME 스케줄러를 통해 카운팅 누적 카운팅 계산하도록 기능 개선 필요
         Map<Long, Integer> evaluationTagsMap = calculateEvaluationTags(evaluationTags);
 

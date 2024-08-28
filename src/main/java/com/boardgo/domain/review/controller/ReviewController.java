@@ -52,7 +52,13 @@ public class ReviewController {
 
     @GetMapping(value = "", headers = API_VERSION_HEADER1)
     public ResponseEntity<MyReviewsResponse> getMyReviews() {
-        return ResponseEntity.ok(reviewUseCase.getMyReviews(currentUserId()));
+        MyReviewsResponse myReviews = reviewUseCase.getMyReviews(currentUserId());
+        if (myReviews.averageRating() == null
+                && myReviews.positiveTags().isEmpty()
+                && myReviews.negativeTags().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(myReviews);
     }
 
     @GetMapping(value = "/meetings/{meetingId}/participants", headers = API_VERSION_HEADER1)

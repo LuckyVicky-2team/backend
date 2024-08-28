@@ -7,5 +7,5 @@ public interface ReviewDslRepository {
 
     List<ReviewMeetingReviewsProjection> findMeetingReviews(Long meetingId, Long reviewerId);
 
-    List<List<String>> findEvaluationTags(Long revieweeId);
+    List<List<String>> findMyEvaluationTags(Long revieweeId);
 }

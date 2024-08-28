@@ -49,7 +49,7 @@ public class ReviewDslRepositoryImpl implements ReviewDslRepository {
     }
 
     @Override
-    public List<List<String>> findEvaluationTags(Long revieweeId) {
+    public List<List<String>> findMyEvaluationTags(Long revieweeId) {
         return queryFactory
                 .select(r.evaluationTags)
                 .from(r)
