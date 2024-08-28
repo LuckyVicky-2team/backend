@@ -8,7 +8,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Set;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class EvaluationTagDslRepositoryImpl implements EvaluationTagDslRepository {
 
     private final JPAQueryFactory queryFactory;
