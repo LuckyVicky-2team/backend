@@ -1,8 +1,12 @@
 package com.boardgo.schedule.service;
 
+import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.domain.meeting.service.MeetingBatchServiceV1;
 import com.boardgo.schedule.job.FinishedMeetingStateJob;
 import jakarta.annotation.PostConstruct;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -27,6 +31,9 @@ public class FinishedMeetingStateService {
     @PostConstruct
     private void jobProgress() throws SchedulerException {
         updateFinishMeetingState();
+
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.schedule(this::resetSchedule, 30, TimeUnit.MINUTES);
     }
 
     public void updateFinishMeetingState() {
@@ -36,7 +43,7 @@ public class FinishedMeetingStateService {
         JobDetail jobDetail = finishedMeetingStateBuild(jobKey, description);
         CronTrigger cronTrigger =
                 triggerService
-                        .cronTrigger(jobKey, CronScheduleBuilder.cronSchedule("0/30 * * * * ?"))
+                        .cronTrigger(jobKey, CronScheduleBuilder.cronSchedule("0 0/30 * ? * *"))
                         .withDescription(description)
                         .startNow()
                         .build();
@@ -59,5 +66,14 @@ public class FinishedMeetingStateService {
             JobExecutionException jobExecutionException = new JobExecutionException(e);
             jobExecutionException.setRefireImmediately(true);
         }
+    }
+
+    private void resetSchedule() {
+        try {
+            scheduler.deleteJob(JobKey.jobKey("finishedMeeting", "MeetingState"));
+        } catch (SchedulerException se) {
+            throw new CustomIllegalArgumentException("deleteSchedule");
+        }
+        updateFinishMeetingState();
     }
 }

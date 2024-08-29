@@ -20,6 +20,7 @@ public class MeetingBatchServiceV1 {
         List<MeetingEntity> meetingEntities =
                 meetingRepository.findAllByMeetingDatetimeBefore(LocalDateTime.now());
         meetingEntities.forEach((meetingEntity -> meetingEntity.updateMeetingState(FINISH)));
+        meetingRepository.saveAllAndFlush(meetingEntities);
     }
 
     public void updateCompleteMeetingState() {

@@ -48,7 +48,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    implementation 'org.springframework.boot:spring-boot-starter-quartz:3.2.3'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz:3.3.0'
+
 
     //ShedLock
     implementation 'net.javacrumbs.shedlock:shedlock-spring:5.10.0'
