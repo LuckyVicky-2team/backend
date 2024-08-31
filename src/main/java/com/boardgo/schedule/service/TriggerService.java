@@ -1,18 +1,22 @@
 package com.boardgo.schedule.service;
 
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
 import org.quartz.JobKey;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TriggerService {
-    public TriggerBuilder<CronTrigger> cronTrigger(
-            JobKey jobKey, CronScheduleBuilder cronScheduleBuilder) {
+    public Trigger simpleTrigger(JobKey jobKey, int intervalInMinutes) {
         return TriggerBuilder.newTrigger()
                 .forJob(jobKey)
                 .withIdentity(jobKey.getName())
-                .withSchedule(cronScheduleBuilder);
+                .startNow()
+                .withSchedule(
+                        SimpleScheduleBuilder.simpleSchedule()
+                                .withIntervalInMinutes(intervalInMinutes)
+                                .repeatForever())
+                .build();
     }
 }
