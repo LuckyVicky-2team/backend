@@ -21,22 +21,27 @@ public class QuartzConfig {
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() {
         SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
-        schedulerFactory.setAutoStartup(true); // application start > scheduler auto start
-        schedulerFactory.setStartupDelay(3); // scheduler start after 30s
+        // application start > scheduler auto start after 30s
+        schedulerFactory.setAutoStartup(true);
+        schedulerFactory.setStartupDelay(3);
+
         schedulerFactory.setQuartzProperties(quartzProperties());
         schedulerFactory.setGlobalJobListeners(jobsListener);
         schedulerFactory.setGlobalTriggerListeners(triggersListener);
+        schedulerFactory.setOverwriteExistingJobs(true);
+        schedulerFactory.setWaitForJobsToCompleteOnShutdown(true);
 
-        // custom job factory of spring with DI support for @Autowired!
+        // custom job factory of spring with DI support for @Autowired
         AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
         jobFactory.setApplicationContext(applicationContext);
         schedulerFactory.setJobFactory(jobFactory);
+
         return schedulerFactory;
     }
 
     private Properties quartzProperties() {
         PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
-        propertiesFactoryBean.setLocation(new ClassPathResource("quarts/quarts.yml"));
+        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
         Properties properties;
         try {
             propertiesFactoryBean.afterPropertiesSet();

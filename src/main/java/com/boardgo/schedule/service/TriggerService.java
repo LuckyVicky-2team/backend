@@ -12,7 +12,6 @@ public class TriggerService {
         return TriggerBuilder.newTrigger()
                 .forJob(jobKey)
                 .withIdentity(jobKey.getName())
-                .startNow()
                 .withSchedule(
                         SimpleScheduleBuilder.simpleSchedule()
                                 .withIntervalInMinutes(intervalInMinutes)
