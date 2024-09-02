@@ -1,6 +1,5 @@
 package com.boardgo.schedule.service;
 
-import com.boardgo.domain.meeting.service.MeetingBatchServiceV1;
 import com.boardgo.schedule.job.FinishedMeetingStateJob;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,6 @@ public class FinishedMeetingStateService {
 
     private final Scheduler scheduler;
     private final TriggerService triggerService;
-
-    private final MeetingBatchServiceV1 meetingBatchServiceV1;
 
     @PostConstruct
     private void jobProgress() throws SchedulerException {
@@ -46,7 +43,6 @@ public class FinishedMeetingStateService {
 
     private void schedule(JobDetail jobDetail, Trigger lastTrigger) {
         try {
-            scheduler.getContext().put("meetingBatchServiceV1", meetingBatchServiceV1);
             scheduler.start();
             scheduler.scheduleJob(jobDetail, lastTrigger);
         } catch (SchedulerException e) {
