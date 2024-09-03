@@ -1,8 +1,6 @@
 package com.boardgo.domain.meeting.service;
 
-import static com.boardgo.domain.meeting.entity.enums.MeetingState.COMPLETE;
 import static com.boardgo.domain.meeting.entity.enums.MeetingState.FINISH;
-import static com.boardgo.domain.meeting.entity.enums.MeetingState.PROGRESS;
 
 import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
@@ -22,11 +20,5 @@ public class MeetingBatchServiceV1 {
         List<MeetingEntity> meetingEntities =
                 meetingRepository.findAllByMeetingDatetimeBefore(LocalDateTime.now());
         meetingEntities.forEach((meetingEntity -> meetingEntity.updateMeetingState(FINISH)));
-    }
-
-    public void updateCompleteMeetingState() {
-        List<Long> meetingIds = meetingRepository.findCompleteMeetingId(PROGRESS);
-        List<MeetingEntity> meetingEntities = meetingRepository.findByIdIn(meetingIds);
-        meetingEntities.forEach((meetingEntity -> meetingEntity.updateMeetingState(COMPLETE)));
     }
 }
