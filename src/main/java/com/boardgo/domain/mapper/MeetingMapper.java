@@ -53,8 +53,8 @@ public interface MeetingMapper {
             List<UserParticipantResponse> userParticipantResponseList,
             List<BoardGameByMeetingIdResponse> boardGameByMeetingIdResponseList,
             Long createMeetingCount,
-            Double rating,
-            Long userWritingCount) {
+            String likeStatus,
+            Double rating) {
         Set<String> genres =
                 boardGameByMeetingIdResponseList.stream()
                         .flatMap(response -> response.genres().stream())
@@ -63,9 +63,8 @@ public interface MeetingMapper {
                 meetingDetailProjection.meetingId(),
                 meetingDetailProjection.userNickName(),
                 rating,
-                userWritingCount,
                 meetingDetailProjection.meetingDatetime(),
-                meetingDetailProjection.likeStatus(),
+                likeStatus,
                 meetingDetailProjection.thumbnail(),
                 meetingDetailProjection.title(),
                 meetingDetailProjection.content(),
@@ -128,6 +127,20 @@ public interface MeetingMapper {
             List<LikedMeetingMyPageProjection> likedMeetingMyPageProjectionList) {
         return likedMeetingMyPageProjectionList.stream()
                 .map(this::toLikedMeetingMyPageResponse)
+                .toList();
+    }
+
+    default List<MeetingSearchResponse> toMeetingSearchResponseList(
+            List<MeetingSearchProjection> meetingSearchProjectionList,
+            Map<Long, List<String>> gamesMap,
+            Map<Long, String> likeStatusMap) {
+        return meetingSearchProjectionList.stream()
+                .map(
+                        item ->
+                                toMeetingSearchResponse(
+                                        item,
+                                        gamesMap.get(item.id()),
+                                        likeStatusMap.get(item.id())))
                 .toList();
     }
 }
