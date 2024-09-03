@@ -8,8 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ScheduleJobs {
-    FINISHED_MEETING(MEETING_STATE, "[모임 종료] 상태 변경 Job"),
-    COMPLETED_MEETING(MEETING_STATE, "[모집 완료] 상태 변경 Job");
+    FINISHED_MEETING(MEETING_STATE, "[모임 종료] 상태 변경 Job");
 
     private final JobGroups group;
     private final String description;
