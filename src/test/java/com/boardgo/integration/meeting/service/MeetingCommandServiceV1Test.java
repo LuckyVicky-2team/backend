@@ -53,6 +53,7 @@ public class MeetingCommandServiceV1Test extends IntegrationTestSupport {
         // given
         List<Long> meetingIds = new ArrayList<>();
         int limit = 5;
+        long leader = 1L;
         for (int i = 0; i < 10; i++) {
             userRepository.save(
                     userInfoEntityData()
@@ -60,16 +61,16 @@ public class MeetingCommandServiceV1Test extends IntegrationTestSupport {
                             .nickName("내이름" + i)
                             .providerType(ProviderType.LOCAL)
                             .build());
-            MeetingEntity meeting = getMeetingEntityData(1L).limitParticipant(limit).build();
+            MeetingEntity meeting = getMeetingEntityData(leader).limitParticipant(limit).build();
             meetingIds.add(meetingRepository.save(meeting).getId());
             meetingParticipantRepository.save(
-                    getLeaderMeetingParticipantEntity(meeting.getId(), 1L));
+                    getLeaderMeetingParticipantEntity(meeting.getId(), leader));
         }
         // 모임정원
         for (int i = 1; i < limit; i++) {
             for (int j = i; j < limit; j++) {
                 meetingParticipantRepository.save(
-                        getParticipantMeetingParticipantEntity((long) i, (long) j));
+                        getParticipantMeetingParticipantEntity((long) i, (long) j + 1));
             }
         }
 
