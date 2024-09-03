@@ -2,7 +2,6 @@ package com.boardgo.domain.meeting.service;
 
 import static com.boardgo.common.constant.S3BucketConstant.MEETING;
 import static com.boardgo.domain.meeting.entity.enums.MeetingState.COMPLETE;
-import static com.boardgo.domain.meeting.entity.enums.MeetingState.PROGRESS;
 
 import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.common.utils.FileUtils;
@@ -13,8 +12,10 @@ import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
+import com.boardgo.domain.meeting.entity.MeetingParticipantSubEntity;
+import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
+import com.boardgo.domain.meeting.repository.MeetingParticipantSubRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
-import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +31,10 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
     private final BoardGameRepository boardGameRepository;
     private final MeetingCreateFactory meetingCreateFactory;
     private final MeetingRepository meetingRepository;
+    private final MeetingParticipantRepository meetingParticipantRepository;
     private final MeetingMapper meetingMapper;
     private final S3Service s3Service;
+    private final MeetingParticipantSubRepository meetingParticipantSubRepository;
 
     @Override
     public Long create(MeetingCreateRequest meetingCreateRequest, MultipartFile imageFile) {
@@ -47,20 +50,13 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
 
     @Override
     public void incrementShareCount(Long meetingId) {
-        MeetingEntity meeting =
-                meetingRepository
-                        .findById(meetingId)
-                        .orElseThrow(() -> new CustomNoSuchElementException("모임"));
-
+        MeetingEntity meeting = getMeetingEntity(meetingId);
         meeting.incrementShareCount();
     }
 
     @Override
     public void incrementViewCount(Long meetingId) {
-        MeetingEntity meeting =
-                meetingRepository
-                        .findById(meetingId)
-                        .orElseThrow(() -> new CustomNoSuchElementException("모임"));
+        MeetingEntity meeting = getMeetingEntity(meetingId);
         meeting.incrementViewCount();
     }
 
@@ -80,9 +76,18 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
     }
 
     @Override
-    public void updateCompleteMeetingState() {
-        List<Long> meetingIds = meetingRepository.findCompleteMeetingId(PROGRESS);
-        List<MeetingEntity> meetingEntities = meetingRepository.findByIdIn(meetingIds);
-        meetingEntities.forEach((meetingEntity -> meetingEntity.updateMeetingState(COMPLETE)));
+    public void updateCompleteMeetingState(Long meetingId) {
+        MeetingEntity meeting = getMeetingEntity(meetingId);
+        MeetingParticipantSubEntity meetingSubEntity =
+                meetingParticipantSubRepository.findById(meetingId).get();
+        if (!meetingSubEntity.isParticipated(meeting.getLimitParticipant())) {
+            meeting.updateMeetingState(COMPLETE);
+        }
+    }
+
+    private MeetingEntity getMeetingEntity(Long meetingId) {
+        return meetingRepository
+                .findById(meetingId)
+                .orElseThrow(() -> new CustomNoSuchElementException("모임"));
     }
 }
