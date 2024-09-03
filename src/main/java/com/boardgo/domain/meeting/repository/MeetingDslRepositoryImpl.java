@@ -392,4 +392,15 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                 .and(m.id.notIn(reviewFinishedMeetings)))
                 .fetch();
     }
+
+    @Override
+    public List<Long> findCompleteMeetingId(MeetingState meetingState) {
+        return queryFactory
+                .select(m.id)
+                .from(m)
+                .innerJoin(mpSub)
+                .on(mpSub.id.eq(m.id))
+                .where(m.state.eq(meetingState).and(m.limitParticipant.eq(mpSub.participantCount)))
+                .fetch();
+    }
 }
