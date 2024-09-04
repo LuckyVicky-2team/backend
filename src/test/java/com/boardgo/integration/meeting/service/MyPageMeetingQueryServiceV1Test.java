@@ -7,7 +7,6 @@ import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.entity.MeetingLikeEntity;
 import com.boardgo.domain.meeting.entity.MeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.enums.MeetingState;
-import com.boardgo.domain.meeting.entity.enums.MeetingType;
 import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
 import com.boardgo.domain.meeting.repository.MeetingLikeRepository;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
@@ -19,7 +18,6 @@ import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.entity.enums.ProviderType;
 import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.service.response.CustomUserDetails;
-import com.boardgo.integration.fixture.MeetingFixture;
 import com.boardgo.integration.fixture.MeetingLikeFixture;
 import com.boardgo.integration.fixture.MeetingParticipantFixture;
 import com.boardgo.integration.fixture.UserInfoFixture;
@@ -49,11 +47,9 @@ public class MyPageMeetingQueryServiceV1Test extends IntegrationTestSupport {
         UserInfoEntity savedUser = userRepository.save(userInfoEntity);
         setSecurityContext(savedUser.getId(), savedUser.getPassword());
 
-        MeetingEntity meetingEntity1 =
-                MeetingFixture.getProgressMeetingEntity(2L, MeetingType.FREE, 10);
+        MeetingEntity meetingEntity1 = getMeetingEntityData(2L).limitParticipant(10).build();
         MeetingEntity savedMeeting1 = meetingRepository.save(meetingEntity1);
-        MeetingEntity meetingEntity2 =
-                MeetingFixture.getProgressMeetingEntity(3L, MeetingType.FREE, 20);
+        MeetingEntity meetingEntity2 = getMeetingEntityData(3L).limitParticipant(20).build();
         MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
 
         MeetingLikeEntity meetingLike1 =
@@ -101,10 +97,9 @@ public class MyPageMeetingQueryServiceV1Test extends IntegrationTestSupport {
         UserInfoEntity userInfoEntity2 = UserInfoFixture.socialUserInfoEntity(ProviderType.KAKAO);
         UserInfoEntity savedUser2 = userRepository.save(userInfoEntity2);
         setSecurityContext(savedUser.getId(), savedUser.getPassword());
-        MeetingEntity meetingEntity1 =
-                MeetingFixture.getProgressMeetingEntity(savedUser.getId(), MeetingType.FREE, 5);
+        MeetingEntity meetingEntity1 = getMeetingEntityData(savedUser.getId()).build();
         MeetingEntity meetingEntity2 =
-                MeetingFixture.getProgressMeetingEntity(savedUser.getId(), MeetingType.FREE, 10);
+                getMeetingEntityData(savedUser.getId()).limitParticipant(10).build();
         MeetingEntity savedMeeting1 = meetingRepository.save(meetingEntity1);
         MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
         MeetingParticipantEntity leaderMeetingParticipantEntity1 =
@@ -140,10 +135,9 @@ public class MyPageMeetingQueryServiceV1Test extends IntegrationTestSupport {
         UserInfoEntity userInfoEntity2 = UserInfoFixture.socialUserInfoEntity(ProviderType.KAKAO);
         UserInfoEntity savedUser2 = userRepository.save(userInfoEntity2);
         setSecurityContext(savedUser2.getId(), savedUser2.getPassword());
-        MeetingEntity meetingEntity1 =
-                MeetingFixture.getProgressMeetingEntity(savedUser.getId(), MeetingType.FREE, 5);
+        MeetingEntity meetingEntity1 = getMeetingEntityData(savedUser.getId()).build();
         MeetingEntity meetingEntity2 =
-                MeetingFixture.getProgressMeetingEntity(savedUser.getId(), MeetingType.FREE, 10);
+                getMeetingEntityData(savedUser.getId()).limitParticipant(10).build();
         MeetingEntity savedMeeting1 = meetingRepository.save(meetingEntity1);
         MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
         MeetingParticipantEntity leaderMeetingParticipantEntity1 =
