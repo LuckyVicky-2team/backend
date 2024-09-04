@@ -12,9 +12,6 @@ import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
-import com.boardgo.domain.meeting.entity.MeetingParticipantSubEntity;
-import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
-import com.boardgo.domain.meeting.repository.MeetingParticipantSubRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +28,8 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
     private final BoardGameRepository boardGameRepository;
     private final MeetingCreateFactory meetingCreateFactory;
     private final MeetingRepository meetingRepository;
-    private final MeetingParticipantRepository meetingParticipantRepository;
     private final MeetingMapper meetingMapper;
     private final S3Service s3Service;
-    private final MeetingParticipantSubRepository meetingParticipantSubRepository;
 
     @Override
     public Long create(MeetingCreateRequest meetingCreateRequest, MultipartFile imageFile) {
@@ -78,11 +73,7 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
     @Override
     public void updateCompleteMeetingState(Long meetingId) {
         MeetingEntity meeting = getMeetingEntity(meetingId);
-        MeetingParticipantSubEntity meetingSubEntity =
-                meetingParticipantSubRepository.findById(meetingId).get();
-        if (!meetingSubEntity.isParticipated(meeting.getLimitParticipant())) {
-            meeting.updateMeetingState(COMPLETE);
-        }
+        meeting.updateMeetingState(COMPLETE);
     }
 
     private MeetingEntity getMeetingEntity(Long meetingId) {
