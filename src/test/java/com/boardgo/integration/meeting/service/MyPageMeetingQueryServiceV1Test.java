@@ -1,10 +1,12 @@
 package com.boardgo.integration.meeting.service;
 
+import static com.boardgo.integration.data.MeetingData.getMeetingEntityData;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.entity.MeetingLikeEntity;
 import com.boardgo.domain.meeting.entity.MeetingParticipantEntity;
+import com.boardgo.domain.meeting.entity.enums.MeetingState;
 import com.boardgo.domain.meeting.entity.enums.MeetingType;
 import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
 import com.boardgo.domain.meeting.repository.MeetingLikeRepository;
@@ -22,6 +24,7 @@ import com.boardgo.integration.fixture.MeetingLikeFixture;
 import com.boardgo.integration.fixture.MeetingParticipantFixture;
 import com.boardgo.integration.fixture.UserInfoFixture;
 import com.boardgo.integration.support.IntegrationTestSupport;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -176,9 +179,12 @@ public class MyPageMeetingQueryServiceV1Test extends IntegrationTestSupport {
         UserInfoEntity savedUser2 = userRepository.save(userInfoEntity2);
         setSecurityContext(savedUser.getId(), savedUser.getPassword());
         MeetingEntity meetingEntity1 =
-                MeetingFixture.getFinishMeetingEntity(savedUser.getId(), MeetingType.FREE, 5);
+                getMeetingEntityData(savedUser.getId())
+                        .meetingDatetime(LocalDateTime.now().minusDays(5))
+                        .state(MeetingState.FINISH)
+                        .build();
         MeetingEntity meetingEntity2 =
-                MeetingFixture.getProgressMeetingEntity(savedUser.getId(), MeetingType.FREE, 10);
+                getMeetingEntityData(savedUser.getId()).limitParticipant(10).build();
         MeetingEntity savedMeeting1 = meetingRepository.save(meetingEntity1);
         MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
         MeetingParticipantEntity leaderMeetingParticipantEntity1 =

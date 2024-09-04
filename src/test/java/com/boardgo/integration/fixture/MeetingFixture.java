@@ -26,44 +26,4 @@ public abstract class MeetingFixture {
                 .state(MeetingState.PROGRESS)
                 .build();
     }
-
-    public static MeetingEntity getCompleteMeetingEntity(
-            Long userId, MeetingType type, int limitParticipant) {
-        return MeetingEntity.builder()
-                .userId(userId)
-                .title("강남역에서 보드게임 같이 하실분 구해요!")
-                .content("강남역 10번출구 앞에서 만나요")
-                .type(type)
-                .limitParticipant(limitParticipant)
-                .thumbnail("보드게임 강남점.jpg")
-                .city("서울시")
-                .county("강남구")
-                .latitude("5441.5429")
-                .longitude("434.5785")
-                .detailAddress("detailAddress")
-                .locationName("locationName")
-                .meetingDatetime(LocalDateTime.now().plusDays(2))
-                .state(MeetingState.COMPLETE)
-                .build();
-    }
-
-    public static MeetingEntity getFinishMeetingEntity(
-            Long userId, MeetingType type, int limitParticipant) {
-        return MeetingEntity.builder()
-                .userId(userId)
-                .title("을지로에서 보드게임 같이 하실분 구해요!")
-                .content("을지로 위워크 앞에서 만나요")
-                .type(type)
-                .limitParticipant(limitParticipant)
-                .thumbnail("보드게임 을지로점.jpg")
-                .city("서울시")
-                .county("중구")
-                .latitude("5441.5429")
-                .longitude("434.5785")
-                .detailAddress("detailAddress")
-                .locationName("locationName")
-                .meetingDatetime(LocalDateTime.now().minusDays(5))
-                .state(MeetingState.FINISH)
-                .build();
-    }
 }
