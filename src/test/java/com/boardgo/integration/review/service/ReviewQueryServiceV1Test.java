@@ -1,5 +1,6 @@
 package com.boardgo.integration.review.service;
 
+import static com.boardgo.common.constant.TimeConstant.REVIEWABLE_HOURS;
 import static com.boardgo.domain.review.entity.enums.ReviewType.PRE_PROGRESS;
 import static com.boardgo.integration.data.MeetingData.getMeetingEntityData;
 import static com.boardgo.integration.data.UserInfoData.userInfoEntityData;
@@ -85,8 +86,42 @@ public class ReviewQueryServiceV1Test extends IntegrationTestSupport {
         assertThat(reviewMeetingList).isNotEmpty();
         for (ReviewMeetingResponse reviewMeeting : reviewMeetingList) {
             assertThat(reviewMeeting.meetingDatetime()).isBefore(LocalDateTime.now());
+
+            LocalDateTime reviewableDatetime =
+                    reviewMeeting.meetingDatetime().plusHours(REVIEWABLE_HOURS);
+            assertThat(reviewableDatetime).isBeforeOrEqualTo(LocalDateTime.now());
         }
-        // TODO 3시간 이후 인지 체크
+    }
+
+    @Test
+    @DisplayName("모임이 종료되었지만, 모임 날짜가 현재로 부터 3시간이 지나지 않았을 경우 리뷰 목록에 표출되지 않는다")
+    void 모임이_종료되었지만_모임_날짜가_현재로_부터_3시간이_지나지_않았을_경우_리뷰_목록에_표출되지_않는다() {
+        // given
+        // 회원
+        UserInfoEntity participant = userRepository.save(localUserInfoEntity());
+        UserInfoEntity leader = userRepository.save(socialUserInfoEntity(ProviderType.KAKAO));
+        // 모임
+        MeetingEntity meeting =
+                meetingRepository.save(
+                        getMeetingEntityData(leader.getId())
+                                .meetingDatetime(LocalDateTime.now())
+                                .state(MeetingState.FINISH)
+                                .build());
+        // 모임참가
+        meetingParticipantRepository.save(
+                getLeaderMeetingParticipantEntity(meeting.getId(), leader.getId()));
+        meetingParticipantRepository.save(
+                getParticipantMeetingParticipantEntity(meeting.getId(), participant.getId()));
+
+        // when
+        List<ReviewMeetingResponse> reviewMeetingList =
+                reviewQueryUseCase.getReviewMeetings(PRE_PROGRESS, participant.getId());
+
+        // then
+        assertThat(reviewMeetingList).isEmpty();
+
+        LocalDateTime reviewableDatetime = meeting.getMeetingDatetime().plusHours(REVIEWABLE_HOURS);
+        assertThat(reviewableDatetime).isAfterOrEqualTo(LocalDateTime.now());
     }
 
     @Test
@@ -177,7 +212,7 @@ public class ReviewQueryServiceV1Test extends IntegrationTestSupport {
         MeetingEntity meeting =
                 meetingRepository.save(
                         getMeetingEntityData(leader.getId())
-                                .meetingDatetime(LocalDateTime.now().minusDays(5))
+                                .meetingDatetime(LocalDateTime.now().minusDays(1))
                                 .state(MeetingState.FINISH)
                                 .build());
         // 모임참가
