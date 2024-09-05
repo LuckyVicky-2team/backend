@@ -1,13 +1,13 @@
 package com.boardgo.domain.meeting.controller;
 
-import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER1;
+import static com.boardgo.common.constant.HeaderConstant.*;
 
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
-import com.boardgo.domain.meeting.repository.response.MeetingDetailResponse;
-import com.boardgo.domain.meeting.repository.response.MeetingSearchResponse;
 import com.boardgo.domain.meeting.service.MeetingCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
+import com.boardgo.domain.meeting.service.response.MeetingDetailResponse;
+import com.boardgo.domain.meeting.service.response.MeetingSearchResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import java.net.URI;
