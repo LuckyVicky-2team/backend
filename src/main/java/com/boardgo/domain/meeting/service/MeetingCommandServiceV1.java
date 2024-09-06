@@ -154,7 +154,7 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
 
     private static void validateUserIsWriter(Long userId, MeetingEntity meeting) {
         if (!meeting.isWriter(userId)) {
-            throw new CustomIllegalArgumentException("다른 사람의 모임 글을 지울 수 없습니다.");
+            throw new CustomIllegalArgumentException("다른 사람의 모임 글을 변경할 수 없습니다.");
         }
     }
 
