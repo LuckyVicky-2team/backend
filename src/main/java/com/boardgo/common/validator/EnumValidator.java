@@ -1,5 +1,7 @@
 package com.boardgo.common.validator;
 
+import static com.boardgo.common.utils.CustomStringUtils.existString;
+
 import com.boardgo.common.validator.annotation.EnumValue;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -12,7 +14,7 @@ public class EnumValidator implements ConstraintValidator<EnumValue, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         Enum<?>[] enumValues = this.enumValue.enumClass().getEnumConstants();
-        if (enumValues == null) {
+        if (enumValues == null || !existString(value)) {
             return false;
         }
         return Arrays.stream(enumValues)
