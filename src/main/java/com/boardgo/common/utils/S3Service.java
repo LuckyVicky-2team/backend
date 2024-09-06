@@ -50,9 +50,9 @@ public class S3Service {
         amazonS3Client.putObject(putObjectRequest);
     }
 
-    public void deleteFile(String fileName) {
+    public void deleteFile(String folderName, String fileName) {
         try {
-            amazonS3Client.deleteObject(bucket, fileName);
+            amazonS3Client.deleteObject(bucket, folderName + "/" + fileName);
         } catch (SdkClientException sce) {
             throw new CustomS3Exception(sce.getMessage());
         }

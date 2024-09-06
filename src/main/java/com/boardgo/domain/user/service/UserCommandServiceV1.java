@@ -1,10 +1,8 @@
 package com.boardgo.domain.user.service;
 
-import static com.boardgo.common.constant.S3BucketConstant.USER;
-import static com.boardgo.common.utils.CustomStringUtils.existString;
-import static com.boardgo.common.utils.ValidateUtils.validateNickname;
-import static com.boardgo.common.utils.ValidateUtils.validatePassword;
-import static com.boardgo.common.utils.ValidateUtils.validatePrTag;
+import static com.boardgo.common.constant.S3BucketConstant.*;
+import static com.boardgo.common.utils.CustomStringUtils.*;
+import static com.boardgo.common.utils.ValidateUtils.*;
 
 import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.common.exception.DuplicateException;
@@ -79,7 +77,7 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
                     s3Service.upload(USER, FileUtils.getUniqueFileName(profileImage), profileImage);
         }
         if (existString(originalImage)) {
-            s3Service.deleteFile(originalImage);
+            s3Service.deleteFile(USER, originalImage);
         }
         userInfoEntity.updateProfileImage(newImage);
     }
