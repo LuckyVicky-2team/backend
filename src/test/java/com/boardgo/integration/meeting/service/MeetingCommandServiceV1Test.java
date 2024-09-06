@@ -215,7 +215,7 @@ public class MeetingCommandServiceV1Test extends IntegrationTestSupport {
                         })
                 .isInstanceOf(CustomIllegalArgumentException.class)
                 .message()
-                .isEqualTo("현재 참여한 인원보다 최대 인원수 보다 커야합니다.");
+                .isEqualTo("현재 참여한 인원보다 최대 인원수가 커야합니다.");
     }
 
     @Test
