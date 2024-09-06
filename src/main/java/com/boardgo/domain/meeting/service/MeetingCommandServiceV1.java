@@ -104,7 +104,7 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
             throw new CustomIllegalArgumentException("현재 참여한 인원보다 최대 인원수 보다 커야합니다.");
         }
 
-        s3Service.deleteFile(MEETING, meeting.getThumbnail());
+        s3Service.deleteFile(meeting.getThumbnail());
         String imageUri = registerImage(updateRequest.boardGameIdList().getFirst(), imageFile);
         meetingGenreMatchRepository.deleteAllInBatchByMeetingId(meeting.getId());
         meetingGameMatchRepository.deleteAllInBatchByMeetingId(meeting.getId());

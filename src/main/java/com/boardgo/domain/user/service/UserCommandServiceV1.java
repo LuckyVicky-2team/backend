@@ -77,7 +77,7 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
                     s3Service.upload(USER, FileUtils.getUniqueFileName(profileImage), profileImage);
         }
         if (existString(originalImage)) {
-            s3Service.deleteFile(USER, originalImage);
+            s3Service.deleteFile(originalImage);
         }
         userInfoEntity.updateProfileImage(newImage);
     }

@@ -246,12 +246,6 @@ public class MeetingCommandServiceV1Test extends IntegrationTestSupport {
         List<Long> boardGameGenreIdList = List.of(userId, 2L);
         Long meetingId =
                 meetingCreateFactory.create(meetingEntity, boardGameIdList, boardGameGenreIdList);
-        meetingParticipantRepository.save(
-                MeetingParticipantEntity.builder()
-                        .meetingId(meetingId)
-                        .userInfoId(2L)
-                        .type(ParticipantType.PARTICIPANT)
-                        .build());
 
         // when
         meetingCommandUseCase.deleteMeeting(meetingId, userId);
