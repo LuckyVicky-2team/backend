@@ -5,7 +5,6 @@ import com.boardgo.domain.user.controller.request.SignupRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.projection.PersonalInfoProjection;
 import com.boardgo.domain.user.repository.projection.UserParticipantProjection;
-import com.boardgo.domain.user.repository.response.UserParticipantResponse;
 import com.boardgo.domain.user.service.response.OtherPersonalInfoResponse;
 import com.boardgo.domain.user.service.response.UserPersonalInfoResponse;
 import com.boardgo.oauth2.dto.OAuth2CreateUserRequest;
