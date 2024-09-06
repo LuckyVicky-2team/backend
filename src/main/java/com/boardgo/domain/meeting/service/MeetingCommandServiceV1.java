@@ -101,7 +101,7 @@ public class MeetingCommandServiceV1 implements MeetingCommandUseCase {
         MeetingParticipantSubEntity meetingParticipantSubEntity =
                 getMeetingParticipantSubEntity(meeting.getId());
         if (!meetingParticipantSubEntity.isParticipated(updateRequest.limitParticipant())) {
-            throw new CustomIllegalArgumentException("현재 참여한 인원보다 최대 인원수 보다 커야합니다.");
+            throw new CustomIllegalArgumentException("현재 참여한 인원보다 최대 인원수가 커야합니다.");
         }
 
         s3Service.deleteFile(meeting.getThumbnail());
