@@ -1,5 +1,6 @@
 package com.boardgo.domain.mapper;
 
+import com.boardgo.domain.review.service.response.MyEvaluationTagsResponse;
 import com.boardgo.domain.user.controller.request.SignupRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.projection.PersonalInfoProjection;
@@ -25,11 +26,16 @@ public interface UserInfoMapper {
     UserInfoEntity toUserInfoEntity(OAuth2CreateUserRequest oAuth2CreateUserRequest);
 
     UserPersonalInfoResponse toUserPersonalInfoResponse(
-            PersonalInfoProjection userPersonalInfoResponse, Double averageRating);
+            PersonalInfoProjection personalInfoProjection);
+
+    UserPersonalInfoResponse toUserPersonalInfoResponse(
+            UserPersonalInfoResponse userPersonalInfoResponse, Double averageRating);
 
     UserParticipantResponse toUserParticipantResponse(
             UserParticipantProjection userParticipantProjection);
 
     OtherPersonalInfoResponse toUserPersonalInfoResponse(
-            UserPersonalInfoResponse userPersonalInfoResponse, int meetingCount);
+            UserPersonalInfoResponse userPersonalInfoResponse,
+            int meetingCount,
+            MyEvaluationTagsResponse myEvaluationTags);
 }
