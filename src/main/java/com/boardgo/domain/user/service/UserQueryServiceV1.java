@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserQueryServiceV1 implements UserQueryUseCase {
     private final UserRepository userRepository;
-    private final UserInfoMapper UserInfoMapper;
+    private final UserInfoMapper userInfoMapper;
 
     @Override
     public void existEmail(EmailRequest emailRequest) {
@@ -38,6 +38,6 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
     @Override
     public UserPersonalInfoResponse getPersonalInfo(Long userId) {
         PersonalInfoProjection personalInfoProjection = userRepository.findByUserInfoId(userId);
-        return UserInfoMapper.toUserPersonalInfoResponse(personalInfoProjection);
+        return userInfoMapper.toUserPersonalInfoResponse(personalInfoProjection);
     }
 }

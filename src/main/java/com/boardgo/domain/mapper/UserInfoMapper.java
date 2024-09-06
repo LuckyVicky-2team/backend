@@ -1,5 +1,6 @@
 package com.boardgo.domain.mapper;
 
+import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
 import com.boardgo.domain.review.service.response.MyEvaluationTagsResponse;
 import com.boardgo.domain.user.controller.request.SignupRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
