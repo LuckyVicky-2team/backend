@@ -273,6 +273,6 @@ public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
     @Override
     public Double getAverageRating(Long revieweeId) {
         Double averageRating = reviewRepository.findRatingAvgByRevieweeId(revieweeId);
-        return averageRating == null ? 0.0 : averageRating;
+        return averageRating == null ? 0.0 : Math.round(averageRating * 10) / 10.0; // 소수점 한자리
     }
 }
