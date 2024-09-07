@@ -9,7 +9,7 @@ import com.boardgo.domain.user.controller.request.NickNameRequest;
 import com.boardgo.domain.user.entity.enums.ProviderType;
 import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.repository.projection.PersonalInfoProjection;
-import com.boardgo.domain.user.service.response.UserPersonalInfoResponse;
+import com.boardgo.domain.user.service.response.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +36,8 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
     }
 
     @Override
-    public UserPersonalInfoResponse getPersonalInfo(Long userId) {
+    public UserInfoResponse getPersonalInfo(Long userId) {
         PersonalInfoProjection personalInfoProjection = userRepository.findByUserInfoId(userId);
-        return userInfoMapper.toUserPersonalInfoResponse(personalInfoProjection);
+        return userInfoMapper.toUserInfoResponse(personalInfoProjection);
     }
 }

@@ -7,11 +7,11 @@ import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.projection.PersonalInfoProjection;
 import com.boardgo.domain.user.repository.projection.UserParticipantProjection;
 import com.boardgo.domain.user.service.response.OtherPersonalInfoResponse;
+import com.boardgo.domain.user.service.response.UserInfoResponse;
 import com.boardgo.domain.user.service.response.UserPersonalInfoResponse;
 import com.boardgo.oauth2.dto.OAuth2CreateUserRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -26,17 +26,10 @@ public interface UserInfoMapper {
 
     UserInfoEntity toUserInfoEntity(OAuth2CreateUserRequest oAuth2CreateUserRequest);
 
-    UserPersonalInfoResponse toUserPersonalInfoResponse(
-            PersonalInfoProjection personalInfoProjection);
+    UserInfoResponse toUserInfoResponse(PersonalInfoProjection personalInfoProjection);
 
-    @Mapping(target = "averageRating", source = "avgRating", qualifiedByName = "setAvgRating")
     UserPersonalInfoResponse toUserPersonalInfoResponse(
-            UserPersonalInfoResponse userPersonalInfoResponse, Double avgRating);
-
-    @Named("setAvgRating")
-    static Double setAvgRating(Double avgRating) {
-        return avgRating;
-    }
+            UserInfoResponse userInfoResponse, Double averageRating);
 
     UserParticipantResponse toUserParticipantResponse(
             UserParticipantProjection userParticipantProjection);

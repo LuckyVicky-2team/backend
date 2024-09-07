@@ -22,6 +22,7 @@ import com.boardgo.domain.user.service.UserQueryUseCase;
 import com.boardgo.domain.user.service.facade.UserQueryServiceFacade;
 import com.boardgo.domain.user.service.response.CustomUserDetails;
 import com.boardgo.domain.user.service.response.OtherPersonalInfoResponse;
+import com.boardgo.domain.user.service.response.UserInfoResponse;
 import com.boardgo.domain.user.service.response.UserPersonalInfoResponse;
 import com.boardgo.integration.init.TestUserInfoInitializer;
 import com.boardgo.integration.support.IntegrationTestSupport;
@@ -157,7 +158,7 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
         Long userId = getUserId(userInfo);
 
         // when
-        UserPersonalInfoResponse personalInfo = userQueryUseCase.getPersonalInfo(userId);
+        UserInfoResponse personalInfo = userQueryUseCase.getPersonalInfo(userId);
 
         // then
         assertThat(personalInfo.profileImage()).isNull();

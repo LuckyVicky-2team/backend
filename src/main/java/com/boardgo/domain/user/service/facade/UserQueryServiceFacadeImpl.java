@@ -6,6 +6,7 @@ import com.boardgo.domain.review.service.ReviewQueryUseCase;
 import com.boardgo.domain.review.service.response.MyEvaluationTagsResponse;
 import com.boardgo.domain.user.service.UserQueryUseCase;
 import com.boardgo.domain.user.service.response.OtherPersonalInfoResponse;
+import com.boardgo.domain.user.service.response.UserInfoResponse;
 import com.boardgo.domain.user.service.response.UserPersonalInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class UserQueryServiceFacadeImpl implements UserQueryServiceFacade {
     }
 
     public UserPersonalInfoResponse getPersonalInfo(Long userId) {
-        UserPersonalInfoResponse userPersonalInfo = userQueryUseCase.getPersonalInfo(userId);
+        UserInfoResponse userPersonalInfo = userQueryUseCase.getPersonalInfo(userId);
         Double averageRating = reviewQueryUseCase.getAverageRating(userId);
         return userInfoMapper.toUserPersonalInfoResponse(userPersonalInfo, averageRating);
     }
