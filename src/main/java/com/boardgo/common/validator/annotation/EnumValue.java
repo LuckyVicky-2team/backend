@@ -24,4 +24,6 @@ public @interface EnumValue {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    String constraintEquals() default "";
 }

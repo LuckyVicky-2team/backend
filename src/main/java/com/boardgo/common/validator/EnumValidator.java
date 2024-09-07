@@ -17,6 +17,10 @@ public class EnumValidator implements ConstraintValidator<EnumValue, String> {
         if (enumValues == null || !existString(value)) {
             return false;
         }
+        if (existString(enumValue.constraintEquals())
+                && !value.equalsIgnoreCase(enumValue.constraintEquals())) {
+            return false;
+        }
         return Arrays.stream(enumValues)
                 .anyMatch(enumValue -> value.equalsIgnoreCase(enumValue.toString()));
     }

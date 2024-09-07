@@ -514,7 +514,7 @@ include::{snippets}/patch-out-meeting/http-response.adoc[]
 | errorCode | messages
 
 | 400
-|진행중인 모임만 나갈 수 있습니다 +
+|유효하지 않은 모임 상태입니다 +
 참여하지 않은 모임입니다
 |===
 
@@ -651,7 +651,7 @@ include::{snippets}/patch-out-my-meeting/http-response.adoc[]
 | errorCode | messages
 
 | 400
-|진행중인 모임만 나갈 수 있습니다 +
+|유효하지 않은 모임 상태입니다 +
 참여하지 않은 모임입니다
 |===
 

@@ -2,9 +2,7 @@ package com.boardgo.domain.meeting.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER1;
 import static com.boardgo.common.utils.SecurityUtils.currentUserId;
-import static com.boardgo.domain.meeting.entity.enums.MeetingState.PROGRESS;
 
-import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.domain.meeting.controller.request.MeetingOutRequest;
 import com.boardgo.domain.meeting.controller.request.MeetingParticipateRequest;
 import com.boardgo.domain.meeting.service.MeetingParticipantCommandUseCase;
@@ -50,9 +48,6 @@ public class MeetingParticipantController {
             @PathVariable(value = "userId", required = false) Long userId,
             @RequestBody @Valid MeetingOutRequest meetingOutRequest) {
         Long id = Objects.isNull(userId) ? currentUserId() : userId;
-        if (!PROGRESS.toString().equals(meetingOutRequest.meetingState())) {
-            throw new CustomIllegalArgumentException("진행중인 모임만 나갈 수 있습니다");
-        }
         meetingParticipantCommandUseCase.outMeeting(meetingOutRequest.meetingId(), id);
         return ResponseEntity.ok().build();
     }
