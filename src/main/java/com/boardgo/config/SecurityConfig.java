@@ -64,7 +64,7 @@ public class SecurityConfig {
         AntPathRequestMatcher.antMatcher(HttpMethod.PATCH, "/meeting/complete/{id}"),
         AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/boardgame"),
         AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/personal-info/{userId}"),
-        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/home/**")
+        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/home/**"),
     };
 
     final AntPathRequestMatcher[] permitUserUri = {
@@ -73,7 +73,8 @@ public class SecurityConfig {
         AntPathRequestMatcher.antMatcher("/meeting-participant/**"),
         AntPathRequestMatcher.antMatcher("/evaluationTags"),
         AntPathRequestMatcher.antMatcher("/meeting/like"),
-        AntPathRequestMatcher.antMatcher("/my/review/**")
+        AntPathRequestMatcher.antMatcher("/my/review/**"),
+        AntPathRequestMatcher.antMatcher("/terms-conditions/user")
     };
 
     @Bean
