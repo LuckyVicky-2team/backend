@@ -45,7 +45,7 @@ public class TermsConditionsEntity {
     @Column(name = "content", nullable = false, columnDefinition = "MEDIUMTEXT")
     private String content;
 
-    @Comment("필수/선택(Y/n)")
+    @Comment("필수 여부(Y/N)")
     @Convert(converter = BooleanConverter.class)
     @Column(name = "required", nullable = false, columnDefinition = "varchar(1)")
     private boolean required;
