@@ -1,13 +1,14 @@
 package com.boardgo.domain.termsconditions.entity;
 
-import com.boardgo.domain.termsconditions.entity.enums.TermsConditionsType;
+import com.boardgo.common.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import org.hibernate.annotations.Comment;
 @Getter
 @Table(name = "user_terms_conditions")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserTermsConditionsEntity {
+public class UserTermsConditionsEntity extends BaseEntity {
 
     @Id
     @Column(name = "user_terms_conditions_id")
@@ -30,12 +31,12 @@ public class UserTermsConditionsEntity {
     private Long userInfoId;
 
     @Comment("약관동의 타입")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "terms_conditions_type", length = 20, nullable = false)
-    private TermsConditionsType termsConditionsType;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "terms_conditions_id")
+    private TermsConditionsEntity termsConditions;
 
-    public UserTermsConditionsEntity(Long userInfoId, TermsConditionsType termsConditionsType) {
+    public UserTermsConditionsEntity(Long userInfoId, TermsConditionsEntity termsConditionsEntity) {
         this.userInfoId = userInfoId;
-        this.termsConditionsType = termsConditionsType;
+        this.termsConditions = termsConditionsEntity;
     }
 }

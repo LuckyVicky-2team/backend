@@ -15,6 +15,7 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
 @Entity
@@ -41,14 +42,30 @@ public class TermsConditionsEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Comment("이용약관 내용")
+    @Column(name = "content", nullable = false, columnDefinition = "MEDIUMTEXT")
+    private String content;
+
     @Comment("필수/선택(Y/n)")
     @Convert(converter = BooleanConverter.class)
     @Column(name = "required", nullable = false, columnDefinition = "varchar(1)")
     private boolean required;
 
-    public TermsConditionsEntity(TermsConditionsType type, String title, boolean required) {
+    @Comment("버전")
+    @ColumnDefault("1")
+    @Column(name = "version", nullable = false, columnDefinition = "SMALLINT")
+    private Integer version;
+
+    public TermsConditionsEntity(
+            TermsConditionsType type,
+            String title,
+            String content,
+            boolean required,
+            Integer version) {
         this.type = type;
         this.title = title;
+        this.content = content;
         this.required = required;
+        this.version = version;
     }
 }
