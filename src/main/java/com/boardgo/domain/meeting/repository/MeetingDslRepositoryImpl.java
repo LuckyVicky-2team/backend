@@ -400,7 +400,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
     }
 
     @Override
-    public List<HomeMeetingDeadlineProjection> findHomeMeetingDeadline(
+    public List<HomeMeetingDeadlineProjection> findByMeetingDateBetween(
             LocalDateTime startDate, LocalDateTime endDate, int size) {
         return queryFactory
                 .select(

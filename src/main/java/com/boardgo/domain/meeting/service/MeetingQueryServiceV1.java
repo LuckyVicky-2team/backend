@@ -122,7 +122,7 @@ public class MeetingQueryServiceV1 implements MeetingQueryUseCase {
         final int DEADLINE_DATE = 3;
         final int SIZE = 10;
         List<HomeMeetingDeadlineProjection> homeMeetingDeadlineProjections =
-                meetingRepository.findHomeMeetingDeadline(
+                meetingRepository.findByMeetingDateBetween(
                         LocalDateTime.now(), LocalDateTime.now().plusDays(DEADLINE_DATE), SIZE);
         return meetingMapper.toHomeMeetingDeadlineResponses(homeMeetingDeadlineProjections);
     }

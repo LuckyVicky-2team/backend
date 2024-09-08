@@ -41,6 +41,6 @@ public interface MeetingDslRepository {
 
     Long getCreateMeetingCount(Long userId);
 
-    List<HomeMeetingDeadlineProjection> findHomeMeetingDeadline(
+    List<HomeMeetingDeadlineProjection> findByMeetingDateBetween(
             LocalDateTime startDate, LocalDateTime endDate, int size);
 }
