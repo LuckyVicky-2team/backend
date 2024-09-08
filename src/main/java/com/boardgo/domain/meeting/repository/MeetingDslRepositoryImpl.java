@@ -3,6 +3,7 @@ package com.boardgo.domain.meeting.repository;
 import static com.boardgo.common.constant.TimeConstant.REVIEWABLE_HOURS;
 import static com.boardgo.domain.meeting.entity.enums.MeetingSortType.PARTICIPANT_COUNT;
 import static com.boardgo.domain.meeting.entity.enums.MeetingState.FINISH;
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.PROGRESS;
 import static com.boardgo.domain.meeting.entity.enums.ParticipantType.LEADER;
 import static com.boardgo.domain.meeting.entity.enums.ParticipantType.PARTICIPANT;
 
@@ -413,7 +414,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                                 m.county,
                                 m.meetingDatetime))
                 .from(m)
-                .where(m.meetingDatetime.between(startDate, endDate))
+                .where(m.meetingDatetime.between(startDate, endDate).and(m.state.eq(PROGRESS)))
                 .orderBy(m.meetingDatetime.asc())
                 .limit(size)
                 .fetch();
