@@ -20,6 +20,11 @@ public class HomeMeetingController {
 
     @GetMapping(value = "/deadline", headers = API_VERSION_HEADER1)
     public ResponseEntity<List<HomeMeetingDeadlineResponse>> getMeetingDeadlines() {
-        return ResponseEntity.ok().body(meetingQueryUseCase.getMeetingDeadlines());
+        List<HomeMeetingDeadlineResponse> homeMeetingDeadlines =
+                meetingQueryUseCase.getMeetingDeadlines();
+        if (homeMeetingDeadlines.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(homeMeetingDeadlines);
     }
 }
