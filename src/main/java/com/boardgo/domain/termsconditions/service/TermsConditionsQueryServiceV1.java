@@ -1,6 +1,6 @@
 package com.boardgo.domain.termsconditions.service;
 
-import com.boardgo.domain.termsconditions.controller.request.TermsConditionsCreateRequest;
+import com.boardgo.domain.termsconditions.entity.TermsConditionsEntity;
 import com.boardgo.domain.termsconditions.repository.TermsConditionsRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TermsConditionsCommandServiceV1 implements TermsConditionsCommandUseCase {
+public class TermsConditionsQueryServiceV1 implements TermsConditionsQueryUseCase {
     private final TermsConditionsRepository termsConditionsRepository;
 
-    @Override
-    public void create(
-            List<TermsConditionsCreateRequest> termsConditionsCreateRequest, Long userId) {}
+    public List<TermsConditionsEntity> getTermsConditions(List<Boolean> required) {
+        return termsConditionsRepository.findAllByRequiredIn(required);
+    }
 }
