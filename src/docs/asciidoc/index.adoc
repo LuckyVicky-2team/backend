@@ -284,7 +284,6 @@ include::{snippets}/meeting-create/response-headers.adoc[]
 인증된 사용자가 아닙니다. +
 |===
 
-
 '''
 
 === *모임 수정*
@@ -337,7 +336,6 @@ include::{snippets}/meeting-list/query-parameters.adoc[]
 include::{snippets}/meeting-list/http-response.adoc[]
 
 '''
-
 
 === *모임 삭제하기*
 
@@ -546,6 +544,30 @@ include::{snippets}/meeting-like-delete/http-response.adoc[]
 
 '''
 
+=== *모임 내보내기*
+
+==== *요청*
+
+include::{snippets}/patch-out-meeting/http-request.adoc[]
+include::{snippets}/patch-out-meeting/path-parameters.adoc[]
+include::{snippets}/patch-out-meeting/request-fields.adoc[]
+
+==== *응답*
+
+include::{snippets}/patch-out-meeting/http-response.adoc[]
+
+- HTTP 에러 상태 코드
+
+|===
+| errorCode | messages
+
+| 400
+|유효하지 않은 모임 상태입니다 +
+참여하지 않은 모임입니다
+|===
+
+'''
+
 == 보드게임
 
 === *보드게임 등록*
@@ -583,7 +605,7 @@ include::{snippets}/boardgame-list/response-fields.adoc[]
 
 == 메인 홈
 
-=== *메인 홈 상황별 추천 보드게임*
+=== *상황별 추천 보드게임*
 
 ==== *요청*
 
@@ -597,7 +619,20 @@ include::{snippets}/get-home-situation/response-fields.adoc[]
 
 '''
 
-=== *메인 홈 누적 인기 보드게임*
+=== *마감임박 모임*
+
+==== *요청*
+
+include::{snippets}/get-home-deadline/http-request.adoc[]
+
+==== *응답*
+
+include::{snippets}/get-home-deadline/http-response.adoc[]
+include::{snippets}/get-home-deadline/response-fields.adoc[]
+
+'''
+
+=== *누적 인기 보드게임*
 
 ==== *요청*
 
@@ -656,6 +691,29 @@ include::{snippets}/my-meeting/http-response.adoc[]
 | 400
 |인증 정보가 존재하지 않습니다. +
 인증된 사용자가 아닙니다.
+|===
+
+'''
+
+=== *모임 나가기*
+
+==== *요청*
+
+include::{snippets}/patch-out-my-meeting/http-request.adoc[]
+include::{snippets}/patch-out-my-meeting/request-fields.adoc[]
+
+==== *응답*
+
+include::{snippets}/patch-out-my-meeting/http-response.adoc[]
+
+- HTTP 에러 상태 코드
+
+|===
+| errorCode | messages
+
+| 400
+|유효하지 않은 모임 상태입니다 +
+참여하지 않은 모임입니다
 |===
 
 '''
