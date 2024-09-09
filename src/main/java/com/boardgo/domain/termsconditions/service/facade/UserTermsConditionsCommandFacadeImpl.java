@@ -31,6 +31,10 @@ public class UserTermsConditionsCommandFacadeImpl implements UserTermsConditions
 
         List<TermsConditionsEntity> termsConditionsEntities =
                 termsConditionsQueryUseCase.getTermsConditions(List.of(TRUE, FALSE));
+        if (termsConditionsEntities.size() != termsConditionsCreateRequest.size()) {
+            throw new CustomIllegalArgumentException("약관동의 항목의 갯수가 일치하지 않습니다");
+        }
+
         Map<String, TermsConditionsEntity> termsConditionsMap =
                 termsConditionsEntities.stream()
                         .collect(
