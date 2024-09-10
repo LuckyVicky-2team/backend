@@ -67,8 +67,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         RoleType role = RoleType.toRoleType(auth.getAuthority());
 
         String accessToken = tokenService.getAccessToken(id, role);
-        String refreshToken = tokenService.getRefreshToken(id, role, domain);
-        log.info("-------------------여기------------------------------------");
+        String refreshToken = tokenService.getRefreshToken(id, role);
         loginService.create(refreshToken, id);
         response.addHeader(AUTHORIZATION, BEARER + accessToken);
         response.setHeader(
