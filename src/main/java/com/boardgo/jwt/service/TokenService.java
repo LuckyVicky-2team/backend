@@ -27,7 +27,7 @@ public class TokenService {
         return jwtUtil.createJwt(id, ACCESS_TOKEN, role, ACCESS_TOKEN_DURATION);
     }
 
-    public String getRefreshToken(Long id, String token, String domain) {
+    public String getRefreshToken(Long id, String token) {
         validateEqualId(id, token);
 
         RoleType role = RoleType.valueOf(jwtUtil.getRole(token));
@@ -35,7 +35,7 @@ public class TokenService {
         return jwtUtil.createJwt(id, REFRESH_TOKEN, role, REFRESH_TOKEN_DURATION);
     }
 
-    public String getRefreshToken(Long id, RoleType roleType, String domain) {
+    public String getRefreshToken(Long id, RoleType roleType) {
         return jwtUtil.createJwt(id, REFRESH_TOKEN, roleType, REFRESH_TOKEN_DURATION);
     }
 
