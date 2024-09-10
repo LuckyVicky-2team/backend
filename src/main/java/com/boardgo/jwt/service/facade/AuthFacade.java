@@ -34,7 +34,7 @@ public class AuthFacade implements AuthFacadeUseCase {
         AuthEntity authEntity = loginService.getByRefreshToken(refreshToken);
         UserInfoEntity user = authEntity.getUserInfo();
         String accessToken = tokenService.getAccessToken(user.getId(), refreshToken);
-        String newRefreshToken = tokenService.getRefreshToken(user.getId(), refreshToken, domain);
+        String newRefreshToken = tokenService.getRefreshToken(user.getId(), refreshToken);
 
         loginService.updateTokenWithOutValidation(authEntity.getId(), newRefreshToken);
         response.addHeader(AUTHORIZATION, BEARER + accessToken);

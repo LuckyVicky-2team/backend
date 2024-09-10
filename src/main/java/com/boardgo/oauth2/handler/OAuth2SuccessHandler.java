@@ -36,8 +36,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
         String refreshToken =
-                tokenService.getRefreshToken(
-                        oAuth2User.getId(), oAuth2User.getRoleType(), properties.domain());
+                tokenService.getRefreshToken(oAuth2User.getId(), oAuth2User.getRoleType());
         response.setHeader(
                 "Set-cookie",
                 CookieUtils.createCookies(
