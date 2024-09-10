@@ -35,8 +35,7 @@ public class AuthDocsTest extends RestDocsTestSupport {
         // given
         UserInfoEntity userInfo = UserInfoData.userInfoEntityData("aa@aa.com", "nickname").build();
         UserInfoEntity savedUser = userRepository.save(userInfo);
-        String refreshToken =
-                tokenService.getRefreshToken(savedUser.getId(), RoleType.USER, "localhost");
+        String refreshToken = tokenService.getRefreshToken(savedUser.getId(), RoleType.USER);
         AuthEntity auth =
                 AuthEntity.builder()
                         .userInfo(userInfo)
