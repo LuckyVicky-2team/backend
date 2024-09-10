@@ -10,6 +10,8 @@ import com.boardgo.domain.termsconditions.entity.TermsConditionsEntity;
 import com.boardgo.domain.termsconditions.entity.UserTermsConditionsEntity;
 import com.boardgo.domain.termsconditions.service.TermsConditionsQueryUseCase;
 import com.boardgo.domain.termsconditions.service.UserTermsConditionsCommandUseCase;
+import com.boardgo.domain.termsconditions.service.UserTermsConditionsQueryUseCase;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,21 +21,20 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
+@Transactional
 public class UserTermsConditionsCommandFacadeImpl implements UserTermsConditionsCommandFacade {
     private final UserTermsConditionsCommandUseCase userTermsConditionsCommandUseCase;
+    private final UserTermsConditionsQueryUseCase userTermsConditionsQueryUseCase;
     private final TermsConditionsQueryUseCase termsConditionsQueryUseCase;
     private final TermsConditionsMapper termsConditionsMapper;
 
     @Override
     public void createUserTermsConditions(
             List<TermsConditionsCreateRequest> termsConditionsCreateRequest, Long userId) {
-        List<UserTermsConditionsEntity> userTermsConditionsEntities = new ArrayList<>();
-
         List<TermsConditionsEntity> termsConditionsEntities =
                 termsConditionsQueryUseCase.getTermsConditions(List.of(TRUE, FALSE));
-        if (termsConditionsEntities.size() != termsConditionsCreateRequest.size()) {
-            throw new CustomIllegalArgumentException("약관동의 항목의 갯수가 일치하지 않습니다");
-        }
+        validateUserTermsConditions(
+                termsConditionsEntities.size(), termsConditionsCreateRequest.size(), userId);
 
         Map<String, TermsConditionsEntity> termsConditionsMap =
                 termsConditionsEntities.stream()
@@ -43,6 +44,7 @@ public class UserTermsConditionsCommandFacadeImpl implements UserTermsConditions
                                                 termsConditionsEntity.getType().name(),
                                         termsConditionsEntity -> termsConditionsEntity));
 
+        List<UserTermsConditionsEntity> userTermsConditionsEntities = new ArrayList<>();
         termsConditionsCreateRequest.forEach(
                 termsConditions -> {
                     TermsConditionsEntity termsConditionsEntity =
@@ -56,5 +58,15 @@ public class UserTermsConditionsCommandFacadeImpl implements UserTermsConditions
                                     termsConditionsEntity, termsConditions.agreement(), userId));
                 });
         userTermsConditionsCommandUseCase.createAll(userTermsConditionsEntities);
+    }
+
+    private void validateUserTermsConditions(
+            int termsConditionsSize, int requestSize, Long userId) {
+        if (termsConditionsSize != requestSize) {
+            throw new CustomIllegalArgumentException("약관동의 항목의 갯수가 일치하지 않습니다");
+        }
+        if (userTermsConditionsQueryUseCase.existsUser(userId)) {
+            throw new CustomIllegalArgumentException("이미 약관동의 완료된 회원입니다");
+        }
     }
 }

@@ -4,4 +4,6 @@ import com.boardgo.domain.termsconditions.entity.UserTermsConditionsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserTermsConditionsRepository
-        extends JpaRepository<UserTermsConditionsEntity, Long> {}
+        extends JpaRepository<UserTermsConditionsEntity, Long> {
+    boolean existsByUserInfoId(Long userInfoId);
+}
