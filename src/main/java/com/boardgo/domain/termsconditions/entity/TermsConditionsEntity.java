@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -48,13 +49,21 @@ public class TermsConditionsEntity {
     @Comment("필수 여부(Y/N)")
     @Convert(converter = BooleanConverter.class)
     @Column(name = "required", nullable = false, columnDefinition = "varchar(1)")
-    private boolean required;
+    private Boolean required;
 
+    @Builder
     public TermsConditionsEntity(
             TermsConditionsType type, String title, String content, boolean required) {
         this.type = type;
         this.title = title;
         this.content = content;
         this.required = required;
+    }
+
+    public boolean isRequired(Boolean required) {
+        if (this.getRequired()) {
+            return required;
+        }
+        return true;
     }
 }
