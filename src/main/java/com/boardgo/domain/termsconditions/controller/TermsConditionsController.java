@@ -31,5 +31,5 @@ public class TermsConditionsController {
         return ResponseEntity.ok().build();
     }
 
-    // TODO. 약관 추가 및 버전업데이트 API
+    // TODO. 약관 추가 및 히스토리 버전업데이트 API 개발
 }

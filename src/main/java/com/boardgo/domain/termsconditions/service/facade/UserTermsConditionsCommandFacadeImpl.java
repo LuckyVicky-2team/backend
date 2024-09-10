@@ -50,7 +50,7 @@ public class UserTermsConditionsCommandFacadeImpl implements UserTermsConditions
                     TermsConditionsEntity termsConditionsEntity =
                             termsConditionsMap.get(termsConditions.termsConditionsType());
                     if (termsConditionsEntity.isRequired() && !termsConditions.agreement()) {
-                        throw new CustomIllegalArgumentException("약관동의 필수항목은 필수로 선택되어야 합니다");
+                        throw new CustomIllegalArgumentException("필수 약관은 필수로 선택되어야 합니다");
                     }
 
                     userTermsConditionsEntities.add(
