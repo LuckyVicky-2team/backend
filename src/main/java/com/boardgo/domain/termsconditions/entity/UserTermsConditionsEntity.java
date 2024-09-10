@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -42,6 +43,7 @@ public class UserTermsConditionsEntity extends BaseEntity {
     @Column(name = "agreement", nullable = false, columnDefinition = "varchar(1)")
     private Boolean agreement;
 
+    @Builder
     public UserTermsConditionsEntity(
             Long userInfoId, TermsConditionsEntity termsConditionsEntity, boolean agreement) {
         this.userInfoId = userInfoId;

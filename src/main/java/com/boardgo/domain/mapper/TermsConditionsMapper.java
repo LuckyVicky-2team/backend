@@ -10,5 +10,5 @@ public interface TermsConditionsMapper {
     TermsConditionsMapper INSTANCE = Mappers.getMapper(TermsConditionsMapper.class);
 
     UserTermsConditionsEntity toUserTermsConditionsEntity(
-            TermsConditionsEntity termsConditions, Boolean agreement, Long userId);
+            TermsConditionsEntity termsConditionsEntity, Boolean agreement, Long userInfoId);
 }
