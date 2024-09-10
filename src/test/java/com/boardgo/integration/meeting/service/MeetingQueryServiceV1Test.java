@@ -1,5 +1,7 @@
 package com.boardgo.integration.meeting.service;
 
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.*;
+import static com.boardgo.integration.data.MeetingData.*;
 import static org.assertj.core.api.Assertions.*;
 
 import com.boardgo.domain.boardgame.service.response.BoardGameListResponse;
@@ -17,6 +19,7 @@ import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
 import com.boardgo.domain.meeting.service.MeetingCreateFactory;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
+import com.boardgo.domain.meeting.service.response.HomeMeetingDeadlineResponse;
 import com.boardgo.domain.meeting.service.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.service.response.MeetingSearchResponse;
 import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
@@ -346,7 +349,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         initEssentialData();
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, null, null, null, null, null, null, null);
+                        null, null, null, null, null, null, null, null, null, null, null, null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -363,7 +366,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         long count = 10L;
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        count, null, null, null, null, null, null, null, page, null, null);
+                        count, null, null, null, null, null, null, null, page, null, null, null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -378,7 +381,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         // given
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, null, null, null, null, null, null, null);
+                        null, null, null, null, null, null, null, null, null, null, null, null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -412,7 +415,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         initEssentialData();
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, "genre5", null, null, null, null, null, null, null, null, null);
+                        null, "genre5", null, null, null, null, null, null, null, null, null, null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -433,7 +436,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         LocalDateTime endDate = LocalDateTime.now().plusDays(5).plusMinutes(10);
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, startDate, endDate, null, null, null, null, null, null, null);
+                        null, null, startDate, endDate, null, null, null, null, null, null, null,
+                        null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -462,6 +466,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         null,
                         null,
                         null,
+                        null,
                         null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
@@ -482,7 +487,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         initEssentialData();
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, "title5", "TITLE", null, null, null, null, null);
+                        null, null, null, null, "title5", "TITLE", null, null, null, null, null,
+                        null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -501,7 +507,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         initEssentialData();
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, "title5", "ALL", null, null, null, null, null);
+                        null, null, null, null, "title5", "ALL", null, null, null, null, null,
+                        null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -520,7 +527,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         initEssentialData();
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, null, null, "city5", null, null, null, null);
+                        null, null, null, null, null, null, "city5", null, null, null, null, null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -539,7 +546,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         initEssentialData();
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, null, null, null, "county5", null, null, null);
+                        null, null, null, null, null, null, null, "county5", null, null, null,
+                        null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -558,6 +566,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         initEssentialData();
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
+                        null,
                         null,
                         null,
                         null,
@@ -593,7 +602,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
-                        .state(MeetingState.COMPLETE)
+                        .state(PROGRESS)
                         .meetingDatetime(LocalDateTime.now().plusDays(1))
                         .type(MeetingType.FREE)
                         .content("content")
@@ -616,7 +625,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
-                        .state(MeetingState.COMPLETE)
+                        .state(MeetingState.PROGRESS)
                         .meetingDatetime(LocalDateTime.now().plusDays(2))
                         .type(MeetingType.FREE)
                         .content("content")
@@ -639,7 +648,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
-                        .state(MeetingState.COMPLETE)
+                        .state(MeetingState.PROGRESS)
                         .meetingDatetime(LocalDateTime.now().plusDays(3))
                         .type(MeetingType.FREE)
                         .content("content")
@@ -658,7 +667,18 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
 
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, null, null, null, null, null, null, "MEETING_DATE");
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "MEETING_DATE");
         meetingLikeRepository.save(
                 MeetingLikeEntity.builder().meetingId(meetingId1).userId(1L).build());
         meetingLikeRepository.save(
@@ -670,6 +690,109 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         assertThat(searchResult.getContent().getFirst().likeStatus()).isEqualTo("Y");
         assertThat(searchResult.getContent().get(1).likeStatus()).isEqualTo("N");
         assertThat(searchResult.getContent().get(2).likeStatus()).isEqualTo("Y");
+    }
+
+    @Test
+    @DisplayName("모집 완료된 글도 볼 수 있다")
+    void 모집_완료된_글도_볼_수_있다() {
+        testBoardGameInitializer.generateBoardGameData();
+        setSecurityContext();
+
+        MeetingEntity meetingEntity1 =
+                MeetingEntity.builder()
+                        .viewCount(0L)
+                        .userId(1L)
+                        .latitude("12312312")
+                        .longitude("12321")
+                        .thumbnail("thumbnail")
+                        .state(COMPLETE)
+                        .meetingDatetime(LocalDateTime.now().plusDays(1))
+                        .type(MeetingType.FREE)
+                        .content("content")
+                        .city("city")
+                        .county("county")
+                        .title("title")
+                        .locationName("location")
+                        .detailAddress("detailAddress")
+                        .limitParticipant(5)
+                        .build();
+        List<Long> boardGameIdList1 = List.of(1L, 2L);
+        List<Long> boardGameGenreIdList1 = List.of(1L, 2L);
+        Long meetingId1 =
+                meetingCreateFactory.create(
+                        meetingEntity1, boardGameIdList1, boardGameGenreIdList1);
+        MeetingEntity meetingEntity2 =
+                MeetingEntity.builder()
+                        .viewCount(0L)
+                        .userId(1L)
+                        .latitude("12312312")
+                        .longitude("12321")
+                        .thumbnail("thumbnail")
+                        .state(MeetingState.PROGRESS)
+                        .meetingDatetime(LocalDateTime.now().plusDays(2))
+                        .type(MeetingType.FREE)
+                        .content("content")
+                        .city("city")
+                        .county("county")
+                        .title("title")
+                        .locationName("location")
+                        .detailAddress("detailAddress")
+                        .limitParticipant(5)
+                        .build();
+        List<Long> boardGameIdList2 = List.of(1L, 2L);
+        List<Long> boardGameGenreIdList2 = List.of(1L, 2L);
+        Long meetingId2 =
+                meetingCreateFactory.create(
+                        meetingEntity2, boardGameIdList2, boardGameGenreIdList2);
+        MeetingEntity meetingEntity3 =
+                MeetingEntity.builder()
+                        .viewCount(0L)
+                        .userId(1L)
+                        .latitude("12312312")
+                        .longitude("12321")
+                        .thumbnail("thumbnail")
+                        .state(COMPLETE)
+                        .meetingDatetime(LocalDateTime.now().plusDays(3))
+                        .type(MeetingType.FREE)
+                        .content("content")
+                        .city("city")
+                        .county("county")
+                        .title("title")
+                        .locationName("location")
+                        .detailAddress("detailAddress")
+                        .limitParticipant(5)
+                        .build();
+        List<Long> boardGameIdList3 = List.of(1L, 2L);
+        List<Long> boardGameGenreIdList3 = List.of(1L, 2L);
+        Long meetingId3 =
+                meetingCreateFactory.create(
+                        meetingEntity3, boardGameIdList3, boardGameGenreIdList3);
+
+        MeetingSearchRequest meetingSearchRequest =
+                new MeetingSearchRequest(
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "COMPLETE",
+                        "MEETING_DATE");
+        meetingLikeRepository.save(
+                MeetingLikeEntity.builder().meetingId(meetingId1).userId(1L).build());
+        meetingLikeRepository.save(
+                MeetingLikeEntity.builder().meetingId(meetingId3).userId(1L).build());
+
+        // when
+        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        // then
+        assertThat(searchResult.getTotalElements()).isEqualTo(3);
+        assertThat(searchResult.getTotalPages()).isEqualTo(1);
+        assertThat(searchResult.getNumberOfElements()).isEqualTo(3);
     }
 
     @Test
@@ -685,7 +808,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
-                        .state(MeetingState.COMPLETE)
+                        .state(PROGRESS)
                         .meetingDatetime(LocalDateTime.now().plusDays(1))
                         .type(MeetingType.FREE)
                         .content("content")
@@ -708,7 +831,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
-                        .state(MeetingState.COMPLETE)
+                        .state(MeetingState.PROGRESS)
                         .meetingDatetime(LocalDateTime.now().plusDays(2))
                         .type(MeetingType.FREE)
                         .content("content")
@@ -731,7 +854,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
-                        .state(MeetingState.COMPLETE)
+                        .state(MeetingState.PROGRESS)
                         .meetingDatetime(LocalDateTime.now().plusDays(3))
                         .type(MeetingType.FREE)
                         .content("content")
@@ -750,7 +873,18 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
 
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, null, null, null, null, null, null, "MEETING_DATE");
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "MEETING_DATE");
         meetingLikeRepository.save(
                 MeetingLikeEntity.builder().meetingId(meetingId1).userId(1L).build());
         meetingLikeRepository.save(
@@ -772,7 +906,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
         initEssentialData();
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
-                        null, null, null, null, null, null, null, null, 2, null, null);
+                        null, null, null, null, null, null, null, null, 2, null, null, null);
         // when
         Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
         // then
@@ -803,5 +937,114 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         customUserDetails, "password1", customUserDetails.getAuthorities());
         context.setAuthentication(auth);
         SecurityContextHolder.setContext(context);
+    }
+
+    @Test
+    @DisplayName("홈 마감임박 모임 목록은 현재 시점부터 3일 이내인 모임만 조회된다")
+    void 홈_마감임박_모임_목록은_현재_시점부터_3일_이내인_모임만_조회된다() {
+        // given
+        // 조회 가능
+        Long userId = 1L;
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusMinutes(59))
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusHours(1))
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusDays(1))
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusDays(2))
+                        .build());
+        // 조회 불가
+        MeetingEntity meeting1 =
+                meetingRepository.save(
+                        getMeetingEntityData(userId)
+                                .meetingDatetime(LocalDateTime.now().plusNanos(59))
+                                .build());
+        MeetingEntity meeting2 =
+                meetingRepository.save(
+                        getMeetingEntityData(userId)
+                                .meetingDatetime(LocalDateTime.now().plusDays(3).plusMinutes(1))
+                                .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusDays(4))
+                        .build());
+        meetingRepository.save(getMeetingEntityData(userId).build());
+        meetingRepository.save(getMeetingEntityData(userId).build());
+
+        // when
+        List<HomeMeetingDeadlineResponse> homeMeetingDeadlines =
+                meetingQueryUseCase.getMeetingDeadlines();
+        // then
+        assertThat(homeMeetingDeadlines).isNotEmpty();
+        homeMeetingDeadlines.forEach(
+                homeMeetingDeadline -> {
+                    assertThat(homeMeetingDeadline.meetingDatetime())
+                            .isBefore(LocalDateTime.now().plusDays(3));
+                    assertThat(homeMeetingDeadline.meetingId()).isNotEqualTo(meeting1.getId());
+                    assertThat(homeMeetingDeadline.meetingId()).isNotEqualTo(meeting2.getId());
+                });
+    }
+
+    @Test
+    @DisplayName("홈 마감임박 모임 목록은 모집 중인 모임 상태만 조회된다")
+    void 홈_마감임박_모임_목록은_모집_중인_모임_상태만_조회된다() {
+        // given
+        Long userId = 1L;
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusHours(1))
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusDays(1))
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusDays(1))
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusDays(2))
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().plusDays(2))
+                        .build());
+        meetingRepository.save(getMeetingEntityData(userId).state(COMPLETE).build());
+        meetingRepository.save(getMeetingEntityData(userId).state(COMPLETE).build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().minusDays(1))
+                        .state(FINISH)
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().minusDays(2))
+                        .state(FINISH)
+                        .build());
+        meetingRepository.save(
+                getMeetingEntityData(userId)
+                        .meetingDatetime(LocalDateTime.now().minusDays(3))
+                        .state(FINISH)
+                        .build());
+        // when
+        List<HomeMeetingDeadlineResponse> homeMeetingDeadlines =
+                meetingQueryUseCase.getMeetingDeadlines();
+        // then
+        assertThat(homeMeetingDeadlines).isNotEmpty();
+        homeMeetingDeadlines.forEach(
+                homeMeetingDeadline -> {
+                    MeetingEntity meeting =
+                            meetingRepository.findById(homeMeetingDeadline.meetingId()).get();
+                    assertThat(meeting.getState()).isEqualTo(PROGRESS);
+                });
     }
 }

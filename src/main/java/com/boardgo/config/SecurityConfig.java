@@ -1,12 +1,15 @@
 package com.boardgo.config;
 
-import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
+import static com.boardgo.common.constant.HeaderConstant.*;
+import static org.springframework.http.HttpMethod.*;
 
 import com.boardgo.domain.user.entity.enums.RoleType;
 import com.boardgo.jwt.JWTFilter;
 import com.boardgo.jwt.JWTUtil;
 import com.boardgo.jwt.JwtExceptionHandlerFilter;
 import com.boardgo.jwt.LoginFilter;
+import com.boardgo.jwt.service.LoginService;
+import com.boardgo.jwt.service.TokenService;
 import com.boardgo.oauth2.handler.OAuth2SuccessHandler;
 import com.boardgo.oauth2.service.CustomOAuth2UserService;
 import java.util.Collections;
@@ -14,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,6 +37,8 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final LoginService loginService;
+    private final TokenService tokenService;
     private final JWTUtil jwtUtil;
 
     @Value("${spring.cors.origins}")
@@ -59,12 +63,13 @@ public class SecurityConfig {
         AntPathRequestMatcher.antMatcher("/login/oauth2/**"),
         AntPathRequestMatcher.antMatcher("/token"),
         AntPathRequestMatcher.antMatcher("/actuator/**"),
-        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/meeting/**"),
-        AntPathRequestMatcher.antMatcher(HttpMethod.PATCH, "/meeting/share/{id}"),
-        AntPathRequestMatcher.antMatcher(HttpMethod.PATCH, "/meeting/complete/{id}"),
-        AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/boardgame"),
-        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/personal-info/{userId}"),
-        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/home/**"),
+        AntPathRequestMatcher.antMatcher(GET, "/meeting/**"),
+        AntPathRequestMatcher.antMatcher(POST, "/reissue"),
+        AntPathRequestMatcher.antMatcher(PATCH, "/meeting/share/{id}"),
+        AntPathRequestMatcher.antMatcher(PATCH, "/meeting/complete/{id}"),
+        AntPathRequestMatcher.antMatcher(POST, "/boardgame"),
+        AntPathRequestMatcher.antMatcher(GET, "/personal-info/{userId}"),
+        AntPathRequestMatcher.antMatcher(GET, "/home/**")
     };
 
     final AntPathRequestMatcher[] permitUserUri = {
@@ -113,7 +118,9 @@ public class SecurityConfig {
                                         SessionCreationPolicy.STATELESS))
                 .addFilterAt(
                         new LoginFilter(
-                                authenticationManager(authenticationConfiguration), jwtUtil),
+                                authenticationManager(authenticationConfiguration),
+                                tokenService,
+                                loginService),
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
                 .addFilterBefore(new JwtExceptionHandlerFilter(), JWTFilter.class)
