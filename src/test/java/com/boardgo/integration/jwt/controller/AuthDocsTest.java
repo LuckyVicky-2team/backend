@@ -2,6 +2,7 @@ package com.boardgo.integration.jwt.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.*;
 import static io.restassured.RestAssured.*;
+import static org.springframework.restdocs.cookies.CookieDocumentation.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.*;
 
 import com.boardgo.common.constant.TimeConstant;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.cookies.RequestCookiesSnippet;
 
 public class AuthDocsTest extends RestDocsTestSupport {
     @Autowired private TokenService tokenService;
@@ -56,12 +58,16 @@ public class AuthDocsTest extends RestDocsTestSupport {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(API_VERSION_HEADER, "1")
                 .cookie(AUTHORIZATION, cookie.getValue())
-                .filter(document("reissue"))
+                .filter(document("reissue", getRequestCookiesSnippet()))
                 .when()
                 .post("/reissue")
                 .then()
                 .log()
                 .ifError()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    private RequestCookiesSnippet getRequestCookiesSnippet() {
+        return requestCookies(cookieWithName(AUTHORIZATION).description("Refresh Token"));
     }
 }
