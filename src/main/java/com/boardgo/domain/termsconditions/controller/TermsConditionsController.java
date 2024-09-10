@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ public class TermsConditionsController {
             @RequestBody @NotEmpty(message = "빈 배열일 수 없습니다.")
                     List<@Valid TermsConditionsCreateRequest> request) {
         userTermsConditionsCommandFacade.createUserTermsConditions(request, currentUserId());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // TODO. 약관 추가 및 히스토리 버전업데이트 API 개발
