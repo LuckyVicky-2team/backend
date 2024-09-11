@@ -18,10 +18,10 @@ import com.boardgo.domain.meeting.repository.MeetingLikeRepository;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
 import com.boardgo.domain.meeting.service.MeetingCreateFactory;
-import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
+import com.boardgo.domain.meeting.service.facade.MeetingQueryFacade;
 import com.boardgo.domain.meeting.service.response.HomeMeetingDeadlineResponse;
-import com.boardgo.domain.meeting.service.response.MeetingDetailResponse;
-import com.boardgo.domain.meeting.service.response.MeetingSearchResponse;
+import com.boardgo.domain.meeting.service.response.MeetingResponse;
+import com.boardgo.domain.meeting.service.response.MeetingSearchPageResponse;
 import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
@@ -42,9 +42,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
+public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
     @Autowired private MeetingRepository meetingRepository;
-    @Autowired private MeetingQueryUseCase meetingQueryUseCase;
+    @Autowired private MeetingQueryFacade meetingQueryFacade;
     @Autowired private MeetingParticipantRepository meetingParticipantRepository;
     @Autowired private MeetingGameMatchRepository meetingGameMatchRepository;
     @Autowired private MeetingGenreMatchRepository meetingGenreMatchRepository;
@@ -96,7 +96,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                                 .build());
 
         // when
-        MeetingDetailResponse result = meetingQueryUseCase.getDetailById(meetingId);
+        MeetingResponse result = meetingQueryFacade.getDetailById(meetingId, 1L);
         // then
         assertThat(result.content()).isEqualTo(meetingEntity.getContent());
         assertThat(result.title()).isEqualTo(meetingEntity.getTitle());
@@ -170,7 +170,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                                 .build());
 
         // when
-        MeetingDetailResponse result = meetingQueryUseCase.getDetailById(meetingId);
+        MeetingResponse result = meetingQueryFacade.getDetailById(meetingId, 1L);
         // then
         assertThat(result.content()).isEqualTo(meetingEntity.getContent());
         assertThat(result.title()).isEqualTo(meetingEntity.getTitle());
@@ -242,7 +242,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                                 .build());
 
         // when
-        MeetingDetailResponse result = meetingQueryUseCase.getDetailById(meetingId);
+        MeetingResponse result = meetingQueryFacade.getDetailById(meetingId, 1L);
         // then
         assertThat(result.content()).isEqualTo(meetingEntity.getContent());
         assertThat(result.title()).isEqualTo(meetingEntity.getTitle());
@@ -316,7 +316,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                                 .build());
 
         // when
-        MeetingDetailResponse result = meetingQueryUseCase.getDetailById(meetingId);
+        MeetingResponse result = meetingQueryFacade.getDetailById(meetingId, 1L);
         // then
         assertThat(result.content()).isEqualTo(meetingEntity.getContent());
         assertThat(result.title()).isEqualTo(meetingEntity.getTitle());
@@ -351,7 +351,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 new MeetingSearchRequest(
                         null, null, null, null, null, null, null, null, null, null, null, null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(30);
         assertThat(searchResult.getTotalPages()).isEqualTo(3);
@@ -368,7 +369,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 new MeetingSearchRequest(
                         count, null, null, null, null, null, null, null, page, null, null, null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(10);
         assertThat(searchResult.getTotalPages()).isEqualTo(1);
@@ -383,9 +385,10 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 new MeetingSearchRequest(
                         null, null, null, null, null, null, null, null, null, null, null, null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
-        for (MeetingSearchResponse meetingSearchResponse : searchResult.getContent()) {
+        for (MeetingSearchPageResponse meetingSearchResponse : searchResult.getContent()) {
             Set<String> genres =
                     Set.of(
                             meetingGenreMatchRepository
@@ -417,12 +420,13 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 new MeetingSearchRequest(
                         null, "genre5", null, null, null, null, null, null, null, null, null, null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(15);
         assertThat(searchResult.getTotalPages()).isEqualTo(2);
         assertThat(searchResult.getNumberOfElements()).isEqualTo(10);
-        for (MeetingSearchResponse meetingSearchResponse : searchResult.getContent()) {
+        for (MeetingSearchPageResponse meetingSearchResponse : searchResult.getContent()) {
             assertThat(meetingSearchResponse.tags()).contains("genre5");
         }
     }
@@ -439,12 +443,13 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         null, null, startDate, endDate, null, null, null, null, null, null, null,
                         null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(15);
         assertThat(searchResult.getTotalPages()).isEqualTo(2);
         assertThat(searchResult.getNumberOfElements()).isEqualTo(10);
-        for (MeetingSearchResponse meetingSearchResponse : searchResult.getContent()) {
+        for (MeetingSearchPageResponse meetingSearchResponse : searchResult.getContent()) {
             assertThat(meetingSearchResponse.meetingDate()).isBetween(startDate, endDate);
         }
     }
@@ -469,12 +474,13 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         null,
                         null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(3);
         assertThat(searchResult.getTotalPages()).isEqualTo(1);
         assertThat(searchResult.getNumberOfElements()).isEqualTo(3);
-        for (MeetingSearchResponse meetingSearchResponse : searchResult.getContent()) {
+        for (MeetingSearchPageResponse meetingSearchResponse : searchResult.getContent()) {
             MeetingEntity meeting = meetingRepository.findById(meetingSearchResponse.id()).get();
             assertThat(meeting.getContent()).contains("content5");
         }
@@ -490,12 +496,13 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         null, null, null, null, "title5", "TITLE", null, null, null, null, null,
                         null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(3);
         assertThat(searchResult.getTotalPages()).isEqualTo(1);
         assertThat(searchResult.getNumberOfElements()).isEqualTo(3);
-        for (MeetingSearchResponse meetingSearchResponse : searchResult.getContent()) {
+        for (MeetingSearchPageResponse meetingSearchResponse : searchResult.getContent()) {
             assertThat(meetingSearchResponse.title()).contains("title5");
         }
     }
@@ -510,12 +517,13 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         null, null, null, null, "title5", "ALL", null, null, null, null, null,
                         null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(3);
         assertThat(searchResult.getTotalPages()).isEqualTo(1);
         assertThat(searchResult.getNumberOfElements()).isEqualTo(3);
-        for (MeetingSearchResponse meetingSearchResponse : searchResult.getContent()) {
+        for (MeetingSearchPageResponse meetingSearchResponse : searchResult.getContent()) {
             assertThat(meetingSearchResponse.title()).contains("title5");
         }
     }
@@ -529,12 +537,13 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 new MeetingSearchRequest(
                         null, null, null, null, null, null, "city5", null, null, null, null, null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(3);
         assertThat(searchResult.getTotalPages()).isEqualTo(1);
         assertThat(searchResult.getNumberOfElements()).isEqualTo(3);
-        for (MeetingSearchResponse meetingSearchResponse : searchResult.getContent()) {
+        for (MeetingSearchPageResponse meetingSearchResponse : searchResult.getContent()) {
             assertThat(meetingSearchResponse.city()).contains("city5");
         }
     }
@@ -549,12 +558,13 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         null, null, null, null, null, null, null, "county5", null, null, null,
                         null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(3);
         assertThat(searchResult.getTotalPages()).isEqualTo(1);
         assertThat(searchResult.getNumberOfElements()).isEqualTo(3);
-        for (MeetingSearchResponse meetingSearchResponse : searchResult.getContent()) {
+        for (MeetingSearchPageResponse meetingSearchResponse : searchResult.getContent()) {
             assertThat(meetingSearchResponse.county()).contains("county5");
         }
     }
@@ -579,12 +589,13 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         null,
                         "PARTICIPANT_COUNT");
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(30);
         assertThat(searchResult.getTotalPages()).isEqualTo(3);
         assertThat(searchResult.getNumberOfElements()).isEqualTo(10);
-        MeetingSearchResponse first = searchResult.getContent().getFirst();
+        MeetingSearchPageResponse first = searchResult.getContent().getFirst();
         assertThat(first.limitParticipant() - first.participantCount()).isEqualTo(0);
     }
 
@@ -685,7 +696,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 MeetingLikeEntity.builder().meetingId(meetingId3).userId(1L).build());
 
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getContent().getFirst().likeStatus()).isEqualTo("Y");
         assertThat(searchResult.getContent().get(1).likeStatus()).isEqualTo("N");
@@ -788,7 +800,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 MeetingLikeEntity.builder().meetingId(meetingId3).userId(1L).build());
 
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(3);
         assertThat(searchResult.getTotalPages()).isEqualTo(1);
@@ -891,8 +904,10 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 MeetingLikeEntity.builder().meetingId(meetingId3).userId(1L).build());
 
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 2L);
         // then
+        System.out.println(searchResult.getContent());
         assertThat(searchResult.getContent().getFirst().likeStatus()).isEqualTo("N");
         assertThat(searchResult.getContent().get(1).likeStatus()).isEqualTo("N");
         assertThat(searchResult.getContent().get(2).likeStatus()).isEqualTo("N");
@@ -908,7 +923,8 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                 new MeetingSearchRequest(
                         null, null, null, null, null, null, null, null, 2, null, null, null);
         // when
-        Page<MeetingSearchResponse> searchResult = meetingQueryUseCase.search(meetingSearchRequest);
+        Page<MeetingSearchPageResponse> searchResult =
+                meetingQueryFacade.search(meetingSearchRequest, 1L);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(30);
         assertThat(searchResult.getTotalPages()).isEqualTo(3);
@@ -981,7 +997,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
 
         // when
         List<HomeMeetingDeadlineResponse> homeMeetingDeadlines =
-                meetingQueryUseCase.getMeetingDeadlines();
+                meetingQueryFacade.getMeetingDeadlines();
         // then
         assertThat(homeMeetingDeadlines).isNotEmpty();
         homeMeetingDeadlines.forEach(
@@ -1037,7 +1053,7 @@ public class MeetingQueryServiceV1Test extends IntegrationTestSupport {
                         .build());
         // when
         List<HomeMeetingDeadlineResponse> homeMeetingDeadlines =
-                meetingQueryUseCase.getMeetingDeadlines();
+                meetingQueryFacade.getMeetingDeadlines();
         // then
         assertThat(homeMeetingDeadlines).isNotEmpty();
         homeMeetingDeadlines.forEach(

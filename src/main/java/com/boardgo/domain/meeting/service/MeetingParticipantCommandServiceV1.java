@@ -1,6 +1,6 @@
 package com.boardgo.domain.meeting.service;
 
-import static com.boardgo.domain.meeting.entity.enums.ParticipantType.OUT;
+import static com.boardgo.domain.meeting.entity.enums.ParticipantType.*;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNullPointException;
@@ -58,6 +58,17 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
         }
     }
 
+    @Override
+    public void outMeeting(Long meetingId, Long userId) {
+        MeetingParticipantEntity meetingParticipant =
+                meetingParticipantRepository.findByUserInfoIdAndMeetingId(userId, meetingId);
+        if (Objects.isNull(meetingParticipant)) {
+            throw new CustomIllegalArgumentException("참여하지 않은 모임입니다");
+        }
+        // TODO 쓰레드에서 나가기
+        meetingParticipant.updateParticipantType(OUT);
+    }
+
     private void validateParticipateMeeting(MeetingEntity meetingEntity, Long userId) {
         meetingEntity.isAfterMeeting();
         if (meetingParticipantRepository.existsByUserInfoIdAndMeetingId(
@@ -73,16 +84,5 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
             throw new CustomIllegalArgumentException("모임 정원으로 참가 불가능 합니다");
         }
         meetingEntity.checkCompleteState();
-    }
-
-    @Override
-    public void outMeeting(Long meetingId, Long userId) {
-        MeetingParticipantEntity meetingParticipant =
-                meetingParticipantRepository.findByUserInfoIdAndMeetingId(userId, meetingId);
-        if (Objects.isNull(meetingParticipant)) {
-            throw new CustomIllegalArgumentException("참여하지 않은 모임입니다");
-        }
-        // TODO 쓰레드에서 나가기
-        meetingParticipant.updateParticipantType(OUT);
     }
 }

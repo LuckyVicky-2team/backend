@@ -6,6 +6,7 @@ import com.boardgo.domain.boardgame.repository.projection.BoardGameSearchProject
 import com.boardgo.domain.boardgame.service.response.BoardGameSearchResponse;
 import com.boardgo.domain.boardgame.service.response.GenreSearchResponse;
 import com.boardgo.domain.mapper.BoardGameMapper;
+import com.boardgo.domain.meeting.service.response.BoardGameByMeetingIdResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +40,11 @@ public class BoardGameQueryServiceV1 implements BoardGameQueryUseCase {
                 boardGameSearchResponseList,
                 pageable,
                 boardGameRepository.countBySearchResult(request));
+    }
+
+    @Override
+    public List<BoardGameByMeetingIdResponse> findMeetingDetailByMeetingId(Long meetingId) {
+        return boardGameRepository.findMeetingDetailByMeetingId(meetingId);
     }
 
     private int getPage(Integer page) {
