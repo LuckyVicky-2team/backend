@@ -48,7 +48,7 @@ public class TermsConditionsEntity {
 
     @Comment("필수 여부(Y/N)")
     @Convert(converter = BooleanConverter.class)
-    @Column(name = "required", nullable = false, columnDefinition = "varchar(1)")
+    @Column(name = "required", nullable = false, columnDefinition = "char(1)")
     private Boolean required;
 
     @Builder

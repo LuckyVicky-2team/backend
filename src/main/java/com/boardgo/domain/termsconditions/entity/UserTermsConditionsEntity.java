@@ -40,7 +40,7 @@ public class UserTermsConditionsEntity extends BaseEntity {
 
     @Comment("동의여부(Y/N)")
     @Convert(converter = BooleanConverter.class)
-    @Column(name = "agreement", nullable = false, columnDefinition = "varchar(1)")
+    @Column(name = "agreement", nullable = false, columnDefinition = "char(1)")
     private Boolean agreement;
 
     @Builder
