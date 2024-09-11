@@ -20,7 +20,6 @@ include::{snippets}/post-terms-conditions-user/request-fields.adoc[]
 
 | TERMS | 이용약관 동의 | Y
 | PRIVACY | 개인정보 이용 수집 동의 | Y
-| PRIVACY | 개인정보 이용 수집 동의 | Y
 | LOCATION | 위치정보 이용 수집 동의 | Y (N 으로 할지 검토필요)
 | AGE14 | 본인은 만 14세 이상입니다 | Y
 | PUSH | 푸시 알림 동의 | N

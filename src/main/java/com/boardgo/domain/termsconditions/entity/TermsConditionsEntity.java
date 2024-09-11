@@ -52,7 +52,7 @@ public class TermsConditionsEntity {
     private Boolean required;
 
     @Builder
-    public TermsConditionsEntity(
+    private TermsConditionsEntity(
             TermsConditionsType type, String title, String content, boolean required) {
         this.type = type;
         this.title = title;

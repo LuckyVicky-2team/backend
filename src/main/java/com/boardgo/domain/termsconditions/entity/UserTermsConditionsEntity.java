@@ -44,7 +44,7 @@ public class UserTermsConditionsEntity extends BaseEntity {
     private Boolean agreement;
 
     @Builder
-    public UserTermsConditionsEntity(
+    private UserTermsConditionsEntity(
             Long userInfoId, TermsConditionsEntity termsConditionsEntity, boolean agreement) {
         this.userInfoId = userInfoId;
         this.termsConditions = termsConditionsEntity;
