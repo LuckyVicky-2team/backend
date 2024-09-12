@@ -69,6 +69,16 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
         meetingParticipant.updateParticipantType(OUT);
     }
 
+    @Override
+    public void create(MeetingParticipantEntity meetingParticipantEntity) {
+        meetingParticipantRepository.save(meetingParticipantEntity);
+    }
+
+    @Override
+    public void deleteByMeetingId(Long meetingId) {
+        meetingParticipantRepository.deleteAllInBatchByMeetingId(meetingId);
+    }
+
     private void validateParticipateMeeting(MeetingEntity meetingEntity, Long userId) {
         meetingEntity.isAfterMeeting();
         if (meetingParticipantRepository.existsByUserInfoIdAndMeetingId(

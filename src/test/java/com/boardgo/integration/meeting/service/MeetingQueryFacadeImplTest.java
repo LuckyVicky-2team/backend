@@ -17,7 +17,6 @@ import com.boardgo.domain.meeting.repository.MeetingGenreMatchRepository;
 import com.boardgo.domain.meeting.repository.MeetingLikeRepository;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
-import com.boardgo.domain.meeting.service.MeetingCreateFactory;
 import com.boardgo.domain.meeting.service.facade.MeetingQueryFacade;
 import com.boardgo.domain.meeting.service.response.HomeMeetingDeadlineResponse;
 import com.boardgo.domain.meeting.service.response.MeetingResponse;
@@ -48,7 +47,6 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
     @Autowired private MeetingParticipantRepository meetingParticipantRepository;
     @Autowired private MeetingGameMatchRepository meetingGameMatchRepository;
     @Autowired private MeetingGenreMatchRepository meetingGenreMatchRepository;
-    @Autowired private MeetingCreateFactory meetingCreateFactory;
     @Autowired private UserRepository userRepository;
     @Autowired private MeetingLikeRepository meetingLikeRepository;
 
@@ -84,8 +82,16 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .build();
         List<Long> boardGameIdList = List.of(1L, 2L);
         List<Long> boardGameGenreIdList = List.of(1L, 2L);
-        Long meetingId =
-                meetingCreateFactory.create(meetingEntity, boardGameIdList, boardGameGenreIdList);
+        MeetingEntity savedMeeting = meetingRepository.save(meetingEntity);
+        Long meetingId = savedMeeting.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList, meetingId);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList, meetingId);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .meetingId(meetingId)
+                        .userInfoId(1L)
+                        .type(ParticipantType.PARTICIPANT)
+                        .build());
 
         MeetingParticipantEntity savedParticipant =
                 meetingParticipantRepository.save(
@@ -152,8 +158,16 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .build();
         List<Long> boardGameIdList = List.of(1L, 2L);
         List<Long> boardGameGenreIdList = List.of(1L, 2L);
-        Long meetingId =
-                meetingCreateFactory.create(meetingEntity, boardGameIdList, boardGameGenreIdList);
+        MeetingEntity savedMeeting = meetingRepository.save(meetingEntity);
+        Long meetingId = savedMeeting.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList, meetingId);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList, meetingId);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .meetingId(meetingId)
+                        .userInfoId(userId)
+                        .type(ParticipantType.PARTICIPANT)
+                        .build());
 
         meetingLikeRepository.save(
                 MeetingLikeEntity.builder()
@@ -224,8 +238,16 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .build();
         List<Long> boardGameIdList = List.of(1L, 2L);
         List<Long> boardGameGenreIdList = List.of(1L, 2L);
-        Long meetingId =
-                meetingCreateFactory.create(meetingEntity, boardGameIdList, boardGameGenreIdList);
+        MeetingEntity savedMeeting = meetingRepository.save(meetingEntity);
+        Long meetingId = savedMeeting.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList, meetingId);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList, meetingId);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .meetingId(meetingId)
+                        .userInfoId(userId)
+                        .type(ParticipantType.LEADER)
+                        .build());
 
         meetingLikeRepository.save(
                 MeetingLikeEntity.builder().meetingId(meetingEntity.getId()).userId(4L).build());
@@ -297,8 +319,16 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .build();
         List<Long> boardGameIdList = List.of(1L, 2L);
         List<Long> boardGameGenreIdList = List.of(1L, 2L);
-        Long meetingId =
-                meetingCreateFactory.create(meetingEntity, boardGameIdList, boardGameGenreIdList);
+        MeetingEntity savedMeeting = meetingRepository.save(meetingEntity);
+        Long meetingId = savedMeeting.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList, meetingId);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList, meetingId);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .meetingId(meetingId)
+                        .userInfoId(userId)
+                        .type(ParticipantType.LEADER)
+                        .build());
 
         long anotherUserId = 2L;
         meetingLikeRepository.save(
@@ -316,7 +346,7 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                                 .build());
 
         // when
-        MeetingResponse result = meetingQueryFacade.getDetailById(meetingId, 1L);
+        MeetingResponse result = meetingQueryFacade.getDetailById(meetingId, userId);
         // then
         assertThat(result.content()).isEqualTo(meetingEntity.getContent());
         assertThat(result.title()).isEqualTo(meetingEntity.getTitle());
@@ -606,10 +636,11 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
         testBoardGameInitializer.generateBoardGameData();
         setSecurityContext();
 
+        long userId = 1L;
         MeetingEntity meetingEntity1 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -624,15 +655,22 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList1 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList1 = List.of(1L, 2L);
-        Long meetingId1 =
-                meetingCreateFactory.create(
-                        meetingEntity1, boardGameIdList1, boardGameGenreIdList1);
+        List<Long> boardGameIdList1 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList1 = List.of(userId, 2L);
+        MeetingEntity savedMeeting = meetingRepository.save(meetingEntity1);
+        Long meetingId1 = savedMeeting.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList1, meetingId1);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList1, meetingId1);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .userInfoId(userId)
+                        .meetingId(meetingId1)
+                        .type(ParticipantType.LEADER)
+                        .build());
         MeetingEntity meetingEntity2 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -647,15 +685,22 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList2 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList2 = List.of(1L, 2L);
-        Long meetingId2 =
-                meetingCreateFactory.create(
-                        meetingEntity2, boardGameIdList2, boardGameGenreIdList2);
+        List<Long> boardGameIdList2 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList2 = List.of(userId, 2L);
+        MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
+        Long meetingId2 = savedMeeting2.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList2, meetingId2);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList2, meetingId2);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .userInfoId(userId)
+                        .meetingId(meetingId2)
+                        .type(ParticipantType.LEADER)
+                        .build());
         MeetingEntity meetingEntity3 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -670,12 +715,18 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList3 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList3 = List.of(1L, 2L);
-        Long meetingId3 =
-                meetingCreateFactory.create(
-                        meetingEntity3, boardGameIdList3, boardGameGenreIdList3);
-
+        List<Long> boardGameIdList3 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList3 = List.of(userId, 2L);
+        MeetingEntity savedMeeting3 = meetingRepository.save(meetingEntity3);
+        Long meetingId3 = savedMeeting3.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList3, meetingId3);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList3, meetingId3);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .userInfoId(userId)
+                        .meetingId(meetingId3)
+                        .type(ParticipantType.LEADER)
+                        .build());
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
                         null,
@@ -691,13 +742,13 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         null,
                         "MEETING_DATE");
         meetingLikeRepository.save(
-                MeetingLikeEntity.builder().meetingId(meetingId1).userId(1L).build());
+                MeetingLikeEntity.builder().meetingId(meetingId1).userId(userId).build());
         meetingLikeRepository.save(
-                MeetingLikeEntity.builder().meetingId(meetingId3).userId(1L).build());
+                MeetingLikeEntity.builder().meetingId(meetingId3).userId(userId).build());
 
         // when
         Page<MeetingSearchPageResponse> searchResult =
-                meetingQueryFacade.search(meetingSearchRequest, 1L);
+                meetingQueryFacade.search(meetingSearchRequest, userId);
         // then
         assertThat(searchResult.getContent().getFirst().likeStatus()).isEqualTo("Y");
         assertThat(searchResult.getContent().get(1).likeStatus()).isEqualTo("N");
@@ -710,10 +761,11 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
         testBoardGameInitializer.generateBoardGameData();
         setSecurityContext();
 
+        long userId = 1L;
         MeetingEntity meetingEntity1 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -728,15 +780,22 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList1 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList1 = List.of(1L, 2L);
-        Long meetingId1 =
-                meetingCreateFactory.create(
-                        meetingEntity1, boardGameIdList1, boardGameGenreIdList1);
+        List<Long> boardGameIdList1 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList1 = List.of(userId, 2L);
+        MeetingEntity savedMeeting = meetingRepository.save(meetingEntity1);
+        Long meetingId1 = savedMeeting.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList1, meetingId1);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList1, meetingId1);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .meetingId(meetingId1)
+                        .userInfoId(userId)
+                        .type(ParticipantType.LEADER)
+                        .build());
         MeetingEntity meetingEntity2 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -751,15 +810,22 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList2 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList2 = List.of(1L, 2L);
-        Long meetingId2 =
-                meetingCreateFactory.create(
-                        meetingEntity2, boardGameIdList2, boardGameGenreIdList2);
+        List<Long> boardGameIdList2 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList2 = List.of(userId, 2L);
+        MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
+        Long meetingId2 = savedMeeting2.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList2, meetingId2);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList2, meetingId2);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .meetingId(meetingId2)
+                        .userInfoId(userId)
+                        .type(ParticipantType.LEADER)
+                        .build());
         MeetingEntity meetingEntity3 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -774,11 +840,18 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList3 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList3 = List.of(1L, 2L);
-        Long meetingId3 =
-                meetingCreateFactory.create(
-                        meetingEntity3, boardGameIdList3, boardGameGenreIdList3);
+        List<Long> boardGameIdList3 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList3 = List.of(userId, 2L);
+        MeetingEntity savedMeeting3 = meetingRepository.save(meetingEntity3);
+        Long meetingId3 = savedMeeting3.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList3, meetingId3);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList3, meetingId3);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .meetingId(meetingId3)
+                        .userInfoId(userId)
+                        .type(ParticipantType.LEADER)
+                        .build());
 
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
@@ -795,13 +868,13 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         "COMPLETE",
                         "MEETING_DATE");
         meetingLikeRepository.save(
-                MeetingLikeEntity.builder().meetingId(meetingId1).userId(1L).build());
+                MeetingLikeEntity.builder().meetingId(meetingId1).userId(userId).build());
         meetingLikeRepository.save(
-                MeetingLikeEntity.builder().meetingId(meetingId3).userId(1L).build());
+                MeetingLikeEntity.builder().meetingId(meetingId3).userId(userId).build());
 
         // when
         Page<MeetingSearchPageResponse> searchResult =
-                meetingQueryFacade.search(meetingSearchRequest, 1L);
+                meetingQueryFacade.search(meetingSearchRequest, userId);
         // then
         assertThat(searchResult.getTotalElements()).isEqualTo(3);
         assertThat(searchResult.getTotalPages()).isEqualTo(1);
@@ -814,10 +887,11 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
         testBoardGameInitializer.generateBoardGameData();
         testUserInfoInitializer.generateUserData();
 
+        long userId = 1L;
         MeetingEntity meetingEntity1 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -832,15 +906,22 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList1 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList1 = List.of(1L, 2L);
-        Long meetingId1 =
-                meetingCreateFactory.create(
-                        meetingEntity1, boardGameIdList1, boardGameGenreIdList1);
+        List<Long> boardGameIdList1 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList1 = List.of(userId, 2L);
+        MeetingEntity savedMeeting1 = meetingRepository.save(meetingEntity1);
+        Long meetingId1 = savedMeeting1.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList1, meetingId1);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList1, meetingId1);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .userInfoId(userId)
+                        .meetingId(meetingId1)
+                        .type(ParticipantType.LEADER)
+                        .build());
         MeetingEntity meetingEntity2 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -855,15 +936,22 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList2 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList2 = List.of(1L, 2L);
-        Long meetingId2 =
-                meetingCreateFactory.create(
-                        meetingEntity2, boardGameIdList2, boardGameGenreIdList2);
+        List<Long> boardGameIdList2 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList2 = List.of(userId, 2L);
+        MeetingEntity savedMeeting2 = meetingRepository.save(meetingEntity2);
+        Long meetingId2 = savedMeeting2.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList2, meetingId2);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList2, meetingId2);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .userInfoId(userId)
+                        .meetingId(meetingId2)
+                        .type(ParticipantType.LEADER)
+                        .build());
         MeetingEntity meetingEntity3 =
                 MeetingEntity.builder()
                         .viewCount(0L)
-                        .userId(1L)
+                        .userId(userId)
                         .latitude("12312312")
                         .longitude("12321")
                         .thumbnail("thumbnail")
@@ -878,12 +966,18 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         .detailAddress("detailAddress")
                         .limitParticipant(5)
                         .build();
-        List<Long> boardGameIdList3 = List.of(1L, 2L);
-        List<Long> boardGameGenreIdList3 = List.of(1L, 2L);
-        Long meetingId3 =
-                meetingCreateFactory.create(
-                        meetingEntity3, boardGameIdList3, boardGameGenreIdList3);
-
+        List<Long> boardGameIdList3 = List.of(userId, 2L);
+        List<Long> boardGameGenreIdList3 = List.of(userId, 2L);
+        MeetingEntity savedMeeting3 = meetingRepository.save(meetingEntity3);
+        Long meetingId3 = savedMeeting3.getId();
+        meetingGenreMatchRepository.bulkInsert(boardGameGenreIdList3, meetingId3);
+        meetingGameMatchRepository.bulkInsert(boardGameIdList3, meetingId3);
+        meetingParticipantRepository.save(
+                MeetingParticipantEntity.builder()
+                        .userInfoId(userId)
+                        .meetingId(meetingId3)
+                        .type(ParticipantType.LEADER)
+                        .build());
         MeetingSearchRequest meetingSearchRequest =
                 new MeetingSearchRequest(
                         null,
@@ -899,15 +993,14 @@ public class MeetingQueryFacadeImplTest extends IntegrationTestSupport {
                         null,
                         "MEETING_DATE");
         meetingLikeRepository.save(
-                MeetingLikeEntity.builder().meetingId(meetingId1).userId(1L).build());
+                MeetingLikeEntity.builder().meetingId(meetingId1).userId(userId).build());
         meetingLikeRepository.save(
-                MeetingLikeEntity.builder().meetingId(meetingId3).userId(1L).build());
+                MeetingLikeEntity.builder().meetingId(meetingId3).userId(userId).build());
 
         // when
         Page<MeetingSearchPageResponse> searchResult =
                 meetingQueryFacade.search(meetingSearchRequest, 2L);
         // then
-        System.out.println(searchResult.getContent());
         assertThat(searchResult.getContent().getFirst().likeStatus()).isEqualTo("N");
         assertThat(searchResult.getContent().get(1).likeStatus()).isEqualTo("N");
         assertThat(searchResult.getContent().get(2).likeStatus()).isEqualTo("N");

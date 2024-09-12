@@ -106,6 +106,7 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
                 .select(
                         new QMyPageMeetingProjection(
                                 m.id,
+                                m.userId,
                                 m.title,
                                 m.thumbnail,
                                 m.detailAddress,

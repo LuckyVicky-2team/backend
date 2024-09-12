@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -116,6 +117,7 @@ public interface MeetingMapper {
                 meetingSearchResponse.participantCount());
     }
 
+    @Mapping(source = "myPageMeetingProjection.userId", target = "writerId")
     MeetingMyPageResponse toMeetingMyPageResponse(
             MyPageMeetingProjection myPageMeetingProjection, Integer currentParticipant);
 
