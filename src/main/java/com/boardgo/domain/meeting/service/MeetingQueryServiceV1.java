@@ -92,6 +92,11 @@ public class MeetingQueryServiceV1 implements MeetingQueryUseCase {
     }
 
     @Override
+    public List<MeetingEntity> findByIdIn(List<Long> meetingIdList) {
+        return meetingRepository.findByIdIn(meetingIdList);
+    }
+
+    @Override
     public List<LikedMeetingMyPageResponse> findLikedMeeting(List<Long> meetingIdList) {
         return meetingMapper.toLikedMeetingMyPageResponseList(
                 meetingRepository.findLikedMeeting(meetingIdList));

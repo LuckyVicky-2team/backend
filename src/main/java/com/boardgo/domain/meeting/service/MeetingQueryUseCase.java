@@ -34,5 +34,7 @@ public interface MeetingQueryUseCase {
 
     List<MyPageMeetingResponse> findMyPageByFilter(MyPageMeetingFilter filter, Long userId);
 
+    List<MeetingEntity> findByIdIn(List<Long> meetingIdList);
+
     List<LikedMeetingMyPageResponse> findLikedMeeting(List<Long> meetingIdList);
 }
