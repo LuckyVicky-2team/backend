@@ -5,8 +5,8 @@ import com.boardgo.domain.meeting.service.response.LikedMeetingMyPageResponse;
 import com.boardgo.domain.meeting.service.response.MeetingMyPageResponse;
 import java.util.List;
 
-public interface MyPageMeetingQueryUseCase {
-    List<MeetingMyPageResponse> findByFilter(MyPageMeetingFilter filter);
+public interface MyPageMeetingQueryFacade {
+    List<MeetingMyPageResponse> findByFilter(MyPageMeetingFilter filter, Long userId);
 
-    List<LikedMeetingMyPageResponse> findLikedMeeting();
+    List<LikedMeetingMyPageResponse> findLikedMeeting(Long userId);
 }
