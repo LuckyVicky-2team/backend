@@ -4,7 +4,6 @@ import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.domain.boardgame.service.BoardGameQueryUseCase;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
-import com.boardgo.domain.meeting.repository.MeetingRepository;
 import com.boardgo.domain.meeting.service.MeetingLikeQueryUseCase;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
 import com.boardgo.domain.meeting.service.response.BoardGameByMeetingIdResponse;
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MeetingQueryFacadeImpl implements MeetingQueryFacade {
     private final MeetingQueryUseCase meetingQueryUseCase;
-    private final MeetingRepository meetingRepository;
     private final MeetingMapper meetingMapper;
     private final BoardGameQueryUseCase boardGameQueryUseCase;
     private final UserQueryUseCase userQueryUseCase;
@@ -63,7 +61,7 @@ public class MeetingQueryFacadeImpl implements MeetingQueryFacade {
         return new PageImpl<>(
                 meetingSearchPageResponseList,
                 pageable,
-                meetingRepository.getSearchTotalCount(searchRequest));
+                meetingQueryUseCase.getSearchTotalCount(searchRequest));
     }
 
     @Override
@@ -83,7 +81,7 @@ public class MeetingQueryFacadeImpl implements MeetingQueryFacade {
                 meetingDetailResponse,
                 userParticipantResponseList,
                 boardGameByMeetingIdResponseList,
-                meetingRepository.getCreateMeetingCount(meetingDetailResponse.userId()),
+                meetingQueryUseCase.getCreateMeetingCount(meetingDetailResponse.userId()),
                 meetingLikeQueryUseCase.getLikeStatus(meetingId, userId),
                 rating);
     }

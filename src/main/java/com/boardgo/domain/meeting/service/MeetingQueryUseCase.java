@@ -24,4 +24,8 @@ public interface MeetingQueryUseCase {
     Map<Long, String> findLikeStatusForMeetings(List<Long> meetingIdList, Long userId);
 
     MeetingDetailResponse getMeetingDetailById(Long meetingId, Long userId);
+
+    Long getSearchTotalCount(MeetingSearchRequest searchRequest);
+
+    Long getCreateMeetingCount(Long userId);
 }

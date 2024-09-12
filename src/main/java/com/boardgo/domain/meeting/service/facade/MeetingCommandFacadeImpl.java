@@ -11,10 +11,10 @@ import com.boardgo.domain.boardgame.entity.BoardGameEntity;
 import com.boardgo.domain.boardgame.service.BoardGameQueryUseCase;
 import com.boardgo.domain.boardgame.service.GameGenreMatchQueryUseCase;
 import com.boardgo.domain.mapper.MeetingMapper;
+import com.boardgo.domain.mapper.MeetingParticipantMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
 import com.boardgo.domain.meeting.controller.request.MeetingUpdateRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
-import com.boardgo.domain.meeting.entity.MeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.MeetingParticipantSubEntity;
 import com.boardgo.domain.meeting.entity.enums.MeetingType;
 import com.boardgo.domain.meeting.entity.enums.ParticipantType;
@@ -40,10 +40,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
     private final S3Service s3Service;
+
+    private final MeetingMapper meetingMapper;
+    private final MeetingParticipantMapper meetingParticipantMapper;
+
     private final BoardGameQueryUseCase boardGameQueryUseCase;
     private final MeetingCommandUseCase meetingCommandUseCase;
     private final MeetingParticipantSubQueryUseCase meetingParticipantSubQueryUseCase;
-    private final MeetingMapper meetingMapper;
     private final MeetingQueryUseCase meetingQueryUseCase;
     private final GameGenreMatchQueryUseCase gameGenreMatchQueryUseCase;
     private final MeetingParticipantWaitingCommandUseCase meetingParticipantWaitingCommandUseCase;
@@ -64,7 +67,9 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         meetingGameMatchCommandUseCase.bulkInsert(
                 meetingCreateRequest.boardGameIdList(), meetingId);
         meetingGenreMatchCommandUseCase.bulkInsert(meetingCreateRequest.genreIdList(), meetingId);
-        meetingParticipantCommandUseCase.create(getLeaderParticipant(userId, meetingId));
+        meetingParticipantCommandUseCase.create(
+                meetingParticipantMapper.toMeetingParticipantEntity(
+                        meetingId, userId, ParticipantType.LEADER));
         return meetingId;
     }
 
@@ -165,14 +170,6 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         if (!meeting.isWriter(userId)) {
             throw new CustomIllegalArgumentException("다른 사람의 모임 글을 변경할 수 없습니다.");
         }
-    }
-
-    private MeetingParticipantEntity getLeaderParticipant(Long userId, Long meetingId) {
-        return MeetingParticipantEntity.builder()
-                .userInfoId(userId)
-                .meetingId(meetingId)
-                .type(ParticipantType.LEADER)
-                .build();
     }
 
     private void validateNullCheckIdList(List<Long> idList, String message) {

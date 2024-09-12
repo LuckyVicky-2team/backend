@@ -71,4 +71,14 @@ public class MeetingQueryServiceV1 implements MeetingQueryUseCase {
         MeetingDetailProjection result = meetingRepository.findDetailById(meetingId, userId);
         return meetingMapper.toMeetingDetailResponse(result);
     }
+
+    @Override
+    public Long getSearchTotalCount(MeetingSearchRequest searchRequest) {
+        return meetingRepository.getSearchTotalCount(searchRequest);
+    }
+
+    @Override
+    public Long getCreateMeetingCount(Long userId) {
+        return meetingRepository.getCreateMeetingCount(userId);
+    }
 }

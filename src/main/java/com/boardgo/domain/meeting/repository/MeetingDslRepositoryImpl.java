@@ -150,10 +150,6 @@ public class MeetingDslRepositoryImpl implements MeetingDslRepository {
         }
     }
 
-    private BooleanExpression userIdEqualsFilter(Long userId) {
-        return Objects.nonNull(userId) ? u.id.eq(userId) : null;
-    }
-
     private StringExpression getLikeStatus() {
         return new CaseBuilder()
                 .when(ml.meetingId.isNotNull())
