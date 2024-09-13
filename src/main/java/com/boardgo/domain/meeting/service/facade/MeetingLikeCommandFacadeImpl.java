@@ -34,14 +34,11 @@ public class MeetingLikeCommandFacadeImpl implements MeetingLikeCommandFacade {
     }
 
     private void checkMeetingIdListExist(List<Long> meetingIdList) {
-        List<MeetingEntity> meetingEntities = meetingQueryUseCase.findByIdIn(meetingIdList);
         Set<Long> meetingIdSet = new HashSet<>(meetingIdList);
-        if (meetingEntities.size() != meetingIdList.size()) {
-            throw new CustomIllegalArgumentException("모임 ID 중 없는 모임이 존재합니다.");
-        }
-
+        List<MeetingEntity> meetingEntities =
+                meetingQueryUseCase.findByIdIn(meetingIdSet.stream().toList());
         if (meetingEntities.size() != meetingIdSet.size()) {
-            throw new CustomIllegalArgumentException("모임 ID 중 중복된 모임이 있습니다.");
+            throw new CustomIllegalArgumentException("모임 ID 중 없는 모임이 존재합니다.");
         }
     }
 
