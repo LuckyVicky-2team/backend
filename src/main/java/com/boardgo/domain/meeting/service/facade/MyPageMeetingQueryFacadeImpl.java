@@ -1,9 +1,12 @@
-package com.boardgo.domain.meeting.service;
+package com.boardgo.domain.meeting.service.facade;
 
 import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.entity.MeetingLikeEntity;
 import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
+import com.boardgo.domain.meeting.service.MeetingLikeQueryUseCase;
+import com.boardgo.domain.meeting.service.MeetingParticipantSubQueryUseCase;
+import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
 import com.boardgo.domain.meeting.service.response.LikedMeetingMyPageResponse;
 import com.boardgo.domain.meeting.service.response.MeetingMyPageResponse;
 import com.boardgo.domain.meeting.service.response.MyPageMeetingResponse;

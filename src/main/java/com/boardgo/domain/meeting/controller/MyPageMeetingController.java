@@ -4,7 +4,7 @@ import static com.boardgo.common.constant.HeaderConstant.*;
 import static com.boardgo.common.utils.SecurityUtils.*;
 
 import com.boardgo.domain.meeting.controller.request.MyPageMeetingFilterRequest;
-import com.boardgo.domain.meeting.service.MyPageMeetingQueryFacade;
+import com.boardgo.domain.meeting.service.facade.MyPageMeetingQueryFacade;
 import com.boardgo.domain.meeting.service.response.LikedMeetingMyPageResponse;
 import com.boardgo.domain.meeting.service.response.MeetingMyPageResponse;
 import jakarta.validation.Valid;

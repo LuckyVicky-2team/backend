@@ -11,7 +11,7 @@ import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
 import com.boardgo.domain.meeting.repository.MeetingLikeRepository;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
-import com.boardgo.domain.meeting.service.MyPageMeetingQueryFacade;
+import com.boardgo.domain.meeting.service.facade.MyPageMeetingQueryFacade;
 import com.boardgo.domain.meeting.service.response.LikedMeetingMyPageResponse;
 import com.boardgo.domain.meeting.service.response.MeetingMyPageResponse;
 import com.boardgo.domain.user.entity.UserInfoEntity;

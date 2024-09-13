@@ -1,4 +1,4 @@
-package com.boardgo.domain.meeting.service;
+package com.boardgo.domain.meeting.service.facade;
 
 import com.boardgo.domain.meeting.entity.enums.MyPageMeetingFilter;
 import com.boardgo.domain.meeting.service.response.LikedMeetingMyPageResponse;
