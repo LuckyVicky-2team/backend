@@ -104,9 +104,8 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
                 .isInstanceOf(CustomNullPointException.class);
     }
 
-    @ParameterizedTest
+    @Test
     @DisplayName("회원정보로 이메일(id), 닉네임, 프로필이미지, 평점, PR태그를 조회한다")
-    @MethodSource("getUserEntity")
     void 회원정보로_이메일_닉네임_프로필이미지_평점_PR태그를_조회한다() {
         // given
         UserInfoEntity userInfo = userInfoEntityData("aa@aa.com", "nickName").build();
