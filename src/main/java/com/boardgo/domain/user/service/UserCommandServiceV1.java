@@ -4,7 +4,6 @@ import static com.boardgo.common.constant.S3BucketConstant.USER;
 import static com.boardgo.common.utils.CustomStringUtils.existString;
 import static com.boardgo.common.utils.ValidateUtils.validateNickname;
 import static com.boardgo.common.utils.ValidateUtils.validatePassword;
-import static com.boardgo.common.utils.ValidateUtils.validatePrTag;
 
 import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.common.exception.DuplicateException;
@@ -15,7 +14,6 @@ import com.boardgo.domain.user.controller.request.SignupRequest;
 import com.boardgo.domain.user.controller.request.UserPersonalInfoUpdateRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
-import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,15 +38,6 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
         userInfo.encodePassword(passwordEncoder);
         UserInfoEntity savedUser = userRepository.save(userInfo);
         return savedUser.getId();
-    }
-
-    @Override
-    public void validateNickNameAndPrTag(String nickName, List<String> prTags) {
-        validateNickname(nickName);
-
-        if (!Objects.isNull(prTags)) {
-            validatePrTag(prTags);
-        }
     }
 
     @Override
