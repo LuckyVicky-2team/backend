@@ -12,7 +12,6 @@ import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.review.repository.ReviewRepository;
 import com.boardgo.domain.user.controller.request.EmailRequest;
-import com.boardgo.domain.user.controller.request.NickNameRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.entity.UserPrTagEntity;
 import com.boardgo.domain.user.entity.enums.ProviderType;
@@ -89,22 +88,21 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
     @DisplayName("해당 닉네임이 존재하지 않으면 에러가 발생하지 않는다")
     void 해당_닉네임이_존재하지_않으면_에러가_발생하지_않는다() {
         // given
-        NickNameRequest nickNameRequest = new NickNameRequest("nickName");
+        String nickname = "nickName";
         // when
-        userQueryUseCase.existNickName(nickNameRequest);
         // then
-
+        userQueryUseCase.existNickName(nickname);
     }
 
     @Test
     @DisplayName("해당 닉네임이 존재하면 에러가 발생한다")
     void 해당_닉네임이_존재하면_에러가_발생한다() {
         // given
-        NickNameRequest nickNameRequest = new NickNameRequest("water");
+        String nickname = "water";
         userRepository.save(localUserInfoEntity());
         // when
         // then
-        Assertions.assertThatThrownBy(() -> userQueryUseCase.existNickName(nickNameRequest))
+        Assertions.assertThatThrownBy(() -> userQueryUseCase.existNickName(nickname))
                 .isInstanceOf(CustomIllegalArgumentException.class);
     }
 

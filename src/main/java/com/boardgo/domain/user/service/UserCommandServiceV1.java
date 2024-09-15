@@ -53,7 +53,10 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
 
     @Override
     public void updateProfileImage(Long userId, MultipartFile profileImage) {
-        UserInfoEntity userInfoEntity = getUserInfoEntity(userId);
+        UserInfoEntity userInfoEntity =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomNullPointException("회원이 존재하지 않습니다"));
         String originalImage = userInfoEntity.getProfileImage();
         String newImage = "";
         if (!Objects.isNull(profileImage)) {
@@ -68,7 +71,10 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
 
     @Override
     public void updatePersonalInfo(Long userId, UserPersonalInfoUpdateRequest updateRequest) {
-        UserInfoEntity userInfoEntity = getUserInfoEntity(userId);
+        UserInfoEntity userInfoEntity =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomNullPointException("회원이 존재하지 않습니다"));
         if (userRepository.existsByNickName(updateRequest.nickName())) {
             throw new DuplicateException("중복된 닉네임입니다.");
         }
@@ -79,17 +85,5 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
         if (existString(updateRequest.password()) && validatePassword(updateRequest.password())) {
             userInfoEntity.updatePassword(updateRequest.password(), passwordEncoder);
         }
-    }
-
-    @Override
-    public UserInfoEntity getUserInfoEntity(Long userId) {
-        return userRepository
-                .findById(userId)
-                .orElseThrow(() -> new CustomNullPointException("회원이 존재하지 않습니다"));
-    }
-
-    @Override
-    public boolean existsUser(String nickname) {
-        return userRepository.existsByNickName(nickname);
     }
 }

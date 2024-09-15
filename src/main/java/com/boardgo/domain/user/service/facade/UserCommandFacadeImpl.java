@@ -6,6 +6,7 @@ import com.boardgo.domain.user.controller.request.SocialSignupRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.service.UserCommandUseCase;
 import com.boardgo.domain.user.service.UserPrTagCommandUseCase;
+import com.boardgo.domain.user.service.UserQueryUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class UserCommandFacadeImpl implements UserCommandFacade {
 
     private final UserCommandUseCase userCommandUseCase;
+    private final UserQueryUseCase userQueryUseCase;
     private final UserPrTagCommandUseCase userPrTagCommandUseCase;
 
     @Override
@@ -28,8 +30,8 @@ public class UserCommandFacadeImpl implements UserCommandFacade {
 
     @Override
     public Long socialSignup(SocialSignupRequest signupRequest, Long userId) {
-        UserInfoEntity userInfoEntity = userCommandUseCase.getUserInfoEntity(userId);
-        if (userCommandUseCase.existsUser(signupRequest.nickName())) {
+        UserInfoEntity userInfoEntity = userQueryUseCase.getUserInfoEntity(userId);
+        if (userQueryUseCase.existNickName(signupRequest.nickName())) {
             throw new DuplicateException("중복된 닉네임입니다.");
         }
         userCommandUseCase.validateNickNameAndPrTag(

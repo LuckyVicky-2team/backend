@@ -1,6 +1,6 @@
 package com.boardgo.integration.user.facade;
 
-import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
+import static com.boardgo.integration.data.UserInfoData.userInfoEntityData;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -23,14 +23,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserCommandFacadeTest extends IntegrationTestSupport {
 
     @Autowired private UserCommandFacade userCommandFacade;
     @Autowired private UserRepository userRepository;
     @Autowired private UserPrTagRepository userPrTagRepository;
-    @Autowired private PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("사용자는 회원가입해서 userInfo 데이터를 생성할 수 있다")
@@ -83,7 +81,11 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
     void 소셜_회원가입은_닉네임과_PR태그를_저장한다(SocialSignupRequest request) {
         // given
         UserInfoEntity userInfoEntity =
-                userRepository.save(socialUserInfoEntity(ProviderType.GOOGLE));
+                userRepository.save(
+                        userInfoEntityData("57928443", "googling")
+                                .providerType(ProviderType.GOOGLE)
+                                .password(null)
+                                .build());
 
         // when
         userCommandFacade.socialSignup(request, userInfoEntity.getId());
