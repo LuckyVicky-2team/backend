@@ -1,6 +1,8 @@
 package com.boardgo.integration.user.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
+import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
+import static com.boardgo.integration.data.UserInfoData.userInfoEntityData;
 import static com.boardgo.integration.fixture.TermsConditionsFixture.getTermsConditionsList;
 import static io.restassured.RestAssured.given;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
@@ -13,6 +15,9 @@ import com.boardgo.domain.termsconditions.controller.request.TermsConditionsCrea
 import com.boardgo.domain.termsconditions.entity.enums.TermsConditionsType;
 import com.boardgo.domain.termsconditions.repository.TermsConditionsRepository;
 import com.boardgo.domain.user.controller.request.SignupRequest;
+import com.boardgo.domain.user.controller.request.SocialSignupRequest;
+import com.boardgo.domain.user.entity.enums.ProviderType;
+import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.integration.support.RestDocsTestSupport;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +28,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.RequestFieldsSnippet;
 
 public class SignupDocsTest extends RestDocsTestSupport {
 
     @Autowired private TermsConditionsRepository termsConditionsRepository;
+    @Autowired private UserRepository userRepository;
 
     @BeforeEach
     void init() {
@@ -37,13 +44,17 @@ public class SignupDocsTest extends RestDocsTestSupport {
     @DisplayName("사용자는 회원가입을 진행할 수 있다V1")
     void 사용자는_회원가입을_진행할_수_있다V1() {
         // given
-        List<TermsConditionsCreateRequest> request = new ArrayList<>();
+        List<TermsConditionsCreateRequest> termsConditions = new ArrayList<>();
         for (TermsConditionsType type : TermsConditionsType.values()) {
-            request.add(new TermsConditionsCreateRequest(type.name(), true));
+            termsConditions.add(new TermsConditionsCreateRequest(type.name(), true));
         }
         SignupRequest signupRequest =
                 new SignupRequest(
-                        "aa@aa.aa", "nickname", "password", List.of("prTag1", "prTag2"), request);
+                        "aa@aa.aa",
+                        "nickname",
+                        "password",
+                        List.of("prTag1", "prTag2"),
+                        termsConditions);
 
         given(this.spec)
                 .log()
@@ -81,5 +92,54 @@ public class SignupDocsTest extends RestDocsTestSupport {
                 .post("/signup")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("소셜로그인 시 서비스 회원가입을 한다")
+    void 소셜로그인_시_서비스_회원가입을_한다() {
+        List<TermsConditionsCreateRequest> termsConditions = new ArrayList<>();
+        for (TermsConditionsType type : TermsConditionsType.values()) {
+            termsConditions.add(new TermsConditionsCreateRequest(type.name(), true));
+        }
+        userRepository.save(
+                userInfoEntityData("abc123@google.com", "googoo")
+                        .providerType(ProviderType.GOOGLE)
+                        .password(null)
+                        .build());
+
+        SocialSignupRequest socialSignupRequest =
+                new SocialSignupRequest("Bread", List.of("ENFJ", "HAPPY"), termsConditions);
+
+        given(this.spec)
+                .port(port)
+                .log()
+                .all()
+                .header(API_VERSION_HEADER, "1")
+                .header(AUTHORIZATION, testAccessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .filter(document("social-signup", getSocialSignupRequestFieldsSnippet()))
+                .body(socialSignupRequest)
+                .urlEncodingEnabled(false)
+                .when()
+                .post("/social/signup")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .log()
+                .ifError()
+                .extract();
+    }
+
+    private RequestFieldsSnippet getSocialSignupRequestFieldsSnippet() {
+        return requestFields(
+                fieldWithPath("nickName").type(STRING).description("닉네임"),
+                fieldWithPath("prTags").type(ARRAY).description("PR태그").optional(),
+                fieldWithPath("termsConditions").type(JsonFieldType.ARRAY).description("약관동의 목록"),
+                fieldWithPath("termsConditions[].termsConditionsType")
+                        .type(STRING)
+                        .description("약관동의 타입"),
+                fieldWithPath("termsConditions[].agreement")
+                        .type(JsonFieldType.BOOLEAN)
+                        .description("약관동의 동의 여부"));
     }
 }

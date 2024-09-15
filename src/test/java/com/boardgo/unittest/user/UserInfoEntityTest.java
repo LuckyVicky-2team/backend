@@ -50,7 +50,7 @@ public class UserInfoEntityTest {
     @DisplayName("userInfoEntity는 닉네임을 변경할 수 있다")
     void userInfoEntity는_닉네임을_변경할_수_있다() {
         // given
-        SocialSignupRequest request = new SocialSignupRequest("changeName", List.of("Happy"));
+        SocialSignupRequest request = new SocialSignupRequest("changeName", List.of("Happy"), null);
         UserInfoEntity userInfoEntity =
                 UserInfoEntity.builder()
                         .id(1L)

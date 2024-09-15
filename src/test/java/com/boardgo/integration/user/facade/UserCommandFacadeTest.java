@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,11 +37,15 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
     @Autowired private UserPrTagRepository userPrTagRepository;
     @Autowired private TermsConditionsRepository termsConditionsRepository;
 
+    @BeforeEach
+    void init() {
+        termsConditionsRepository.saveAll(getTermsConditionsList());
+    }
+
     @Test
     @DisplayName("사용자는 회원가입해서 userInfo 데이터를 생성할 수 있다")
     void 사용자는_회원가입해서_userInfo_데이터를_생성할_수_있다() {
         // given
-        termsConditionsRepository.saveAll(getTermsConditionsList());
         List<TermsConditionsCreateRequest> request = new ArrayList<>();
         for (TermsConditionsType type : TermsConditionsType.values()) {
             request.add(new TermsConditionsCreateRequest(type.name(), true));
@@ -65,7 +70,6 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
     @DisplayName("사용자는 PrTag가 없어도 userInfo 데이터를 생성할 수 있다")
     void 사용자는_PrTag가_없어도_userInfo_데이터를_생성할_수_있다() {
         // given
-        termsConditionsRepository.saveAll(getTermsConditionsList());
         List<TermsConditionsCreateRequest> request = new ArrayList<>();
         for (TermsConditionsType type : TermsConditionsType.values()) {
             request.add(new TermsConditionsCreateRequest(type.name(), true));
@@ -124,7 +128,13 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
     }
 
     private static Stream<Arguments> getSocialSignupRequest() {
+        List<TermsConditionsCreateRequest> termsConditions = new ArrayList<>();
+        for (TermsConditionsType type : TermsConditionsType.values()) {
+            termsConditions.add(new TermsConditionsCreateRequest(type.name(), true));
+        }
         return Stream.of(
-                Arguments.of(new SocialSignupRequest("Bread", List.of("ENFJ", "HAPPY", "SLEEP"))));
+                Arguments.of(
+                        new SocialSignupRequest(
+                                "Bread", List.of("ENFJ", "HAPPY", "SLEEP"), termsConditions)));
     }
 }

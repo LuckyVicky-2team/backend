@@ -44,7 +44,8 @@ public class UserCommandFacadeImpl implements UserCommandFacade {
             throw new DuplicateException("중복된 닉네임입니다.");
         }
         validateNickNameAndPrTag(signupRequest.nickName(), signupRequest.prTags());
-        // TODO. 약관동의 저장
+        userTermsConditionsCommandFacade.createUserTermsConditions(
+                signupRequest.termsConditions(), userId);
         userInfoEntity.updateNickname(signupRequest.nickName());
         userPrTagCommandUseCase.bulkInsertPrTags(signupRequest.prTags(), userInfoEntity.getId());
         return userInfoEntity.getId();
