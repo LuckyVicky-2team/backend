@@ -19,7 +19,8 @@ public class UserInfoEntityTest {
         // given
         String encodedPassword = "12345678";
         FakePasswordEncoder fakePasswordEncoder = new FakePasswordEncoder();
-        SignupRequest signupRequest = new SignupRequest("aa@aa.aa", "nickname", "password", null);
+        SignupRequest signupRequest =
+                new SignupRequest("aa@aa.aa", "nickname", "password", null, null);
         UserInfoMapper instance = UserInfoMapper.INSTANCE;
 
         // when
@@ -34,7 +35,8 @@ public class UserInfoEntityTest {
     @DisplayName("signupRequest는 userInfoEntity로 매핑할 수 있다")
     void signupRequest는_userInfoEntity로_매핑할_수_있다() {
         // given
-        SignupRequest signupRequest = new SignupRequest("aa@aa.aa", "nickname", "password", null);
+        SignupRequest signupRequest =
+                new SignupRequest("aa@aa.aa", "nickname", "password", null, null);
         UserInfoMapper instance = UserInfoMapper.INSTANCE;
         // when
         UserInfoEntity userInfo = instance.toUserInfoEntity(signupRequest);

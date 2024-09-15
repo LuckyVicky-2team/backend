@@ -4,12 +4,14 @@ import static com.boardgo.common.utils.ValidateUtils.validateNickname;
 import static com.boardgo.common.utils.ValidateUtils.validatePrTag;
 
 import com.boardgo.common.exception.DuplicateException;
+import com.boardgo.domain.termsconditions.service.facade.UserTermsConditionsCommandFacade;
 import com.boardgo.domain.user.controller.request.SignupRequest;
 import com.boardgo.domain.user.controller.request.SocialSignupRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.service.UserCommandUseCase;
 import com.boardgo.domain.user.service.UserPrTagCommandUseCase;
 import com.boardgo.domain.user.service.UserQueryUseCase;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +19,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class UserCommandFacadeImpl implements UserCommandFacade {
 
     private final UserCommandUseCase userCommandUseCase;
     private final UserQueryUseCase userQueryUseCase;
     private final UserPrTagCommandUseCase userPrTagCommandUseCase;
+    private final UserTermsConditionsCommandFacade userTermsConditionsCommandFacade;
 
     @Override
     public Long signup(SignupRequest signupRequest) {
         validateNickNameAndPrTag(signupRequest.nickName(), signupRequest.prTags());
-        // TODO. 약관동의 저장
         Long userId = userCommandUseCase.save(signupRequest);
+        userTermsConditionsCommandFacade.createUserTermsConditions(
+                signupRequest.termsConditions(), userId);
         userPrTagCommandUseCase.bulkInsertPrTags(signupRequest.prTags(), userId);
         return userId;
     }

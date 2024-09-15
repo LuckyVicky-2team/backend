@@ -1,10 +1,14 @@
 package com.boardgo.integration.user.facade;
 
 import static com.boardgo.integration.data.UserInfoData.userInfoEntityData;
+import static com.boardgo.integration.fixture.TermsConditionsFixture.getTermsConditionsList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.boardgo.common.exception.CustomNullPointException;
+import com.boardgo.domain.termsconditions.controller.request.TermsConditionsCreateRequest;
+import com.boardgo.domain.termsconditions.entity.enums.TermsConditionsType;
+import com.boardgo.domain.termsconditions.repository.TermsConditionsRepository;
 import com.boardgo.domain.user.controller.request.SignupRequest;
 import com.boardgo.domain.user.controller.request.SocialSignupRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
@@ -14,6 +18,7 @@ import com.boardgo.domain.user.repository.UserPrTagRepository;
 import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.service.facade.UserCommandFacade;
 import com.boardgo.integration.support.IntegrationTestSupport;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,13 +34,20 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
     @Autowired private UserCommandFacade userCommandFacade;
     @Autowired private UserRepository userRepository;
     @Autowired private UserPrTagRepository userPrTagRepository;
+    @Autowired private TermsConditionsRepository termsConditionsRepository;
 
     @Test
     @DisplayName("사용자는 회원가입해서 userInfo 데이터를 생성할 수 있다")
     void 사용자는_회원가입해서_userInfo_데이터를_생성할_수_있다() {
         // given
+        termsConditionsRepository.saveAll(getTermsConditionsList());
+        List<TermsConditionsCreateRequest> request = new ArrayList<>();
+        for (TermsConditionsType type : TermsConditionsType.values()) {
+            request.add(new TermsConditionsCreateRequest(type.name(), true));
+        }
         SignupRequest signupRequest =
-                new SignupRequest("aa@aa.aa", "nickname", "password", List.of("prTag1", "prTag2"));
+                new SignupRequest(
+                        "aa@aa.aa", "nickname", "password", List.of("prTag1", "prTag2"), request);
         // when
         Long signupUserId = userCommandFacade.signup(signupRequest);
         // then
@@ -53,7 +65,13 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
     @DisplayName("사용자는 PrTag가 없어도 userInfo 데이터를 생성할 수 있다")
     void 사용자는_PrTag가_없어도_userInfo_데이터를_생성할_수_있다() {
         // given
-        SignupRequest signupRequest = new SignupRequest("aa@aa.aa", "nickname", "password", null);
+        termsConditionsRepository.saveAll(getTermsConditionsList());
+        List<TermsConditionsCreateRequest> request = new ArrayList<>();
+        for (TermsConditionsType type : TermsConditionsType.values()) {
+            request.add(new TermsConditionsCreateRequest(type.name(), true));
+        }
+        SignupRequest signupRequest =
+                new SignupRequest("aa@aa.aa", "nickname", "password", null, request);
         // when
         Long signupUserId = userCommandFacade.signup(signupRequest);
         // then
