@@ -10,6 +10,7 @@ import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.service.UserCommandUseCase;
 import com.boardgo.domain.user.service.UserPrTagCommandUseCase;
 import com.boardgo.domain.user.service.UserQueryUseCase;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class UserCommandFacadeImpl implements UserCommandFacade {
 
     private final UserCommandUseCase userCommandUseCase;
