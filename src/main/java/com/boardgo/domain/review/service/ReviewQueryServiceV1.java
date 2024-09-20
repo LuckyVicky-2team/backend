@@ -215,11 +215,11 @@ public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
     public MyReviewsResponse getMyReviews(Long userId) {
         Double averageRating = getAverageRating(userId);
         MyEvaluationTagsResponse myEvaluationTags = getMyEvaluationTags(userId);
-        // FIXME 스케줄러를 통해 카운팅 누적 카운팅 계산하도록 기능 개선 필요
         return new MyReviewsResponse(
                 averageRating, myEvaluationTags.positiveTags(), myEvaluationTags.negativeTags());
     }
 
+    // TODO 캐싱처리
     @Override
     public MyEvaluationTagsResponse getMyEvaluationTags(Long userId) {
         List<List<String>> evaluationTags = reviewRepository.findMyEvaluationTags(userId);
