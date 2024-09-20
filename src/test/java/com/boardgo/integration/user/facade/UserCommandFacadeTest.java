@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,9 +41,10 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
         termsConditionsRepository.saveAll(getTermsConditionsList());
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("사용자는 회원가입해서 userInfo 데이터를 생성할 수 있다")
-    void 사용자는_회원가입해서_userInfo_데이터를_생성할_수_있다() {
+    @MethodSource("getTermsConditionsCreateRequest")
+    void 사용자는_회원가입해서_userInfo_데이터를_생성할_수_있다(List<TermsConditionsCreateRequest> termsConditions) {
         // given
         List<TermsConditionsCreateRequest> request = new ArrayList<>();
         for (TermsConditionsType type : TermsConditionsType.values()) {
@@ -52,7 +52,11 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
         }
         SignupRequest signupRequest =
                 new SignupRequest(
-                        "aa@aa.aa", "nickname", "password", List.of("prTag1", "prTag2"), request);
+                        "aa@aa.aa",
+                        "nickname",
+                        "password",
+                        List.of("prTag1", "prTag2"),
+                        termsConditions);
         // when
         Long signupUserId = userCommandFacade.signup(signupRequest);
         // then
@@ -66,16 +70,14 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
         assertThat(userPrTagEntities.get(1).getTagName()).isEqualTo(signupRequest.prTags().get(1));
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("사용자는 PrTag가 없어도 userInfo 데이터를 생성할 수 있다")
-    void 사용자는_PrTag가_없어도_userInfo_데이터를_생성할_수_있다() {
+    @MethodSource("getTermsConditionsCreateRequest")
+    void 사용자는_PrTag가_없어도_userInfo_데이터를_생성할_수_있다(
+            List<TermsConditionsCreateRequest> termsConditions) {
         // given
-        List<TermsConditionsCreateRequest> request = new ArrayList<>();
-        for (TermsConditionsType type : TermsConditionsType.values()) {
-            request.add(new TermsConditionsCreateRequest(type.name(), true));
-        }
         SignupRequest signupRequest =
-                new SignupRequest("aa@aa.aa", "nickname", "password", null, request);
+                new SignupRequest("aa@aa.aa", "nickname", "password", null, termsConditions);
         // when
         Long signupUserId = userCommandFacade.signup(signupRequest);
         // then
@@ -87,9 +89,12 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
 
     @ParameterizedTest
     @DisplayName("소셜 회원가입은 회원이 존재하지 않을 경우 예외를 발생한다")
-    @MethodSource("getSocialSignupRequest")
-    void 소셜_회원가입은_회원이_존재하지_않을_경우_예외를_발생한다(SocialSignupRequest request) {
+    @MethodSource("getTermsConditionsCreateRequest")
+    void 소셜_회원가입은_회원이_존재하지_않을_경우_예외를_발생한다(List<TermsConditionsCreateRequest> termsConditions) {
         // given
+        SocialSignupRequest request =
+                new SocialSignupRequest(
+                        "Bread", List.of("ENFJ", "HAPPY", "SLEEP"), termsConditions);
         Long userId = 5626262352L;
         // when
         // then
@@ -99,9 +104,12 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
 
     @ParameterizedTest
     @DisplayName("소셜 회원가입은 닉네임과 PR태그를 저장한다")
-    @MethodSource("getSocialSignupRequest")
-    void 소셜_회원가입은_닉네임과_PR태그를_저장한다(SocialSignupRequest request) {
+    @MethodSource("getTermsConditionsCreateRequest")
+    void 소셜_회원가입은_닉네임과_PR태그를_저장한다(List<TermsConditionsCreateRequest> termsConditions) {
         // given
+        SocialSignupRequest request =
+                new SocialSignupRequest(
+                        "Bread", List.of("ENFJ", "HAPPY", "SLEEP"), termsConditions);
         UserInfoEntity userInfoEntity =
                 userRepository.save(
                         userInfoEntityData("57928443", "googling")
@@ -127,14 +135,11 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
         assertThat(prTags).isEqualTo(request.prTags());
     }
 
-    private static Stream<Arguments> getSocialSignupRequest() {
+    private static Stream<Arguments> getTermsConditionsCreateRequest() {
         List<TermsConditionsCreateRequest> termsConditions = new ArrayList<>();
         for (TermsConditionsType type : TermsConditionsType.values()) {
             termsConditions.add(new TermsConditionsCreateRequest(type.name(), true));
         }
-        return Stream.of(
-                Arguments.of(
-                        new SocialSignupRequest(
-                                "Bread", List.of("ENFJ", "HAPPY", "SLEEP"), termsConditions)));
+        return Stream.of(Arguments.of(termsConditions));
     }
 }
