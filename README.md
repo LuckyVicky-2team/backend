@@ -60,6 +60,16 @@
 
 # 🔍Git Flow
 
+| **브랜치**   | **특징**                                                                                                                                                   |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `prod`    | - 운영 서버 </br> - `prod/1.0` `prod/2.1`                                                                                                                    |
+| `dev`     | - 개발 서버 & 테스트서버 </br> - `prod` 브랜치에서 분기 </br> - `prod` 브랜치에서 `hoxfix` 발생 후 `prod`에 merge 됐을 경우, `prod > dev` pull 동기화                                    |
+| `feature` | - 하나의 CRUD 단위로 개발 </br> - `dev` 브랜치에서 분기 </br> - 기능 개발 완료 시 `dev` 브랜치로 merge </br> - `feature/기능명` (feature/user-board) </br> - feature 기능명의 네이밍은 케밥 케이스 |
+| `fix`     | - `dev` 브랜치에서 이슈 발생 시 `dev` 브랜치에서 분기 </br> - 이슈 수정 완료 시 `dev` 브랜치로 merge                                                                                 |
+| `hotfix`  | - `prod` 브랜치에서 이슈 발생 시 분기 </br> - 이슈 해결 시 `prod` 브랜치에 merge </br> - 현재 운영이 `prod/1.0`이고, `hotfix/1.0` 에서 해결한 경우 prod의 다음버전인  `prod/1.1` 에 merge          |
+
+[🪴Branch Convention](https://github.com/LuckyVicky-2team/backend/wiki/%F0%9F%AA%B4Branch-Convention) 참고
+
 # 🔍백엔드 팀원 소개
 
 | **팀원**                                                                                                                                                                         | **서비스 개발 담당 기능**                                                              | **이슈 및 해결과정** |
