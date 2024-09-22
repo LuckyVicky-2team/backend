@@ -6,23 +6,85 @@
 :toclevels: 2
 :sectlinks:
 
-
-=== *소셜 로그인 토큰 발급*
+=== *약관동의 목록 조회*
 
 ==== *요청*
 
-include::{snippets}/token/http-request.adoc[]
-- header
-include::{snippets}/token/request-headers.adoc[]
-- cookie
-include::{snippets}/token/request-cookies.adoc[]
+include::{snippets}/get-terms-conditions/http-request.adoc[]
+include::{snippets}/get-terms-conditions/query-parameters.adoc[]
+- 전체 약관정보 목록 조회 시 TRUE와 FALSE 둘다 사용해야 합니다
 
 ==== *응답*
 
-- header
+include::{snippets}/get-terms-conditions/http-response.adoc[]
 
-include::{snippets}/token/response-headers.adoc[]
-include::{snippets}/social-signup/http-response.adoc[]
+
+- 에러 HTTP 상태 코드
+
+|===
+| errorCode | messages
+
+| 4040
+| 약관동의 (이)가 존재하지 않습니다.
+|===
+
+'''
+
+=== *회원 약관동의 저장*
+
+==== *요청*
+
+include::{snippets}/post-terms-conditions-user/http-request.adoc[]
+include::{snippets}/post-terms-conditions-user/request-fields.adoc[]
+
+==== *약관동의 정보*
+
+|===
+| 타입 | 약관동의 항목 | 필수여부
+
+| TERMS | 이용약관 동의 | Y
+| PRIVACY | 개인정보 이용 수집 동의 | Y
+| LOCATION | 위치정보 이용 수집 동의 | Y (N 으로 할지 검토필요)
+| AGE14 | 본인은 만 14세 이상입니다 | Y
+| PUSH | 푸시 알림 동의 | N
+|===
+
+==== *응답*
+
+include::{snippets}/post-terms-conditions-user/http-response.adoc[]
+
+
+- 에러 HTTP 상태 코드
+
+|===
+| errorCode | messages
+
+| 400
+| 약관동의 항목의 갯수가 일치하지 않습니다 +
+이미 약관동의 완료된 회원입니다 +
+필수 약관은 모두 동의되어야 합니다
+|===
+
+'''
+
+=== *액세스 토큰 재발급*
+
+==== *요청*
+
+include::{snippets}/reissue/http-request.adoc[]
+- cookie
+include::{snippets}/reissue/request-cookies.adoc[]
+
+==== *응답*
+
+- HTTP 상태 코드
+
+|===
+| code | messages
+
+| 200
+| 정상 발급 - 액세스 토큰(헤더), 리프레시 토큰(쿠키)
+|===
 
 - 에러 HTTP 상태 코드
 

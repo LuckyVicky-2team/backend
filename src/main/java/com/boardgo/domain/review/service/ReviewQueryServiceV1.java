@@ -35,7 +35,6 @@ import com.boardgo.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,6 +50,7 @@ public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
     private final ReviewMapper reviewMapper;
     private final EvaluationTagRepository evaluationTagRepository;
 
+    // FIXME: 퍼사드패턴으로 리팩토링 필요
     @Override
     public List<ReviewMeetingResponse> getReviewMeetings(ReviewType reviewType, Long userId) {
         switch (reviewType) {
@@ -106,6 +106,7 @@ public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
 
     @Override
     public void create(ReviewCreateRequest createRequest, Long reviewerId) {
+        // FIXME: 퍼사드패턴으로 리팩토링 필요
         validateCreateReview(createRequest.meetingId(), createRequest.revieweeId(), reviewerId);
         ReviewEntity reviewEntity =
                 reviewMapper.toReviewEntity(
@@ -148,6 +149,7 @@ public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
         }
     }
 
+    // FIXME: 퍼사드패턴으로 리팩토링 필요
     @Override
     public List<ReviewMeetingParticipantsResponse> getReviewMeetingParticipants(
             Long meetingId, Long reviewerId) {
@@ -181,6 +183,7 @@ public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
                         .collect(Collectors.toList());
         int i = 0;
         for (ReviewMeetingReviewsProjection meetingReviewsProjection : meetingReviews) {
+            // FIXME: 퍼사드패턴으로 리팩토링 필요
             ReviewMeetingReviewsResponse reviewMeetingReviewsResponse =
                     getMeetingReviews(collect.get(i), meetingReviewsProjection);
             reviewMeetingReviewsResponses.add(reviewMeetingReviewsResponse);
@@ -214,13 +217,13 @@ public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
 
     @Override
     public MyReviewsResponse getMyReviews(Long userId) {
-        Double averageRating =
-                Optional.ofNullable(reviewRepository.findRatingAvgByRevieweeId(userId)).orElse(0.0);
+        Double averageRating = getAverageRating(userId);
         MyEvaluationTagsResponse myEvaluationTags = getMyEvaluationTags(userId);
         return new MyReviewsResponse(
                 averageRating, myEvaluationTags.positiveTags(), myEvaluationTags.negativeTags());
     }
 
+    // TODO 캐싱처리 //FIXME: 퍼사드패턴으로 리팩토링 필요
     @Override
     public MyEvaluationTagsResponse getMyEvaluationTags(Long userId) {
         List<List<String>> evaluationTags = reviewRepository.findMyEvaluationTags(userId);

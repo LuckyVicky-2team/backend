@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class LoginService {
     private final UserRepository userRepository;
@@ -38,16 +38,15 @@ public class LoginService {
     }
 
     @Transactional
-    public void updateTokenWithOutValidation(
-            AuthEntity authEntity, String refreshToken, Long userId) {
-        authEntity.update(refreshToken, getAfterRefreshDuration());
+    public void updateTokenWithOutValidation(Long id, String refreshToken) {
+        authRepository.updateTokenById(id, refreshToken, getAfterRefreshDuration());
     }
 
     private AuthEntity getAuthEntity(UserInfoEntity userInfo, String token) {
         return AuthEntity.builder()
                 .userInfo(userInfo)
                 .refreshToken(token)
-                .expirationTime(getAfterRefreshDuration())
+                .expirationDatetime(getAfterRefreshDuration())
                 .build();
     }
 
