@@ -45,7 +45,7 @@ public class UserInfoEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
-    @Embedded private UserInfoData userInfoData;
+    @Embedded private UserInfoStatus userInfoStatus;
 
     @Column(name = "deleted_at", columnDefinition = "DATETIME")
     private LocalDateTime deleteAt;

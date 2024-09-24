@@ -11,7 +11,7 @@ import org.hibernate.annotations.Comment;
 @Embeddable
 @NoArgsConstructor
 @Getter
-public class UserInfoData {
+public class UserInfoStatus {
     @Comment("알림 확인 유무")
     @Convert(converter = BooleanConverter.class)
     @Column(columnDefinition = "varchar(1)")

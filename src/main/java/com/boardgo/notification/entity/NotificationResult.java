@@ -42,6 +42,7 @@ public class NotificationResult {
     private Boolean isSuccessful;
 
     @Comment("발송 재시도 횟수")
+    @Column(columnDefinition = "integer default 0")
     private Integer resendCount;
 
     @Builder
