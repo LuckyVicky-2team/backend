@@ -35,6 +35,11 @@ public class NotificationResult {
     @Column(columnDefinition = "varchar(1)")
     private Boolean isSent;
 
+    @Comment("성공 유무")
+    @Convert(converter = BooleanConverter.class)
+    @Column(columnDefinition = "varchar(1)")
+    private Boolean isSuccessful;
+
     @Comment("발송 재시도 횟수")
     private Integer resendCount;
 
