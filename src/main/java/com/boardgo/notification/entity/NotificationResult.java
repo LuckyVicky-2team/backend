@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -43,9 +44,12 @@ public class NotificationResult {
     @Comment("발송 재시도 횟수")
     private Integer resendCount;
 
-    public NotificationResult(Long notificationId, Boolean isSent, Integer resendCount) {
+    @Builder
+    private NotificationResult(
+            Long notificationId, Boolean isSent, Boolean isSuccessful, Integer resendCount) {
         this.notificationId = notificationId;
         this.isSent = isSent;
+        this.isSuccessful = isSuccessful;
         this.resendCount = resendCount;
     }
 }
