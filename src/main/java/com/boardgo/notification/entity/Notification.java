@@ -6,6 +6,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,7 +24,10 @@ import org.hibernate.annotations.Comment;
 @Getter
 @Table(
         name = "notification",
-        indexes = {@Index(name = "idx_user_info_id", columnList = "user_info_id")})
+        indexes = {
+            @Index(name = "idx_user_info_id", columnList = "user_info_id"),
+            @Index(name = "idx_send_date_time_is_sent", columnList = "send_date_time,is_sent")
+        })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification extends BaseEntity {
 
@@ -43,23 +48,37 @@ public class Notification extends BaseEntity {
     @Comment("이동 경로")
     private String pathUrl;
 
+    @Comment("알림 유형")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private NotificationType type;
+
     @Comment("발송 시간")
     @Column(nullable = false, columnDefinition = "DATETIME")
-    private LocalDateTime sendTime;
+    private LocalDateTime sendDateTime;
 
     @Embedded private NotificationMessage message;
+
+    @Comment("발송 유무")
+    @Convert(converter = BooleanConverter.class)
+    @Column(columnDefinition = "varchar(1)")
+    private Boolean isSent;
 
     @Builder
     private Notification(
             Boolean isRead,
             Long userInfoId,
             String pathUrl,
-            LocalDateTime sendTime,
-            NotificationMessage message) {
+            NotificationType type,
+            LocalDateTime sendDateTime,
+            NotificationMessage message,
+            Boolean isSent) {
         this.isRead = isRead;
         this.userInfoId = userInfoId;
         this.pathUrl = pathUrl;
-        this.sendTime = sendTime;
+        this.type = type;
+        this.sendDateTime = sendDateTime;
         this.message = message;
+        this.isSent = isSent;
     }
 }

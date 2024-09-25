@@ -18,23 +18,19 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Getter
 @Table(
-        name = "notification_result",
+        name = "notification_fail",
         indexes = {@Index(name = "idx_notification_id", columnList = "notification_id")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotificationResult {
+public class NotificationFail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notification_result_id")
+    @Column(name = "notification_fail_id")
     private Long id;
 
+    @Comment("알림 고유 id")
     @Column(nullable = false)
     private Long notificationId;
-
-    @Comment("발송 유무")
-    @Convert(converter = BooleanConverter.class)
-    @Column(columnDefinition = "varchar(1)")
-    private Boolean isSent;
 
     @Comment("성공 유무")
     @Convert(converter = BooleanConverter.class)
@@ -46,10 +42,8 @@ public class NotificationResult {
     private Integer resendCount;
 
     @Builder
-    private NotificationResult(
-            Long notificationId, Boolean isSent, Boolean isSuccessful, Integer resendCount) {
+    private NotificationFail(Long notificationId, Boolean isSuccessful, Integer resendCount) {
         this.notificationId = notificationId;
-        this.isSent = isSent;
         this.isSuccessful = isSuccessful;
         this.resendCount = resendCount;
     }
