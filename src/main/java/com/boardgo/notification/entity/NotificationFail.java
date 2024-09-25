@@ -32,19 +32,19 @@ public class NotificationFail {
     @Column(nullable = false)
     private Long notificationId;
 
-    @Comment("성공 유무")
+    @Comment("재시도 성공 유무")
     @Convert(converter = BooleanConverter.class)
     @Column(columnDefinition = "varchar(1)")
-    private Boolean isSuccessful;
+    private Boolean isRetrySuccess;
 
     @Comment("발송 재시도 횟수")
     @Column(columnDefinition = "integer default 0")
     private Integer resendCount;
 
     @Builder
-    private NotificationFail(Long notificationId, Boolean isSuccessful, Integer resendCount) {
+    private NotificationFail(Long notificationId, Boolean isRetrySuccess, Integer resendCount) {
         this.notificationId = notificationId;
-        this.isSuccessful = isSuccessful;
+        this.isRetrySuccess = isRetrySuccess;
         this.resendCount = resendCount;
     }
 }
