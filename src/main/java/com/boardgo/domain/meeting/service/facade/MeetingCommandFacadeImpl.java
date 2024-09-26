@@ -25,6 +25,7 @@ import com.boardgo.domain.meeting.service.MeetingParticipantCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingParticipantSubQueryUseCase;
 import com.boardgo.domain.meeting.service.MeetingParticipantWaitingCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
+import com.boardgo.domain.meeting.service.response.BoardGameByMeetingIdResponse;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -109,7 +110,6 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
     public void updateMeeting(
             MeetingUpdateRequest updateRequest, Long userId, MultipartFile imageFile) {
         MeetingEntity meeting = meetingQueryUseCase.getMeeting(updateRequest.id());
-        log.info("userId : {}, meeting.WriterId: {}", userId, meeting.getId());
         validateUserIsWriter(userId, meeting);
         Long meetingId = meeting.getId();
 
@@ -137,11 +137,19 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
     private String updateImage(
             MultipartFile imageFile, List<Long> boardGameIdList, MeetingEntity meeting) {
         if ((Objects.isNull(imageFile) && Objects.isNull(boardGameIdList))
-                || (Objects.nonNull(meeting.getThumbnail())
+                || (Objects.isNull(imageFile)
+                        && Objects.nonNull(meeting.getThumbnail())
                         && meeting.getThumbnail().startsWith("meeting"))) {
             return meeting.getThumbnail();
         } else {
             s3Service.deleteFile(meeting.getThumbnail());
+            if (Objects.isNull(boardGameIdList)) {
+                List<Long> meetingBoardGameIdList =
+                        boardGameQueryUseCase.findMeetingDetailByMeetingId(meeting.getId()).stream()
+                                .map(BoardGameByMeetingIdResponse::boardGameId)
+                                .toList();
+                return registerImage(meetingBoardGameIdList, imageFile);
+            }
             return registerImage(boardGameIdList, imageFile);
         }
     }
