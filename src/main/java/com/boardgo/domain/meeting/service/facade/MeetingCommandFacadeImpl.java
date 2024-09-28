@@ -3,6 +3,14 @@ package com.boardgo.domain.meeting.service.facade;
 import static com.boardgo.common.constant.S3BucketConstant.*;
 import static com.boardgo.domain.meeting.entity.enums.MeetingState.*;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.common.utils.FileUtils;
@@ -26,14 +34,9 @@ import com.boardgo.domain.meeting.service.MeetingParticipantSubQueryUseCase;
 import com.boardgo.domain.meeting.service.MeetingParticipantWaitingCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
 import com.boardgo.domain.meeting.service.response.BoardGameByMeetingIdResponse;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -113,19 +116,11 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         validateUserIsWriter(userId, meeting);
         Long meetingId = meeting.getId();
 
-        log.info("update limitCount : {}", updateRequest.limitParticipant());
-        MeetingParticipantSubEntity meetingParticipantSubEntity =
-                meetingParticipantSubQueryUseCase.getByMeetingId(meetingId);
-        log.info("subentity limitCount : {}", meetingParticipantSubEntity.getParticipantCount());
-        if (updateRequest.limitParticipant() <= 1
-                || meetingParticipantSubEntity.getParticipantCount()
-                        > updateRequest.limitParticipant()) {
-            throw new CustomIllegalArgumentException("현재 참여한 인원보다 최대 인원수가 커야합니다.");
-        }
+        validateLimitParticipantCount(updateRequest, meetingId);
 
         List<Long> boardGameIdList = updateRequest.boardGameIdList();
 
-        String imageUri = updateImage(imageFile, boardGameIdList, meeting);
+        String imageUri = updateImage(imageFile, boardGameIdList, meeting, updateRequest);
         meeting.update(updateRequest, imageUri);
 
         if (Objects.nonNull(boardGameIdList) && !boardGameIdList.isEmpty()) {
@@ -138,25 +133,35 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         }
     }
 
+    private void validateLimitParticipantCount(MeetingUpdateRequest updateRequest, Long meetingId) {
+        MeetingParticipantSubEntity meetingParticipantSubEntity =
+                meetingParticipantSubQueryUseCase.getByMeetingId(meetingId);
+        if (updateRequest.limitParticipant() <= 1
+                || meetingParticipantSubEntity.getParticipantCount()
+                        > updateRequest.limitParticipant()) {
+            throw new CustomIllegalArgumentException("현재 참여한 인원보다 최대 인원수가 커야합니다.");
+        }
+    }
+
     private String updateImage(
-            MultipartFile imageFile, List<Long> boardGameIdList, MeetingEntity meeting) {
-        // 1. 이미지 파일 수정 X, 보드게임 수정 X
-        // 2. 이미지 파일 수정 X, 보드게임 수정 O, thumbnail 사용자 등록 이미지인 경우
-        if (Objects.isNull(imageFile)
-                && (Objects.isNull(boardGameIdList)
-                        || (Objects.nonNull(meeting.getThumbnail())
-                                && meeting.getThumbnail().startsWith("meeting")))) {
-            return meeting.getThumbnail();
-        } else {
+            MultipartFile imageFile, List<Long> boardGameIdList, MeetingEntity meeting, MeetingUpdateRequest updateRequest) {
+        // 1. 썸네일을 지운 경우 - 기존 썸네일이 사용자가 등록한 이미지
+        // 2. 썸네일이 있는 경우 - 기존 사용자가 등록한 이미지가 있든지 말든지 모두 처리
+        // 3. 기존 썸네일이 사용자가 올린 경우가 아닌 경우 - 보드게임 이미지를 변경해야함
+        if (updateRequest.isDeleteThumbnail() || Objects.nonNull(imageFile) || (meeting.getThumbnail().startsWith("boardgame") && Objects.nonNull(updateRequest.boardGameIdList()))) {
             s3Service.deleteFile(meeting.getThumbnail());
             if (Objects.isNull(boardGameIdList)) {
                 List<Long> meetingBoardGameIdList =
-                        boardGameQueryUseCase.findMeetingDetailByMeetingId(meeting.getId()).stream()
-                                .map(BoardGameByMeetingIdResponse::boardGameId)
-                                .toList();
+                    boardGameQueryUseCase.findMeetingDetailByMeetingId(meeting.getId()).stream()
+                        .map(BoardGameByMeetingIdResponse::boardGameId)
+                        .toList();
                 return registerImage(meetingBoardGameIdList, imageFile);
             }
             return registerImage(boardGameIdList, imageFile);
+        } else  {
+            // 1. 이미지 파일 수정 X, 보드게임 수정 X
+            // 2. 이미지 파일 수정 X, 보드게임 수정 O, thumbnail 사용자 등록 이미지인 경우
+            return meeting.getThumbnail();
         }
     }
 
