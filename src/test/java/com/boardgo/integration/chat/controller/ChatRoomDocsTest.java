@@ -68,7 +68,7 @@ public class ChatRoomDocsTest extends RestDocsTestSupport {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.filter(
 				document(
-					"chatroom",
+					"chatroom-list",
 					responseFields(
 						fieldWithPath("[].chatRoomId")
 							.type(JsonFieldType.NUMBER)
