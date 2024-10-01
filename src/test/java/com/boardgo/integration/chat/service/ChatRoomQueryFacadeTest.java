@@ -51,9 +51,8 @@ public class ChatRoomQueryFacadeTest extends IntegrationTestSupport {
 		ChatMessage chat2 = chatRepository.save(ChatMessage.builder()
 			.roomId(savedChatRoom.getId())
 			.userId(savedUser.getId())
-			.content("hi Test")
+			.content("hi Test2")
 			.sendDatetime(now).build());
-		List<ChatMessage> room1 = chatRepository.findByRoomId(1L);
 		//when
 		List<ChattingListResponse> result = chatRoomQueryFacade.getList(savedUser.getId());
 		//then
@@ -61,8 +60,9 @@ public class ChatRoomQueryFacadeTest extends IntegrationTestSupport {
 		assertThat(result).extracting(ChattingListResponse::chatRoomId)
 			.containsExactlyInAnyOrder(1L, 2L);
 		assertThat(result).extracting(ChattingListResponse::lastMessage)
-			.containsExactlyInAnyOrder(null, "hi Test");
+			.containsExactlyInAnyOrder(null, "hi Test2");
 		assertThat(result.getFirst().lastSendDatetime().truncatedTo(ChronoUnit.SECONDS)).isEqualTo(now.truncatedTo(ChronoUnit.SECONDS));
+		assertThat(result.getFirst().chatRoomId()).isEqualTo(savedChatRoom.getId());
 	}
 
 	private ChatRoomEntity getChatRoomEntity(UserInfoEntity savedUser) {
