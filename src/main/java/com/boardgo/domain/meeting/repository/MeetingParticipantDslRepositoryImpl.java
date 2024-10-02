@@ -61,4 +61,12 @@ public class MeetingParticipantDslRepositoryImpl implements MeetingParticipantDs
                                                 .and(mp.userInfoId.notIn(revieweeIds))))
                 .fetch();
     }
+
+    @Override
+    public List<Long> getMeetingIdByNotEqualsOut(Long userId) {
+        return queryFactory.select(mp.meetingId)
+            .from(mp)
+            .where(mp.userInfoId.eq(userId).and(mp.type.ne(OUT)))
+            .fetch();
+    }
 }

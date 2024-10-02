@@ -17,6 +17,7 @@ import com.boardgo.domain.meeting.service.response.ParticipantOutResponse;
 import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
 import com.boardgo.domain.user.repository.projection.UserParticipantProjection;
 
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -50,5 +51,8 @@ public class MeetingParticipantQueryServiceV1 implements MeetingParticipantQuery
         List<UserParticipantProjection> projectionList = meetingParticipantRepository.findParticipantListByMeetingId(
             meetingId);
         return projectionList.stream().map(meetingParticipantMapper::toUserParticipantResponse).toList();
+      
+    public List<Long> getMeetingIdByNotEqualsOut(Long userId) {
+        return meetingParticipantRepository.getMeetingIdByNotEqualsOut(userId);
     }
 }

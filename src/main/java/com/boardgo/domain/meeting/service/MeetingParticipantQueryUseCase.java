@@ -12,4 +12,6 @@ public interface MeetingParticipantQueryUseCase {
     int getMeetingCount(Long userId);
 
     List<UserParticipantResponse> findByMeetingId(Long meetingId);
+  
+    List<Long> getMeetingIdByNotEqualsOut(Long userId);
 }
