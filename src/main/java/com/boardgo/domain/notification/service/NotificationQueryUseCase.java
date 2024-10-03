@@ -1,6 +1,6 @@
-package com.boardgo.notification.service;
+package com.boardgo.domain.notification.service;
 
-import com.boardgo.notification.service.response.NotificationResponse;
+import com.boardgo.domain.notification.service.response.NotificationResponse;
 import java.util.List;
 
 public interface NotificationQueryUseCase {

@@ -1,10 +1,10 @@
-package com.boardgo.notification.controller;
+package com.boardgo.domain.notification.controller;
 
 import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER1;
 import static com.boardgo.common.utils.SecurityUtils.currentUserId;
 
-import com.boardgo.notification.service.NotificationQueryUseCase;
-import com.boardgo.notification.service.response.NotificationResponse;
+import com.boardgo.domain.notification.service.NotificationQueryUseCase;
+import com.boardgo.domain.notification.service.response.NotificationResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

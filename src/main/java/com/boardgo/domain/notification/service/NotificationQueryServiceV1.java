@@ -1,8 +1,8 @@
-package com.boardgo.notification.service;
+package com.boardgo.domain.notification.service;
 
 import com.boardgo.domain.mapper.NotificationMapper;
-import com.boardgo.notification.repository.NotificationRepository;
-import com.boardgo.notification.service.response.NotificationResponse;
+import com.boardgo.domain.notification.repository.NotificationRepository;
+import com.boardgo.domain.notification.service.response.NotificationResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

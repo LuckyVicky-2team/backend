@@ -1,4 +1,4 @@
-package com.boardgo.notification.repository.projection;
+package com.boardgo.domain.notification.service.response;
 
-public record NotificationProjection(
+public record NotificationResponse(
         Long notificationId, String title, String content, Boolean isRead, String pathUrl) {}

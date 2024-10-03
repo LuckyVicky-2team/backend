@@ -1,4 +1,4 @@
-package com.boardgo.notification.entity;
+package com.boardgo.domain.notification.entity;
 
 public enum NotificationType {
     PUSH,

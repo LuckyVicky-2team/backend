@@ -1,7 +1,7 @@
 package com.boardgo.domain.mapper;
 
-import com.boardgo.notification.repository.projection.NotificationProjection;
-import com.boardgo.notification.service.response.NotificationResponse;
+import com.boardgo.domain.notification.repository.projection.NotificationProjection;
+import com.boardgo.domain.notification.service.response.NotificationResponse;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

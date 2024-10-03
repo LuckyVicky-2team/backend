@@ -1,6 +1,6 @@
-package com.boardgo.notification.repository;
+package com.boardgo.domain.notification.repository;
 
-import com.boardgo.notification.repository.projection.NotificationProjection;
+import com.boardgo.domain.notification.repository.projection.NotificationProjection;
 import java.util.List;
 
 public interface NotificationDslRepository {

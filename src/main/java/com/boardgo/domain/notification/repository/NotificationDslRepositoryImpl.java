@@ -1,7 +1,7 @@
-package com.boardgo.notification.repository;
+package com.boardgo.domain.notification.repository;
 
+import com.boardgo.domain.notification.repository.projection.NotificationProjection;
 import com.boardgo.notification.entity.QNotificationEntity;
-import com.boardgo.notification.repository.projection.NotificationProjection;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
