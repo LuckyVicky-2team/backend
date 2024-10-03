@@ -1,6 +1,6 @@
 package com.boardgo.notification.entity;
 
 public enum NotificationType {
-    WEB,
+    PUSH,
     EMAIL
 }
