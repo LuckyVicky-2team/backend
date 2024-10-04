@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class NotificationQueryServiceV1Test extends IntegrationTestSupport {
@@ -42,10 +44,16 @@ public class NotificationQueryServiceV1Test extends IntegrationTestSupport {
                                 userId, getNotificationMessage(MessageType.REVIEW_RECEIVED).build())
                         .pathUrl("/mypage/review/receivedReviews")
                         .build();
+        NotificationEntity notification4 =
+                NotificationData.getNotification(
+                                userId, getNotificationMessage(MessageType.KICKED_OUT).build())
+                        .pathUrl("/gatherings")
+                        .build();
 
         notificationRepository.save(failNotification1);
         notificationRepository.save(failNotification2);
         notificationRepository.save(notification3);
+        notificationRepository.save(notification4);
 
         // when
         List<NotificationResponse> notificationList =
@@ -63,6 +71,47 @@ public class NotificationQueryServiceV1Test extends IntegrationTestSupport {
                     NotificationMessage message = notificationEntity.getMessage();
                     assertThat(response.title()).isEqualTo(message.getTitle());
                     assertThat(response.content()).isEqualTo(message.getContent());
+                });
+    }
+
+    @ParameterizedTest
+    @DisplayName("알림메세지 타입에 따라 이동경로가 다르다")
+    @EnumSource(MessageType.class)
+    void 알림메세지_타입에_따라_이동경로가_다르다(MessageType messageType) {
+        // given
+        String pathUrl = "";
+        switch (messageType) {
+            case MEETING_MODIFY:
+            case MEETING_REMINDER:
+                pathUrl = "/gatherings/1";
+                break;
+            case REVIEW_RECEIVED:
+                pathUrl = "/mypage/review/receivedReviews";
+                break;
+            case REQUEST_REVIEW:
+                pathUrl = "/mypage/review";
+                break;
+            case KICKED_OUT:
+                pathUrl = "/gatherings";
+                break;
+        }
+
+        NotificationEntity notification =
+                NotificationData.getNotification(1L, getNotificationMessage(messageType).build())
+                        .pathUrl(pathUrl)
+                        .build();
+        notificationRepository.save(notification);
+
+        // when
+        List<NotificationResponse> notificationList =
+                notificationQueryUseCase.getNotificationList(1L);
+
+        // then
+        assertThat(notificationList).isNotEmpty();
+        String finalPathUrl = pathUrl;
+        notificationList.forEach(
+                response -> {
+                    assertThat(response.pathUrl()).isEqualTo(finalPathUrl);
                 });
     }
 
