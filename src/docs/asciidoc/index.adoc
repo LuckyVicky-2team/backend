@@ -1041,7 +1041,7 @@ include::{snippets}/get-notifications/response-fields.adoc[]
 ==== *요청*
 
 include::{snippets}/patch-read-notification/http-request.adoc[]
-include::{snippets}/patch-read-notification/request-parts.adoc[]
+include::{snippets}/patch-read-notification/query-parameters.adoc[]
 
 ==== *응답*
 

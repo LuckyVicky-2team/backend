@@ -7,8 +7,8 @@ import static com.boardgo.integration.data.NotificationData.getNotificationMessa
 import static io.restassured.RestAssured.given;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import com.boardgo.domain.notification.entity.MessageType;
@@ -26,7 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
-import org.springframework.restdocs.request.RequestPartsSnippet;
+import org.springframework.restdocs.request.QueryParametersSnippet;
 
 public class NotificationRestDocs extends RestDocsTestSupport {
     @Autowired private NotificationRepository notificationRepository;
@@ -104,11 +104,8 @@ public class NotificationRestDocs extends RestDocsTestSupport {
                 .port(port)
                 .header(API_VERSION_HEADER, "1")
                 .header(AUTHORIZATION, testAccessToken)
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                .multiPart("ids", "1,2,3,4,5")
-                .filter(
-                        document(
-                                "patch-read-notification", getNotificationRequestPartBodySnippet()))
+                .queryParam("ids", "1,2,3,4,5")
+                .filter(document("patch-read-notification", getNotificationQueryParamSnippet()))
                 .when()
                 .patch("/notification/read")
                 .then()
@@ -118,8 +115,8 @@ public class NotificationRestDocs extends RestDocsTestSupport {
                 .extract();
     }
 
-    RequestPartsSnippet getNotificationRequestPartBodySnippet() {
-        return requestParts(
-                partWithName("ids").attributes(constraints("ARRAY")).description("알림 ID 배열"));
+    QueryParametersSnippet getNotificationQueryParamSnippet() {
+        return queryParameters(
+                parameterWithName("ids").description("알림 ID ARRAY 타입 ids=1,2,3,4,5"));
     }
 }
