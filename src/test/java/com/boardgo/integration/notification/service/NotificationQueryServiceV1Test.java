@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.boardgo.domain.notification.entity.MessageType;
 import com.boardgo.domain.notification.entity.NotificationEntity;
+import com.boardgo.domain.notification.entity.NotificationMessage;
 import com.boardgo.domain.notification.repository.NotificationRepository;
 import com.boardgo.domain.notification.service.NotificationQueryUseCase;
 import com.boardgo.domain.notification.service.response.NotificationResponse;
@@ -24,20 +25,21 @@ public class NotificationQueryServiceV1Test extends IntegrationTestSupport {
     @DisplayName("전송된 알림 메세지만 알림 목록에서 조회할 수 있다")
     void 전송된_알림_메세지만_알림_목록에서_조회할_수_있다() {
         // given
+        Long userId = 1L;
         NotificationEntity failNotification1 =
                 NotificationData.getNotification(
-                                1L, getNotificationMessage(MessageType.MEETING_MODIFY).build())
+                                2L, getNotificationMessage(MessageType.MEETING_MODIFY).build())
                         .isSent(false)
                         .build();
         NotificationEntity failNotification2 =
                 NotificationData.getNotification(
-                                1L, getNotificationMessage(MessageType.REQUEST_REVIEW).build())
+                                userId, getNotificationMessage(MessageType.REQUEST_REVIEW).build())
                         .isSent(false)
                         .pathUrl("/mypage/review")
                         .build();
         NotificationEntity notification3 =
                 NotificationData.getNotification(
-                                1L, getNotificationMessage(MessageType.REVIEW_RECEIVED).build())
+                                userId, getNotificationMessage(MessageType.REVIEW_RECEIVED).build())
                         .pathUrl("/mypage/review/receivedReviews")
                         .build();
 
@@ -56,6 +58,11 @@ public class NotificationQueryServiceV1Test extends IntegrationTestSupport {
                     NotificationEntity notificationEntity =
                             notificationRepository.findById(response.notificationId()).get();
                     assertThat(notificationEntity.getIsSent()).isTrue();
+                    assertThat(notificationEntity.getUserInfoId()).isEqualTo(userId);
+
+                    NotificationMessage message = notificationEntity.getMessage();
+                    assertThat(response.title()).isEqualTo(message.getTitle());
+                    assertThat(response.content()).isEqualTo(message.getContent());
                 });
     }
 
