@@ -63,7 +63,7 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         validateNullCheckIdList(meetingCreateRequest.boardGameIdList(), "boardGame is Null");
 
         String imageUri =
-                registerImage(meetingCreateRequest.boardGameIdList(), imageFile);
+                registerImage(meetingCreateRequest.boardGameIdList().getFirst(), imageFile);
         MeetingEntity meetingEntity =
                 meetingMapper.toMeetingEntity(meetingCreateRequest, userId, imageUri);
         Long meetingId = meetingCommandUseCase.create(meetingEntity);
@@ -156,12 +156,12 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
                 || (meeting.getThumbnail().startsWith(BOARDGAME)
                         && Objects.nonNull(updateRequest.boardGameIdList()))) {
             s3Service.deleteFile(meeting.getThumbnail());
-            if (Objects.isNull(boardGameIdList)) {
+            if (Objects.isNull(imageFile) && (Objects.isNull(boardGameIdList) || boardGameIdList.isEmpty())) {
                 return boardGameQueryUseCase
                         .findFirstByMeetingId(meeting.getId())
                         .thumbnail();
             }
-            return registerImage(boardGameIdList, imageFile);
+            return registerImage(boardGameIdList.getFirst(), imageFile);
         } else {
             // 1. 이미지 파일 수정 X, 보드게임 수정 X
             // 2. 이미지 파일 수정 X, 보드게임 수정 O, thumbnail 사용자 등록 이미지인 경우
@@ -169,10 +169,10 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         }
     }
 
-    private String registerImage(List<Long> boardGameIdList, MultipartFile imageFile) {
+    private String registerImage(Long boardGameId, MultipartFile imageFile) {
         String imageUri;
         if (Objects.isNull(imageFile) || imageFile.isEmpty()) {
-            BoardGameEntity boardGameEntity = boardGameQueryUseCase.getById(boardGameIdList.getFirst());
+            BoardGameEntity boardGameEntity = boardGameQueryUseCase.getById(boardGameId);
             imageUri = boardGameEntity.getThumbnail();
         } else {
             imageUri = s3Service.upload(MEETING, FileUtils.getUniqueFileName(imageFile), imageFile);
