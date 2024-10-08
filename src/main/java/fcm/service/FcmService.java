@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class FcmService {
-    private final FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+    private final FirebaseMessaging firebaseMessaging;
 
     public String sendFcmMessage(FcmMessageSendRequest request) {
         Message message =
