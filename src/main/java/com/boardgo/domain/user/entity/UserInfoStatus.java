@@ -17,5 +17,17 @@ public class UserInfoStatus {
     @Column(columnDefinition = "varchar(1)")
     private Boolean isNotificationChecked;
 
+    @Comment("FCM 푸시 토큰")
+    private String pushToken;
+
+    public UserInfoStatus(Boolean isNotificationChecked, String pushToken) {
+        this.isNotificationChecked = isNotificationChecked;
+        this.pushToken = pushToken;
+    }
+
     // TODO 알림 아이콘 확인 업데이트 메소드
+
+    public void updatePushToken(String pushToken) {
+        this.pushToken = pushToken;
+    }
 }
