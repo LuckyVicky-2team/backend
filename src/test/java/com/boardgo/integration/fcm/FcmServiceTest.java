@@ -4,15 +4,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.boardgo.common.exception.FcmException;
 import com.boardgo.fcm.request.FcmMessageSendRequest;
-import com.boardgo.fcm.service.FcmUseCase;
-import com.boardgo.integration.support.IntegrationTestSupport;
+import com.boardgo.fcm.service.FcmService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
-public class FcmServiceTest extends IntegrationTestSupport {
-
-    @Autowired private FcmUseCase fcmUseCase;
+@SpringBootTest
+@Transactional
+@ActiveProfiles("local")
+public class FcmServiceTest {
+    @Autowired private FcmService fcmService;
 
     @Test
     @DisplayName("토큰이 유효하지 않을 경우 fcm 메세지 전송에 실패한다")
@@ -24,7 +28,7 @@ public class FcmServiceTest extends IntegrationTestSupport {
 
         // when
         // then
-        assertThatThrownBy(() -> fcmUseCase.sendFcmMessage(request))
+        assertThatThrownBy(() -> fcmService.sendFcmMessage(request))
                 .isInstanceOf(FcmException.class);
     }
 }
