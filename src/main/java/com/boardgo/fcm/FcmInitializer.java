@@ -1,4 +1,4 @@
-package fcm;
+package com.boardgo.fcm;
 
 import com.boardgo.common.exception.FcmException;
 import com.google.auth.oauth2.GoogleCredentials;
