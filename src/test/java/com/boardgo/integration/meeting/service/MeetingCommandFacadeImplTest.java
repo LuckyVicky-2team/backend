@@ -123,10 +123,7 @@ public class MeetingCommandFacadeImplTest extends IntegrationTestSupport {
                 meetingGenreMatchRepository.findByMeetingId(meetingId);
         MeetingParticipantEntity participantEntity =
                 meetingParticipantRepository.findByMeetingId(meeting.getId()).getFirst();
-        ChatRoomEntity chatRoomEntity = chatRoomRepository.findByMeetingIdIn(List.of(meetingId))
-            .stream()
-            .findFirst()
-            .get();
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findByMeetingId(meetingId);
 
         assertThat(participantEntity.getUserInfoId()).isEqualTo(savedUser.getId());
         assertThat(gameMatchEntityList).extracting("boardGameId").contains(1L, 2L);
@@ -1059,6 +1056,9 @@ public class MeetingCommandFacadeImplTest extends IntegrationTestSupport {
                         .meetingId(meetingId)
                         .type(ParticipantType.LEADER)
                         .build());
+        ChatRoomEntity chatRoom = chatRoomRepository.save(ChatRoomEntity.builder()
+            .meetingId(meetingId)
+            .build());
         // when
         meetingCommandFacade.deleteMeeting(meetingId, userId);
         // then
@@ -1071,12 +1071,14 @@ public class MeetingCommandFacadeImplTest extends IntegrationTestSupport {
                 meetingGenreMatchRepository.findByMeetingId(meetingId);
         List<MeetingGameMatchEntity> gameMatchEntityList =
                 meetingGameMatchRepository.findByMeetingId(meetingId);
+        Optional<ChatRoomEntity> chatRoomOpt = chatRoomRepository.findById(chatRoom.getId());
 
         assertThat(meetingOptional).isEmpty();
         assertThat(meetingParticipantList.isEmpty()).isTrue();
         assertThat(meetingLikeEntityList.isEmpty()).isTrue();
         assertThat(genreMatchList.isEmpty()).isTrue();
         assertThat(gameMatchEntityList.isEmpty()).isTrue();
+        assertThat(chatRoomOpt).isEmpty();
     }
 
     @Test

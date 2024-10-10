@@ -17,4 +17,9 @@ public class ChatRoomCommandServiceV1 implements ChatRoomCommandUseCase{
 		ChatRoomEntity chatRoom = ChatRoomEntity.builder().meetingId(meetingId).build();
 		return chatRoomRepository.save(chatRoom).getId();
 	}
+
+	@Override
+	public void deleteByMeetingId(Long meetingId) {
+		chatRoomRepository.deleteById(meetingId);
+	}
 }

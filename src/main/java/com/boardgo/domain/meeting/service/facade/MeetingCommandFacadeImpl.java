@@ -106,9 +106,11 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         meetingGameMatchCommandUseCase.deleteByMeetingId(meetingId);
         meetingGenreMatchCommandUseCase.deleteByMeetingId(meetingId);
         meetingParticipantCommandUseCase.deleteByMeetingId(meetingId);
+
         if (meeting.getType() == MeetingType.ACCEPT) {
             meetingParticipantWaitingCommandUseCase.deleteByMeetingId(meetingId);
         }
+        chatRoomCommandUseCase.deleteByMeetingId(meetingId);
         meetingCommandUseCase.deleteById(meetingId);
     }
 
