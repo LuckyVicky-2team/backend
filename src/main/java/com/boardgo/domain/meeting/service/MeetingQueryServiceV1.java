@@ -48,7 +48,7 @@ public class MeetingQueryServiceV1 implements MeetingQueryUseCase {
     public MeetingEntity getMeeting(Long meetingId) {
         return meetingRepository
                 .findById(meetingId)
-                .orElseThrow(() -> new CustomNullPointException("회원이 존재하지 않습니다"));
+                .orElseThrow(() -> new CustomNullPointException("모임이 존재하지 않습니다"));
     }
 
     @Override
