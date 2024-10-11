@@ -1,6 +1,6 @@
 package com.boardgo.domain.meeting.service;
 
-import static com.boardgo.domain.meeting.entity.enums.ParticipantType.*;
+import static com.boardgo.domain.meeting.entity.enums.ParticipantType.OUT;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNullPointException;
@@ -17,6 +17,8 @@ import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingParticipantSubRepository;
 import com.boardgo.domain.meeting.repository.MeetingParticipateWaitingRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
+import com.boardgo.domain.notification.entity.MessageType;
+import com.boardgo.domain.notification.service.request.ReplaceMessageParam;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,6 +69,8 @@ public class MeetingParticipantCommandServiceV1 implements MeetingParticipantCom
         }
         // TODO 쓰레드에서 나가기
         meetingParticipant.updateParticipantType(OUT);
+        // TODO 나가기 알림 추가(퍼사드 패턴으로 리팩토링)
+        MessageType.KICKED_OUT.createMessage(new ReplaceMessageParam("알림제목", "닉네임"));
     }
 
     @Override
