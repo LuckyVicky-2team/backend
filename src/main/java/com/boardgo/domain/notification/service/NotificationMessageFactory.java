@@ -3,7 +3,7 @@ package com.boardgo.domain.notification.service;
 import com.boardgo.domain.notification.entity.MessageType;
 import com.boardgo.domain.notification.entity.NotificationMessageFormat;
 import com.boardgo.domain.notification.repository.NotificationMessageFormatRepository;
-import com.boardgo.domain.notification.service.request.ReplaceMessageParam;
+import com.boardgo.domain.notification.service.request.NotificationCreateRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +36,7 @@ public class NotificationMessageFactory implements ApplicationRunner {
         return MESSAGE_FORMAT.get(messageType);
     }
 
-    public static String replaceMessage(String message, ReplaceMessageParam param) {
+    public static String replaceMessage(String message, NotificationCreateRequest param) {
         message = message.replace(MEETING_TITLE, param.meetingTitle());
         message = message.replace(NICKNAME, param.nickname());
         return message;

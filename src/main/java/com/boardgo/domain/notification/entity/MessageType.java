@@ -1,9 +1,7 @@
 package com.boardgo.domain.notification.entity;
 
-import static com.boardgo.domain.notification.service.NotificationMessageFactory.replaceMessage;
-
 import com.boardgo.domain.notification.service.NotificationMessageFactory;
-import com.boardgo.domain.notification.service.request.ReplaceMessageParam;
+import com.boardgo.domain.notification.service.request.NotificationCreateRequest;
 
 public enum MessageType {
     MEETING_MODIFY,
@@ -12,11 +10,12 @@ public enum MessageType {
     REQUEST_REVIEW,
     KICKED_OUT;
 
-    public String createMessage(ReplaceMessageParam param) {
+    public String createMessage(NotificationCreateRequest param) {
         NotificationMessageFormat messageFormat = NotificationMessageFactory.get(this);
         return switch (this) {
-            case REQUEST_REVIEW -> replaceMessage(messageFormat.getTitle(), param);
-            default -> replaceMessage(messageFormat.getContent(), param);
+            case REQUEST_REVIEW -> NotificationMessageFactory.replaceMessage(
+                    messageFormat.getTitle(), param);
+            default -> NotificationMessageFactory.replaceMessage(messageFormat.getContent(), param);
         };
     }
 }
