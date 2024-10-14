@@ -44,7 +44,7 @@ public class NotificationCommandServiceV1 implements NotificationCommandUseCase 
 
         switch (messageType) {
             case MEETING_MODIFY, MEETING_REMINDER -> pathUrl =
-                    REQUEST_REVIEW_URL + "/" + request.meetingId();
+                    MEETING_URL + "/" + request.meetingId();
             case REVIEW_RECEIVED -> pathUrl = REVIEW_RECEIVED_URL;
             case REQUEST_REVIEW -> {
                 title = messageType.createMessage(request);
