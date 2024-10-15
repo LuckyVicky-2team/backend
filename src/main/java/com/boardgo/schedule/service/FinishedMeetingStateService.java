@@ -1,6 +1,7 @@
 package com.boardgo.schedule.service;
 
 import static com.boardgo.common.constant.TimeConstant.MINUTE;
+import static com.boardgo.common.constant.TimeConstant.MINUTES_30;
 import static com.boardgo.schedule.service.enums.ScheduleJobs.FINISHED_MEETING;
 
 import com.boardgo.schedule.JobRunner;
@@ -32,11 +33,10 @@ public class FinishedMeetingStateService extends JobRunner {
     public void updateFinishMeetingState() {
         ScheduleJobs job = FINISHED_MEETING;
         JobKey jobKey = JobKey.jobKey(job.name(), job.getJobGroup());
-        final int intervalInMinutes = 30;
 
         JobDetail jobDetail =
                 jobDetailService.jobDetailBuilder(jobKey, FinishedMeetingStateJob.class);
-        Trigger simpleTrigger = triggerService.simpleTrigger(jobKey, intervalInMinutes, MINUTE);
+        Trigger simpleTrigger = triggerService.simpleTrigger(jobKey, MINUTES_30, MINUTE);
         schedule(jobDetail, simpleTrigger);
     }
 

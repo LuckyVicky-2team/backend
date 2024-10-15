@@ -1,6 +1,7 @@
 package com.boardgo.schedule.service;
 
 import static com.boardgo.common.constant.TimeConstant.SECOND;
+import static com.boardgo.common.constant.TimeConstant.SECOND_10;
 
 import com.boardgo.schedule.JobRunner;
 import com.boardgo.schedule.job.SendPushJob;
@@ -31,10 +32,9 @@ public class SendPushService extends JobRunner {
     public void sendPush() {
         ScheduleJobs job = ScheduleJobs.INSTANT_SEND;
         JobKey jobKey = JobKey.jobKey(job.name(), job.getJobGroup());
-        final int intervalInSecond = 10;
 
         JobDetail jobDetail = jobDetailService.jobDetailBuilder(jobKey, SendPushJob.class);
-        Trigger simpleTrigger = triggerService.simpleTrigger(jobKey, intervalInSecond, SECOND);
+        Trigger simpleTrigger = triggerService.simpleTrigger(jobKey, SECOND_10, SECOND);
         schedule(jobDetail, simpleTrigger);
     }
 
