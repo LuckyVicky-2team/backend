@@ -5,4 +5,7 @@ public class TimeConstant {
     public static Long ACCESS_TOKEN_DURATION = 15L;
     public static Long REFRESH_TOKEN_DURATION = 10080L; // 일주일
     public static int REVIEWABLE_HOURS = 3;
+    public static String SECOND = "SECOND";
+    public static String MINUTE = "MINUTE";
+    public static String HOUR = "HOUR";
 }
