@@ -17,7 +17,6 @@ public class MeetingParticipantCommandFacadeImpl implements MeetingParticipantCo
     @Override
     public void outMeeting(Long meetingId, Long userId, boolean isKicked) {
         meetingParticipantCommandUseCase.outMeeting(meetingId, userId);
-        // TODO 쓰레드에서 나가기
         if (isKicked) {
             notificationCommandUseCase.createNotification(
                     userId, KICKED_OUT, new NotificationCreateRequest("알림제목", "닉네임", null));
