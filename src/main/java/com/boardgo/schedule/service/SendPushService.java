@@ -2,6 +2,7 @@ package com.boardgo.schedule.service;
 
 import static com.boardgo.common.constant.TimeConstant.SECOND;
 
+import com.boardgo.schedule.JobRunner;
 import com.boardgo.schedule.job.SendPushJob;
 import com.boardgo.schedule.service.enums.ScheduleJobs;
 import lombok.RequiredArgsConstructor;

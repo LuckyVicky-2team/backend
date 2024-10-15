@@ -1,4 +1,4 @@
-package com.boardgo.schedule.service;
+package com.boardgo.schedule;
 
 import jakarta.annotation.PostConstruct;
 import org.quartz.SchedulerException;

@@ -3,6 +3,7 @@ package com.boardgo.schedule.service;
 import static com.boardgo.common.constant.TimeConstant.MINUTE;
 import static com.boardgo.schedule.service.enums.ScheduleJobs.FINISHED_MEETING;
 
+import com.boardgo.schedule.JobRunner;
 import com.boardgo.schedule.job.FinishedMeetingStateJob;
 import com.boardgo.schedule.service.enums.ScheduleJobs;
 import lombok.RequiredArgsConstructor;
