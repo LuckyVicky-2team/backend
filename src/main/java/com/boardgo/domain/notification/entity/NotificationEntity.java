@@ -87,4 +87,8 @@ public class NotificationEntity extends BaseEntity {
     public void read() {
         this.isRead = true;
     }
+
+    public void send() {
+        this.isSent = true;
+    }
 }

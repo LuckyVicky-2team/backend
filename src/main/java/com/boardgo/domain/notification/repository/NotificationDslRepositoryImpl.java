@@ -49,7 +49,8 @@ public class NotificationDslRepositoryImpl implements NotificationDslRepository 
                                 u.userInfoStatus.pushToken,
                                 n.message.title,
                                 n.message.content,
-                                n.pathUrl))
+                                n.pathUrl,
+                                n.id))
                 .from(n)
                 .innerJoin(u)
                 .on(n.userInfoId.eq(u.id))
