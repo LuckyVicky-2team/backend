@@ -15,7 +15,7 @@ public abstract class NotificationData {
                 .userInfoId(userId)
                 .pathUrl("/gatherings/1")
                 .type(NotificationType.PUSH)
-                .sendDateTime(LocalDateTime.of(2024, 10, 3, 18, 30))
+                .sendDateTime(LocalDateTime.of(2024, 10, 15, 18, 30))
                 .message(message)
                 .isSent(true);
     }

@@ -2,6 +2,7 @@ package com.boardgo.domain.notification.service;
 
 import com.boardgo.domain.mapper.NotificationMapper;
 import com.boardgo.domain.notification.repository.NotificationRepository;
+import com.boardgo.domain.notification.service.response.NotificationPushResponse;
 import com.boardgo.domain.notification.service.response.NotificationResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,12 @@ public class NotificationQueryServiceV1 implements NotificationQueryUseCase {
 
     @Override
     public List<NotificationResponse> getNotificationList(Long userId) {
-        return notificationMapper.toResponseList(notificationRepository.findByUserInfoId(userId));
+        return notificationMapper.toNotificationResponseList(
+                notificationRepository.findByUserInfoId(userId));
+    }
+
+    @Override
+    public List<NotificationPushResponse> getNotificationPushList() {
+        return notificationMapper.toPushResponseList(notificationRepository.findNotificationPush());
     }
 }
