@@ -8,11 +8,13 @@ import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
 @Profile("!test")
+@Slf4j
 @RequiredArgsConstructor
 public class FcmService {
     private final FirebaseMessagingUseCase firebaseMessagingUseCase;
@@ -24,6 +26,7 @@ public class FcmService {
                         .setNotification(setNotification(request.title(), request.content()))
                         .setWebpushConfig(setWebpushConfig(request.pathUrl()))
                         .build();
+        log.info("Send FCM Message :: " + request);
         return firebaseMessagingUseCase.send(message);
     }
 
