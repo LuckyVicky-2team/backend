@@ -1,6 +1,5 @@
 package com.boardgo.domain.notification.repository;
 
-import com.boardgo.domain.notification.entity.NotificationType;
 import com.boardgo.domain.notification.entity.QNotificationEntity;
 import com.boardgo.domain.notification.repository.projection.NotificationProjection;
 import com.boardgo.domain.notification.repository.projection.NotificationPushProjection;
@@ -58,7 +57,6 @@ public class NotificationDslRepositoryImpl implements NotificationDslRepository 
                         n.sendDateTime
                                 .before(LocalDateTime.now())
                                 .and(n.isSent.eq(false))
-                                .and(n.type.eq(NotificationType.PUSH))
                                 .and(u.userInfoStatus.pushToken.isNotNull()))
                 .limit(100)
                 .fetch();
