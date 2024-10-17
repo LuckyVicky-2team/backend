@@ -83,4 +83,26 @@ public class NotificationCommandServiceV1Test extends IntegrationTestSupport {
                 .isInstanceOf(CustomNoSuchElementException.class)
                 .hasMessageContaining("알림 (이)가 존재하지 않습니다");
     }
+
+    @Test
+    @DisplayName("알림 푸시 결과를 저장하고 알림 전송 상태를 변경한다")
+    void 알림_푸시_결과를_저장하고_알림_전송_상태를_변경한다() {
+        // given
+        NotificationEntity notification =
+                getNotification(1L, getNotificationMessage(MessageType.MEETING_MODIFY).build())
+                        .isSent(false)
+                        .build();
+        notificationRepository.save(notification);
+        String result = "success push message result";
+
+        // when
+        notificationCommandUseCase.saveNotificationResult(notification.getId(), result);
+
+        // then
+        NotificationEntity notificationEntity =
+                notificationRepository.findById(notification.getId()).get();
+        assertThat(notificationEntity).isNotNull();
+        assertThat(notificationEntity.getIsSent()).isTrue();
+        assertThat(notificationEntity.getRawResult()).isEqualTo(result);
+    }
 }

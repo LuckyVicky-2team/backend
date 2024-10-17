@@ -90,7 +90,11 @@ public class NotificationEntity extends BaseEntity {
         this.isRead = true;
     }
 
-    public void send() {
+    public void sent() {
         this.isSent = true;
+    }
+
+    public void saveRawResult(String rawResult) {
+        this.rawResult = rawResult;
     }
 }

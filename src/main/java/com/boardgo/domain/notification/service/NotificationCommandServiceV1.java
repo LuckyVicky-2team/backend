@@ -5,6 +5,7 @@ import com.boardgo.domain.notification.entity.NotificationEntity;
 import com.boardgo.domain.notification.repository.NotificationRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +25,16 @@ public class NotificationCommandServiceV1 implements NotificationCommandUseCase 
         }
         List<Long> ids = notificationEntity.stream().map(NotificationEntity::getId).toList();
         notificationRepository.readNotifications(ids);
+    }
+
+    @Override
+    public void saveNotificationResult(Long notificationId, String result) {
+        Optional<NotificationEntity> notificationOptional =
+                notificationRepository.findById(notificationId);
+        if (notificationOptional.isPresent()) {
+            NotificationEntity notification = notificationOptional.get();
+            notification.sent();
+            notification.saveRawResult(result);
+        }
     }
 }
