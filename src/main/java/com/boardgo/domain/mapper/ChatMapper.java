@@ -42,6 +42,7 @@ public interface ChatMapper {
             MeetingEntity meeting, ChatMessage chatMessage, Long chatRoomId) {
         return new ChattingListResponse(
                 chatRoomId,
+                meeting.getId(),
                 meeting.getThumbnail(),
                 meeting.getTitle(),
                 Objects.isNull(chatMessage) ? null : chatMessage.getContent(),

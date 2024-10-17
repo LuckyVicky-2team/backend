@@ -78,6 +78,9 @@ public class ChatRoomDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("[].chatRoomId")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("채팅방 id"),
+                                        fieldWithPath("[].meetingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("모임 id"),
                                         fieldWithPath("[].thumbnail")
                                                 .type(JsonFieldType.STRING)
                                                 .description("모임 썸네일"),
