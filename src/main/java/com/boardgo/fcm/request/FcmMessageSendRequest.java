@@ -1,3 +1,6 @@
 package com.boardgo.fcm.request;
 
-public record FcmMessageSendRequest(String token, String title, String content, String pathUrl) {}
+import lombok.NonNull;
+
+public record FcmMessageSendRequest(
+        @NonNull String token, @NonNull String title, @NonNull String content, String pathUrl) {}

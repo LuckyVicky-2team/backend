@@ -7,13 +7,14 @@ import com.boardgo.domain.notification.service.response.NotificationPushResponse
 import com.boardgo.fcm.request.FcmMessageSendRequest;
 import com.boardgo.fcm.service.FcmService;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 
+@Slf4j
 @DisallowConcurrentExecution
 public class SendPushJob implements Job {
 
@@ -21,7 +22,6 @@ public class SendPushJob implements Job {
     @Autowired private NotificationCommandUseCase notificationCommandUseCase;
     @Autowired private FcmService fcmService;
 
-    @Async
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         List<NotificationPushResponse> notificationPushList =
@@ -29,6 +29,7 @@ public class SendPushJob implements Job {
         if (notificationPushList.isEmpty()) {
             return;
         }
+
         notificationPushList.forEach(
                 push -> {
                     String fcmResult = "";
@@ -40,12 +41,14 @@ public class SendPushJob implements Job {
                                                 push.title(),
                                                 push.content(),
                                                 push.pathUrl()));
-                        // TODO DB 복합인덱스 키 생성
                         notificationCommandUseCase.saveNotificationResult(
                                 push.notificationId(), fcmResult);
                     } catch (FcmException fe) {
-                        fcmResult = fe.getMessage();
                         // TODO fcm 푸시 실패 시 저장
+                        log.info("send FCM FcmException :: {}", fe.getMessage());
+                    } catch (NullPointerException npe) {
+                        // TODO fcm 푸시 실패 시 저장
+                        log.info("send FCM push NPE error :: {}", npe.getMessage());
                     }
                 });
     }
