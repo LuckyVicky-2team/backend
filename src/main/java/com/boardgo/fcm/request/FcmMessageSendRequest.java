@@ -1,6 +1,6 @@
 package com.boardgo.fcm.request;
 
-import lombok.NonNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record FcmMessageSendRequest(
-        @NonNull String token, @NonNull String title, @NonNull String content, String pathUrl) {}
+        @NotBlank String token, @NotBlank String title, @NotBlank String content, String pathUrl) {}
