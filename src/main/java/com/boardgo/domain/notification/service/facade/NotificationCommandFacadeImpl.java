@@ -20,6 +20,7 @@ public class NotificationCommandFacadeImpl implements NotificationCommandFacade 
 
     @Override
     public void create(Long meetingId, Long userId, MessageType messageType) {
+        // TODO 회원 알림설정 OFF일 경우 발송X
         String nickname = userQueryUseCase.getUserInfoEntity(userId).getNickName();
         String meetingTitle = meetingQueryUseCase.getMeeting(meetingId).getTitle();
         notificationCommandUseCase.createNotification(

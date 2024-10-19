@@ -1,7 +1,9 @@
 package com.boardgo.domain.meeting.service.facade;
 
-import static com.boardgo.common.constant.S3BucketConstant.*;
-import static com.boardgo.domain.meeting.entity.enums.MeetingState.*;
+import static com.boardgo.common.constant.S3BucketConstant.BOARDGAME;
+import static com.boardgo.common.constant.S3BucketConstant.MEETING;
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.COMPLETE;
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.PROGRESS;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNullPointException;
@@ -26,6 +28,7 @@ import com.boardgo.domain.meeting.service.MeetingParticipantCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingParticipantSubQueryUseCase;
 import com.boardgo.domain.meeting.service.MeetingParticipantWaitingCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
+import com.boardgo.domain.notification.service.facade.NotificationCommandFacade;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,6 +58,7 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
     private final MeetingGameMatchCommandUseCase meetingGameMatchCommandUseCase;
     private final MeetingParticipantCommandUseCase meetingParticipantCommandUseCase;
     private final ChatRoomCommandUseCase chatRoomCommandUseCase;
+    private final NotificationCommandFacade notificationCommandFacade;
 
     @Override
     public Long create(
@@ -132,6 +136,8 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
                     gameGenreMatchQueryUseCase.getGenreIdListByBoardGameIdList(boardGameIdList),
                     meetingId);
         }
+        // TODO 모임에 참여한 사람들의 id로 푸시메세지 저장
+        //        notificationCommandFacade.create(meeting.getId(), null, MEETING_MODIFY);
     }
 
     private void validateLimitParticipantCount(MeetingUpdateRequest updateRequest, Long meetingId) {
