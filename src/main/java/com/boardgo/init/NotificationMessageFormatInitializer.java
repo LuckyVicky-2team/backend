@@ -25,8 +25,9 @@ public class NotificationMessageFormatInitializer implements ApplicationRunner {
         for (MessageType messageType : MessageType.values()) {
             notificationMessageFormatList.add(
                     NotificationMessageFormat.builder()
-                            .title("알림메세지 {#meetingTitle}")
-                            .content("{#nickName} 님의 알림메세지 내용")
+                            .title("보드고에서 보드게임 함께해요!")
+                            .content(
+                                    "{#nickName} 님의 알림메세지 내용입니다. 모임이 있다면 \"{#meetingTitle}\" 에 참가중이에요")
                             .messageType(messageType)
                             .build());
         }
