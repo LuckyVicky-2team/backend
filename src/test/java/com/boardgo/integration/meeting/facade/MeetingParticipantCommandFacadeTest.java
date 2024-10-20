@@ -36,9 +36,12 @@ public class MeetingParticipantCommandFacadeTest extends IntegrationTestSupport 
         // given
         UserInfoEntity notpParticipant = userInfoEntityData("out@daum.net", "나는강퇴자").build();
         userRepository.save(notpParticipant);
+
         Long leaderId = 2L;
         MeetingEntity meeting = getMeetingEntityData(leaderId).build();
         meetingRepository.save(meeting);
+        meetingParticipantRepository.save(
+                getParticipantMeetingParticipantEntity(meeting.getId(), leaderId));
 
         // when
         assertThrows(
@@ -65,6 +68,8 @@ public class MeetingParticipantCommandFacadeTest extends IntegrationTestSupport 
         MeetingEntity meeting = getMeetingEntityData(leaderId).build();
         meetingRepository.save(meeting);
 
+        meetingParticipantRepository.save(
+                getParticipantMeetingParticipantEntity(meeting.getId(), leaderId));
         meetingParticipantRepository.save(
                 getParticipantMeetingParticipantEntity(meeting.getId(), participant.getId()));
 
