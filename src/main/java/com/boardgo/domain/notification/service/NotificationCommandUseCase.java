@@ -8,4 +8,6 @@ public interface NotificationCommandUseCase {
     void readNotification(List<Long> notificationIds);
 
     void createNotification(MessageType messageType, NotificationCreateRequest request);
+
+    void saveNotificationResult(Long notificationId, String result);
 }
