@@ -7,11 +7,9 @@ import com.boardgo.domain.notification.service.request.NotificationCreateRequest
 import com.boardgo.domain.user.service.UserQueryUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class NotificationCommandFacadeImpl implements NotificationCommandFacade {
 
     private final NotificationCommandUseCase notificationCommandUseCase;
