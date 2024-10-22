@@ -42,7 +42,7 @@ public class UserNotificationSettingEntity extends BaseEntity {
 
     @Comment("동의 유무")
     @Convert(converter = BooleanConverter.class)
-    @Column(columnDefinition = "varchar(1)")
+    @Column(columnDefinition = "char(1)")
     private Boolean isAgreed;
 
     @Builder
