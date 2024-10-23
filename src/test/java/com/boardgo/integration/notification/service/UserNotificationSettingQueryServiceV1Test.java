@@ -3,7 +3,9 @@ package com.boardgo.integration.notification.service;
 import static com.boardgo.integration.data.UserInfoData.userInfoEntityData;
 import static com.boardgo.integration.fixture.NotificationSettingFixture.getNotificationSettings;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.domain.notification.entity.MessageType;
 import com.boardgo.domain.notification.entity.NotificationSettingEntity;
 import com.boardgo.domain.notification.entity.UserNotificationSettingEntity;
@@ -16,6 +18,7 @@ import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.integration.support.IntegrationTestSupport;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,12 @@ public class UserNotificationSettingQueryServiceV1Test extends IntegrationTestSu
     @Autowired UserRepository userRepository;
     @Autowired NotificationSettingRepository notificationSettingRepository;
     @Autowired UserNotificationSettingRepository userNotificationSettingRepository;
+    private final List<NotificationSettingEntity> notificationSettings = getNotificationSettings();
+
+    @BeforeEach
+    void init() {
+        notificationSettingRepository.saveAll(notificationSettings);
+    }
 
     @Test
     @DisplayName("회원의 알림설정 조회하기")
@@ -34,8 +43,6 @@ public class UserNotificationSettingQueryServiceV1Test extends IntegrationTestSu
         UserInfoEntity user = userInfoEntityData("user1@naver.com", "user1").build();
         userRepository.save(user);
 
-        List<NotificationSettingEntity> notificationSettings = getNotificationSettings();
-        notificationSettingRepository.saveAll(notificationSettings);
         notificationSettings.forEach(
                 notificationSettingEntity -> {
                     userNotificationSettingRepository.save(
@@ -61,5 +68,22 @@ public class UserNotificationSettingQueryServiceV1Test extends IntegrationTestSu
                     assertThat(response.additionalContent()).isNotNull();
                     assertThat(messageTypes.contains(response.messageType())).isTrue();
                 });
+    }
+
+    @Test
+    @DisplayName("회원의 알림설정 목록이 존재하지 않으면 예외가 발생한다")
+    void 회원의_알림설정_목록이_존재하지_않으면_예외가_발생한다() {
+        // given
+        UserInfoEntity user = userInfoEntityData("user1@naver.com", "user1").build();
+        userRepository.save(user);
+
+        // when
+        // then
+        assertThatThrownBy(
+                        () ->
+                                userNotificationSettingQueryUseCase.getUserNotificationSettingsList(
+                                        user.getId()))
+                .isInstanceOf(CustomIllegalArgumentException.class)
+                .hasMessageContaining("회원의 알림설정이 존재하지 않습니다");
     }
 }
