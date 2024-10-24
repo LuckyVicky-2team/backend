@@ -1,11 +1,14 @@
 package com.boardgo.domain.notification.service;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
+import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.mapper.UserNotificationSettingMapper;
+import com.boardgo.domain.notification.entity.MessageType;
 import com.boardgo.domain.notification.entity.UserNotificationSettingEntity;
 import com.boardgo.domain.notification.repository.UserNotificationSettingRepository;
 import com.boardgo.domain.notification.service.response.UserNotificationSettingResponse;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +27,15 @@ public class UserNotificationSettingQueryServiceV1 implements UserNotificationSe
             throw new CustomIllegalArgumentException("회원의 알림설정이 존재하지 않습니다");
         }
         return userNotificationSettingMapper.toUserNotificationSettingResponse(entities);
+    }
+
+    @Override
+    public UserNotificationSettingEntity getUserNotificationSetting(Long userId, MessageType messageType) {
+        UserNotificationSettingEntity userNotificationSetting =
+                userNotificationSettingRepository.findByUserInfoIdAndNotificationSettingMessageType(userId,
+                        messageType);
+        Optional.ofNullable(userNotificationSetting)
+                .orElseThrow(() -> new CustomNullPointException("회원 알림설정이 존재하지 않습니다"));
+        return userNotificationSetting;
     }
 }

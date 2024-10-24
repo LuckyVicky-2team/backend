@@ -21,14 +21,20 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserNotificationSettingQueryServiceV1Test extends IntegrationTestSupport {
 
-    @Autowired UserNotificationSettingQueryUseCase userNotificationSettingQueryUseCase;
-    @Autowired UserRepository userRepository;
-    @Autowired NotificationSettingRepository notificationSettingRepository;
-    @Autowired UserNotificationSettingRepository userNotificationSettingRepository;
+    @Autowired
+    UserNotificationSettingQueryUseCase userNotificationSettingQueryUseCase;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    NotificationSettingRepository notificationSettingRepository;
+    @Autowired
+    UserNotificationSettingRepository userNotificationSettingRepository;
     private final List<NotificationSettingEntity> notificationSettings = getNotificationSettings();
 
     @BeforeEach
@@ -80,10 +86,38 @@ public class UserNotificationSettingQueryServiceV1Test extends IntegrationTestSu
         // when
         // then
         assertThatThrownBy(
-                        () ->
-                                userNotificationSettingQueryUseCase.getUserNotificationSettingsList(
-                                        user.getId()))
+                () ->
+                        userNotificationSettingQueryUseCase.getUserNotificationSettingsList(
+                                user.getId()))
                 .isInstanceOf(CustomIllegalArgumentException.class)
                 .hasMessageContaining("회원의 알림설정이 존재하지 않습니다");
     }
+
+    @ParameterizedTest
+    @DisplayName("알림 항목 별로 회원의 알림설정 활성화 유무를 확인할 수 있다")
+    @EnumSource(MessageType.class)
+    void 알림_항목_별로_회원의_알림설정_활성화_유무를_확인할_수_있다(MessageType messageType) {
+        //given
+        UserInfoEntity user = userInfoEntityData("user1@naver.com", "user1").build();
+        userRepository.save(user);
+
+        notificationSettings.forEach(
+                notificationSettingEntity -> {
+                    userNotificationSettingRepository.save(
+                            UserNotificationSettingEntity.builder()
+                                    .userInfoId(user.getId())
+                                    .notificationSetting(notificationSettingEntity)
+                                    .isAgreed(true)
+                                    .build());
+                });
+
+        //when
+        UserNotificationSettingEntity userNotificationSetting =
+                userNotificationSettingQueryUseCase.getUserNotificationSetting(user.getId(), messageType);
+
+        //then
+        assertThat(userNotificationSetting.getNotificationSetting().getMessageType()).isEqualTo(messageType);
+        assertThat(userNotificationSetting.getIsAgreed()).isNotNull().isInstanceOf(Boolean.class);
+    }
+
 }
