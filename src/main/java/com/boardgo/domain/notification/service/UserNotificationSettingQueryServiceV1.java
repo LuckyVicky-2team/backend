@@ -30,12 +30,14 @@ public class UserNotificationSettingQueryServiceV1 implements UserNotificationSe
     }
 
     @Override
-    public UserNotificationSettingEntity getUserNotificationSetting(Long userId, MessageType messageType) {
+    public UserNotificationSettingEntity getUserNotificationSetting(
+            Long userId, MessageType messageType) {
         UserNotificationSettingEntity userNotificationSetting =
-                userNotificationSettingRepository.findByUserInfoIdAndNotificationSettingMessageType(userId,
-                        messageType);
+                userNotificationSettingRepository.findByUserInfoIdAndNotificationSettingMessageType(
+                        userId, messageType);
         Optional.ofNullable(userNotificationSetting)
-                .orElseThrow(() -> new CustomNullPointException("회원 알림설정이 존재하지 않습니다"));
+                .orElseThrow(
+                        () -> new CustomNullPointException(messageType + ": 회원의 알림설정이 존재하지 않습니다"));
         return userNotificationSetting;
     }
 }
