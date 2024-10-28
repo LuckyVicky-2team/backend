@@ -45,7 +45,15 @@ public class UserNotificationSettingQueryServiceV1Test extends IntegrationTestSu
         UserInfoEntity user = userInfoEntityData("user1@naver.com", "user1").build();
         userRepository.save(user);
 
-        notificationSettings.forEach(notificationSettingEntity -> {});
+        notificationSettings.forEach(
+                notificationSettingEntity -> {
+                    userNotificationSettingRepository.save(
+                            UserNotificationSettingEntity.builder()
+                                    .userInfoId(user.getId())
+                                    .notificationSetting(notificationSettingEntity)
+                                    .isAgreed(true)
+                                    .build());
+                });
 
         // when
         List<UserNotificationSettingResponse> userNotificationSettingsList =
