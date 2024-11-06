@@ -1,13 +1,9 @@
 package com.boardgo.domain.review.service;
 
 import static com.boardgo.common.utils.CustomStringUtils.stringToLongList;
-import static com.boardgo.domain.meeting.entity.enums.ParticipantType.LEADER;
-import static com.boardgo.domain.meeting.entity.enums.ParticipantType.PARTICIPANT;
 
 import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.domain.mapper.ReviewMapper;
-import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
-import com.boardgo.domain.meeting.repository.projection.ParticipationCountProjection;
 import com.boardgo.domain.review.entity.EvaluationTagEntity;
 import com.boardgo.domain.review.entity.EvaluationType;
 import com.boardgo.domain.review.repository.EvaluationTagRepository;
@@ -31,7 +27,6 @@ import org.springframework.stereotype.Service;
 public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
 
     private final ReviewRepository reviewRepository;
-    private final MeetingParticipantRepository meetingParticipantRepository;
     private final ReviewMapper reviewMapper;
     private final EvaluationTagRepository evaluationTagRepository;
 
@@ -46,35 +41,18 @@ public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
     }
 
     /***
-     * 참여한 모임에서 참여자 모두에게 리뷰를 작성한 모임 찾기
-     * @return 리뷰 작성 완료 모임 ID 목록
+     * 모임 별로 리뷰 작성 갯수 카운팅
+     * @return Map<모임Id, 리뷰작성갯수>
      */
     @Override
-    public List<Long> findFinishedReviewMeetingIds(Long userId) {
+    public Map<Long, Integer> countReview(Long userId) {
         List<ReviewCountProjection> reviewCountList =
                 reviewRepository.countReviewByReviewerId(userId);
-
-        Map<Long, Integer> reviewCountMap =
-                reviewCountList.stream()
-                        .collect(
-                                Collectors.toMap(
-                                        ReviewCountProjection::getMeetingId,
-                                        ReviewCountProjection::getReviewCount));
-
-        List<ParticipationCountProjection> participationCountList =
-                meetingParticipantRepository.countMeetingParticipation(
-                        reviewCountMap.keySet(), List.of(LEADER, PARTICIPANT));
-
-        List<Long> reviewFinished = new ArrayList<>();
-        for (ParticipationCountProjection participationCount : participationCountList) {
-            Long meetingId = participationCount.getMeetingId();
-            Integer reviewCount = reviewCountMap.get(meetingId);
-            Integer participantCount = participationCount.getParticipationCount() - 1; // 본인 제외
-            if (reviewCount.equals(participantCount)) {
-                reviewFinished.add(meetingId);
-            }
-        }
-        return reviewFinished;
+        return reviewCountList.stream()
+                .collect(
+                        Collectors.toMap(
+                                ReviewCountProjection::getMeetingId,
+                                ReviewCountProjection::getReviewCount));
     }
 
     @Override

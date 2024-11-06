@@ -12,11 +12,13 @@ import com.boardgo.domain.meeting.entity.enums.ParticipantType;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.projection.ReviewMeetingParticipantsProjection;
 import com.boardgo.domain.meeting.service.response.ParticipantOutResponse;
+import com.boardgo.domain.meeting.service.response.ParticipationCountResponse;
 import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
 import com.boardgo.domain.review.service.response.ReviewMeetingParticipantsResponse;
 import com.boardgo.domain.user.repository.projection.UserParticipantProjection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,5 +83,12 @@ public class MeetingParticipantQueryServiceV1 implements MeetingParticipantQuery
             throw new CustomNoSuchElementException("리뷰를 작성할 참여자");
         }
         return meetingParticipantMapper.toReviewMeetingParticipantsList(reviewMeetingParticipants);
+    }
+
+    @Override
+    public List<ParticipationCountResponse> countMeetingParticipation(
+            Set<Long> meetingIds, List<ParticipantType> types) {
+        return meetingParticipantMapper.toParticipationCountResponses(
+                meetingParticipantRepository.countMeetingParticipation(meetingIds, types));
     }
 }

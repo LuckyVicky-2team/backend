@@ -4,12 +4,13 @@ import com.boardgo.domain.review.service.response.MyEvaluationTagsResponse;
 import com.boardgo.domain.review.service.response.MyReviewsResponse;
 import com.boardgo.domain.review.service.response.ReviewMeetingReviewsResponse;
 import java.util.List;
+import java.util.Map;
 
 public interface ReviewQueryUseCase {
 
     List<Long> findMeetingIdsOfWrittenReview(Long userId);
 
-    List<Long> findFinishedReviewMeetingIds(Long userId);
+    Map<Long, Integer> countReview(Long userId);
 
     List<Long> getReviewMeetingParticipants(Long meetingId, Long reviewerId);
 

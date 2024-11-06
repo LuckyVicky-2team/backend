@@ -1,9 +1,12 @@
 package com.boardgo.domain.meeting.service;
 
+import com.boardgo.domain.meeting.entity.enums.ParticipantType;
 import com.boardgo.domain.meeting.service.response.ParticipantOutResponse;
+import com.boardgo.domain.meeting.service.response.ParticipationCountResponse;
 import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
 import com.boardgo.domain.review.service.response.ReviewMeetingParticipantsResponse;
 import java.util.List;
+import java.util.Set;
 
 public interface MeetingParticipantQueryUseCase {
 
@@ -19,4 +22,7 @@ public interface MeetingParticipantQueryUseCase {
 
     List<ReviewMeetingParticipantsResponse> findMeetingParticipantsToReview(
             List<Long> revieweeIds, Long meetingId);
+
+    List<ParticipationCountResponse> countMeetingParticipation(
+            Set<Long> meetingIds, List<ParticipantType> types);
 }
