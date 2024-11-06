@@ -6,14 +6,10 @@ import static com.boardgo.domain.meeting.entity.enums.ParticipantType.PARTICIPAN
 
 import com.boardgo.common.exception.CustomNoSuchElementException;
 import com.boardgo.domain.mapper.ReviewMapper;
-import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
-import com.boardgo.domain.meeting.repository.MeetingRepository;
-import com.boardgo.domain.meeting.repository.projection.MeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.projection.ParticipationCountProjection;
 import com.boardgo.domain.review.entity.EvaluationTagEntity;
 import com.boardgo.domain.review.entity.EvaluationType;
-import com.boardgo.domain.review.entity.enums.ReviewType;
 import com.boardgo.domain.review.repository.EvaluationTagRepository;
 import com.boardgo.domain.review.repository.ReviewRepository;
 import com.boardgo.domain.review.repository.projection.MyEvaluationTagProjection;
@@ -22,7 +18,6 @@ import com.boardgo.domain.review.repository.projection.ReviewMeetingReviewsProje
 import com.boardgo.domain.review.service.response.MyEvaluationTagResponse;
 import com.boardgo.domain.review.service.response.MyEvaluationTagsResponse;
 import com.boardgo.domain.review.service.response.MyReviewsResponse;
-import com.boardgo.domain.review.service.response.ReviewMeetingResponse;
 import com.boardgo.domain.review.service.response.ReviewMeetingReviewsResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,39 +31,26 @@ import org.springframework.stereotype.Service;
 public class ReviewQueryServiceV1 implements ReviewQueryUseCase {
 
     private final ReviewRepository reviewRepository;
-    private final MeetingRepository meetingRepository;
     private final MeetingParticipantRepository meetingParticipantRepository;
     private final ReviewMapper reviewMapper;
     private final EvaluationTagRepository evaluationTagRepository;
 
-    // FIXME: 퍼사드패턴으로 리팩토링 필요
+    /***
+     * 모임을 함께 한 참여자에게 리뷰를 작성할 경우 모임 id 가 조회된다.
+     * (참여자 모두에게 리뷰를 작성하지 않아도 조회 됨)
+     * @return 참여자에게 리뷰를 작성한 모임 id 목록
+     */
     @Override
-    public List<ReviewMeetingResponse> getReviewMeetings(ReviewType reviewType, Long userId) {
-        switch (reviewType) {
-            case PRE_PROGRESS -> {
-                List<Long> reviewFinishedMeetings = findReviewFinishedList(userId);
-                List<MeetingReviewProjection> meetingPreProgressReview =
-                        meetingRepository.findMeetingPreProgressReview(
-                                userId, reviewFinishedMeetings);
-                return reviewMapper.toReviewMeetingReviewMeetingFromProjection(
-                        meetingPreProgressReview);
-            }
-            case FINISH -> {
-                List<Long> meetingIds = reviewRepository.findFinishedReview(userId);
-                List<MeetingEntity> meetingEntityList = meetingRepository.findAllById(meetingIds);
-                return reviewMapper.toReviewMeetingReviewMeetingFromEntity(meetingEntityList);
-            }
-        }
-
-        return List.of();
+    public List<Long> findMeetingIdsOfWrittenReview(Long userId) {
+        return reviewRepository.findFinishedReview(userId);
     }
 
     /***
-     * 참여한 모임애서 참여자 모두에게 리뷰를 작성한 모임 찾기
-     * @param userId
+     * 참여한 모임에서 참여자 모두에게 리뷰를 작성한 모임 찾기
      * @return 리뷰 작성 완료 모임 ID 목록
      */
-    private List<Long> findReviewFinishedList(Long userId) {
+    @Override
+    public List<Long> findFinishedReviewMeetingIds(Long userId) {
         List<ReviewCountProjection> reviewCountList =
                 reviewRepository.countReviewByReviewerId(userId);
 
