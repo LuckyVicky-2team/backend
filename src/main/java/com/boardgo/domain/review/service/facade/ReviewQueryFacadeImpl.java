@@ -41,6 +41,10 @@ public class ReviewQueryFacadeImpl implements ReviewQueryFacade {
         switch (reviewType) {
             case PRE_PROGRESS -> {
                 List<Long> finishedReviewMeetingIds = findFinishedReviewMeetingIds(userId);
+                // 모임 중 참여자가 본인 1명 뿐인 경우 리뷰 작성 모임 항목에서 제외
+                Map<Long, Long> meetingParticipantsCount =
+                        meetingParticipantQueryUseCase.countMeetingParticipants(userId, 1L);
+                finishedReviewMeetingIds.addAll(meetingParticipantsCount.keySet());
                 return meetingQueryUseCase.findReviewableMeeting(userId, finishedReviewMeetingIds);
             }
             case FINISH -> {
@@ -61,7 +65,7 @@ public class ReviewQueryFacadeImpl implements ReviewQueryFacade {
         Map<Long, Integer> reviewCountMap = reviewQueryUseCase.countReview(userId);
 
         List<ParticipationCountResponse> participationCountList =
-                meetingParticipantQueryUseCase.countMeetingParticipation(
+                meetingParticipantQueryUseCase.countMeetingParticipants(
                         reviewCountMap.keySet(), List.of(LEADER, PARTICIPANT));
 
         List<Long> reviewFinished = new ArrayList<>();

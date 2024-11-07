@@ -10,6 +10,7 @@ import com.boardgo.domain.mapper.MeetingParticipantMapper;
 import com.boardgo.domain.meeting.entity.MeetingParticipantEntity;
 import com.boardgo.domain.meeting.entity.enums.ParticipantType;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
+import com.boardgo.domain.meeting.repository.projection.MeetingParticipantsCountProjection;
 import com.boardgo.domain.meeting.repository.projection.ReviewMeetingParticipantsProjection;
 import com.boardgo.domain.meeting.service.response.ParticipantOutResponse;
 import com.boardgo.domain.meeting.service.response.ParticipationCountResponse;
@@ -17,8 +18,10 @@ import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
 import com.boardgo.domain.review.service.response.ReviewMeetingParticipantsResponse;
 import com.boardgo.domain.user.repository.projection.UserParticipantProjection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,9 +89,21 @@ public class MeetingParticipantQueryServiceV1 implements MeetingParticipantQuery
     }
 
     @Override
-    public List<ParticipationCountResponse> countMeetingParticipation(
+    public List<ParticipationCountResponse> countMeetingParticipants(
             Set<Long> meetingIds, List<ParticipantType> types) {
         return meetingParticipantMapper.toParticipationCountResponses(
                 meetingParticipantRepository.countMeetingParticipation(meetingIds, types));
+    }
+
+    @Override
+    public Map<Long, Long> countMeetingParticipants(Long userId, Long participantCount) {
+        List<MeetingParticipantsCountProjection> participantsCounts =
+                meetingParticipantRepository.countMeetingParticipantsByUserInfoId(
+                        userId, participantCount);
+        return participantsCounts.stream()
+                .collect(
+                        Collectors.toMap(
+                                MeetingParticipantsCountProjection::meetingId,
+                                MeetingParticipantsCountProjection::meetingParticipantsCount));
     }
 }
