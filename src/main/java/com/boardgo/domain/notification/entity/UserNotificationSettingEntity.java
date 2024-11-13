@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -24,6 +25,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "user_notification_setting")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class UserNotificationSettingEntity extends BaseEntity {
     @Id
     @Column(name = "user_notification_setting_id")
