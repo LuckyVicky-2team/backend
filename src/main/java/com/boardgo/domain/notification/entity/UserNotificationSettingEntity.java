@@ -52,4 +52,8 @@ public class UserNotificationSettingEntity extends BaseEntity {
         this.notificationSetting = notificationSetting;
         this.isAgreed = isAgreed;
     }
+
+    public void updateAgree(Boolean isAgreed) {
+        this.isAgreed = isAgreed;
+    }
 }

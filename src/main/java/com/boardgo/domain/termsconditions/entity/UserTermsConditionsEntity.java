@@ -53,4 +53,8 @@ public class UserTermsConditionsEntity extends BaseEntity {
         this.termsConditions = termsConditionsEntity;
         this.agreement = agreement;
     }
+
+    public void updateAgreement(Boolean agreement) {
+        this.agreement = agreement;
+    }
 }
