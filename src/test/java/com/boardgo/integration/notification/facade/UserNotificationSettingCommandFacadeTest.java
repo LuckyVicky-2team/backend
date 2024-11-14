@@ -44,7 +44,8 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
     @ParameterizedTest
     @EnumSource(MessageType.class)
     @DisplayName("회원의 기존 푸시 약관동의가 N 일때 특정 알림설정을 Y로 변경하면 푸시 약관동의도 Y 로 변경된다")
-    void 회원의_기존_푸시_약관동의가_N_일때_특정_알림설정을_Y로_변경하면_푸시_약관동의도_Y_로_변경된다(MessageType messageType) {
+    void 회원의_기존_푸시_약관동의가_N_일때_특정_알림설정을_Y로_변경하면_푸시_약관동의도_Y_로_변경된다(MessageType messageType)
+            throws InterruptedException {
         // given
         NotificationSettingEntity notificationSetting =
                 NotificationSettingEntity.builder()
@@ -80,6 +81,7 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
                         userId, messageType);
         assertThat(userNotificationSettingEntity.getIsAgreed()).isTrue();
 
+        Thread.sleep(3000);
         UserTermsConditionsEntity userTermsConditionsEntity =
                 userTermsConditionsRepository.findByUserInfoIdAndTermsConditionsType(
                         userId, TermsConditionsType.PUSH);
