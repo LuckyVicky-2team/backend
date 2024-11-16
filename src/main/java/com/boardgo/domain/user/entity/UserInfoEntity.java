@@ -3,6 +3,7 @@ package com.boardgo.domain.user.entity;
 import com.boardgo.common.domain.BaseEntity;
 import com.boardgo.domain.user.entity.enums.ProviderType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -44,6 +45,8 @@ public class UserInfoEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
+    @Embedded private UserInfoStatus userInfoStatus;
+
     @Column(name = "deleted_at", columnDefinition = "DATETIME")
     private LocalDateTime deleteAt;
 
@@ -55,7 +58,8 @@ public class UserInfoEntity extends BaseEntity {
             String nickName,
             String profileImage,
             ProviderType providerType,
-            LocalDateTime deleteAt) {
+            LocalDateTime deleteAt,
+            UserInfoStatus userInfoStatus) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -63,6 +67,7 @@ public class UserInfoEntity extends BaseEntity {
         this.profileImage = profileImage;
         this.providerType = providerType;
         this.deleteAt = deleteAt;
+        this.userInfoStatus = userInfoStatus;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {

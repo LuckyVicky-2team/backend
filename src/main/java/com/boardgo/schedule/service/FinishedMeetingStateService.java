@@ -1,13 +1,15 @@
 package com.boardgo.schedule.service;
 
+import static com.boardgo.common.constant.TimeConstant.MINUTE;
+import static com.boardgo.common.constant.TimeConstant.MINUTES_30;
 import static com.boardgo.schedule.service.enums.ScheduleJobs.FINISHED_MEETING;
 
+import com.boardgo.schedule.JobRunner;
 import com.boardgo.schedule.job.FinishedMeetingStateJob;
 import com.boardgo.schedule.service.enums.ScheduleJobs;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -16,25 +18,25 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class FinishedMeetingStateService {
+@Slf4j
+public class FinishedMeetingStateService extends JobRunner {
 
     private final Scheduler scheduler;
     private final TriggerService triggerService;
     private final JobDetailService jobDetailService;
 
-    @PostConstruct
-    private void jobProgress() throws SchedulerException {
+    @Override
+    protected void doRun() {
         updateFinishMeetingState();
     }
 
     public void updateFinishMeetingState() {
         ScheduleJobs job = FINISHED_MEETING;
         JobKey jobKey = JobKey.jobKey(job.name(), job.getJobGroup());
-        final int intervalInMinutes = 30;
 
         JobDetail jobDetail =
                 jobDetailService.jobDetailBuilder(jobKey, FinishedMeetingStateJob.class);
-        Trigger simpleTrigger = triggerService.simpleTrigger(jobKey, intervalInMinutes);
+        Trigger simpleTrigger = triggerService.simpleTrigger(jobKey, MINUTES_30, MINUTE);
         schedule(jobDetail, simpleTrigger);
     }
 
@@ -43,8 +45,10 @@ public class FinishedMeetingStateService {
             scheduler.start();
             scheduler.scheduleJob(jobDetail, lastTrigger);
         } catch (SchedulerException e) {
-            JobExecutionException jobExecutionException = new JobExecutionException(e);
-            jobExecutionException.setRefireImmediately(true);
+            log.warn(
+                    "Fail scheduler job :: {} , Error :: {}",
+                    jobDetail.getKey().getName(),
+                    e.getMessage());
         }
     }
 }

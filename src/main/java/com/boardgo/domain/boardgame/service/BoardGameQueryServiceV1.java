@@ -5,10 +5,11 @@ import com.boardgo.domain.boardgame.controller.request.BoardGameSearchRequest;
 import com.boardgo.domain.boardgame.entity.BoardGameEntity;
 import com.boardgo.domain.boardgame.repository.BoardGameRepository;
 import com.boardgo.domain.boardgame.repository.projection.BoardGameSearchProjection;
+import com.boardgo.domain.boardgame.service.response.BoardGameByMeetingIdResponse;
+import com.boardgo.domain.boardgame.service.response.BoardGameResponse;
 import com.boardgo.domain.boardgame.service.response.BoardGameSearchResponse;
 import com.boardgo.domain.boardgame.service.response.GenreSearchResponse;
 import com.boardgo.domain.mapper.BoardGameMapper;
-import com.boardgo.domain.meeting.service.response.BoardGameByMeetingIdResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,7 +47,15 @@ public class BoardGameQueryServiceV1 implements BoardGameQueryUseCase {
 
     @Override
     public List<BoardGameByMeetingIdResponse> findMeetingDetailByMeetingId(Long meetingId) {
-        return boardGameRepository.findMeetingDetailByMeetingId(meetingId);
+        return boardGameRepository.findMeetingDetailByMeetingId(meetingId).stream()
+                .map(boardGameMapper::toBoardGameByMeetingIdResponse)
+                .toList();
+    }
+
+    @Override
+    public BoardGameResponse findFirstByMeetingId(Long meetingId) {
+        return boardGameMapper.toBoardGameResponse(
+                boardGameRepository.findFirstByMeetingId(meetingId));
     }
 
     @Override

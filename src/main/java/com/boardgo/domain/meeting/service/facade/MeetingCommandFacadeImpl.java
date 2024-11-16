@@ -1,7 +1,10 @@
 package com.boardgo.domain.meeting.service.facade;
 
-import static com.boardgo.common.constant.S3BucketConstant.*;
-import static com.boardgo.domain.meeting.entity.enums.MeetingState.*;
+import static com.boardgo.common.constant.S3BucketConstant.BOARDGAME;
+import static com.boardgo.common.constant.S3BucketConstant.MEETING;
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.COMPLETE;
+import static com.boardgo.domain.meeting.entity.enums.MeetingState.PROGRESS;
+import static com.boardgo.domain.notification.entity.MessageType.MEETING_MODIFY;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.common.exception.CustomNullPointException;
@@ -10,6 +13,7 @@ import com.boardgo.common.utils.S3Service;
 import com.boardgo.domain.boardgame.entity.BoardGameEntity;
 import com.boardgo.domain.boardgame.service.BoardGameQueryUseCase;
 import com.boardgo.domain.boardgame.service.GameGenreMatchQueryUseCase;
+import com.boardgo.domain.chatting.service.ChatRoomCommandUseCase;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.mapper.MeetingParticipantMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
@@ -22,9 +26,12 @@ import com.boardgo.domain.meeting.service.MeetingCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingGameMatchCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingGenreMatchCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingParticipantCommandUseCase;
+import com.boardgo.domain.meeting.service.MeetingParticipantQueryUseCase;
 import com.boardgo.domain.meeting.service.MeetingParticipantSubQueryUseCase;
 import com.boardgo.domain.meeting.service.MeetingParticipantWaitingCommandUseCase;
 import com.boardgo.domain.meeting.service.MeetingQueryUseCase;
+import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
+import com.boardgo.domain.notification.service.facade.NotificationCommandFacade;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -49,10 +56,14 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
     private final MeetingParticipantSubQueryUseCase meetingParticipantSubQueryUseCase;
     private final MeetingQueryUseCase meetingQueryUseCase;
     private final GameGenreMatchQueryUseCase gameGenreMatchQueryUseCase;
+    // TODO MeetingParticipantWaiting 도메인 삭제
     private final MeetingParticipantWaitingCommandUseCase meetingParticipantWaitingCommandUseCase;
+    private final MeetingParticipantQueryUseCase meetingParticipantQueryUseCase;
     private final MeetingGenreMatchCommandUseCase meetingGenreMatchCommandUseCase;
     private final MeetingGameMatchCommandUseCase meetingGameMatchCommandUseCase;
     private final MeetingParticipantCommandUseCase meetingParticipantCommandUseCase;
+    private final ChatRoomCommandUseCase chatRoomCommandUseCase;
+    private final NotificationCommandFacade notificationCommandFacade;
 
     @Override
     public Long create(
@@ -69,6 +80,7 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         meetingParticipantCommandUseCase.create(
                 meetingParticipantMapper.toMeetingParticipantEntity(
                         meetingId, userId, ParticipantType.LEADER));
+        chatRoomCommandUseCase.create(meetingId);
         return meetingId;
     }
 
@@ -99,9 +111,11 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
         meetingGameMatchCommandUseCase.deleteByMeetingId(meetingId);
         meetingGenreMatchCommandUseCase.deleteByMeetingId(meetingId);
         meetingParticipantCommandUseCase.deleteByMeetingId(meetingId);
+
         if (meeting.getType() == MeetingType.ACCEPT) {
             meetingParticipantWaitingCommandUseCase.deleteByMeetingId(meetingId);
         }
+        chatRoomCommandUseCase.deleteByMeetingId(meetingId);
         meetingCommandUseCase.deleteById(meetingId);
     }
 
@@ -109,19 +123,14 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
     public void updateMeeting(
             MeetingUpdateRequest updateRequest, Long userId, MultipartFile imageFile) {
         MeetingEntity meeting = meetingQueryUseCase.getMeeting(updateRequest.id());
-        log.info("userId : {}, meeting.WriterId: {}", userId, meeting.getId());
         validateUserIsWriter(userId, meeting);
         Long meetingId = meeting.getId();
 
-        MeetingParticipantSubEntity meetingParticipantSubEntity =
-                meetingParticipantSubQueryUseCase.getByMeetingId(meetingId);
-        if (!meetingParticipantSubEntity.isParticipated(updateRequest.limitParticipant())) {
-            throw new CustomIllegalArgumentException("현재 참여한 인원보다 최대 인원수가 커야합니다.");
-        }
+        validateLimitParticipantCount(updateRequest, meetingId);
 
         List<Long> boardGameIdList = updateRequest.boardGameIdList();
 
-        String imageUri = updateImage(imageFile, boardGameIdList, meeting);
+        String imageUri = updateImage(imageFile, boardGameIdList, meeting, updateRequest);
         meeting.update(updateRequest, imageUri);
 
         if (Objects.nonNull(boardGameIdList) && !boardGameIdList.isEmpty()) {
@@ -132,17 +141,47 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
                     gameGenreMatchQueryUseCase.getGenreIdListByBoardGameIdList(boardGameIdList),
                     meetingId);
         }
+
+        List<UserParticipantResponse> participantResponses =
+                meetingParticipantQueryUseCase.findByMeetingId(meetingId);
+        participantResponses.forEach(
+                participant ->
+                        notificationCommandFacade.create(
+                                meeting.getId(), participant.userId(), MEETING_MODIFY));
+    }
+
+    private void validateLimitParticipantCount(MeetingUpdateRequest updateRequest, Long meetingId) {
+        MeetingParticipantSubEntity meetingParticipantSubEntity =
+                meetingParticipantSubQueryUseCase.getByMeetingId(meetingId);
+        if (updateRequest.limitParticipant() <= 1
+                || meetingParticipantSubEntity.getParticipantCount()
+                        > updateRequest.limitParticipant()) {
+            throw new CustomIllegalArgumentException("현재 참여한 인원보다 최대 인원수가 커야합니다.");
+        }
     }
 
     private String updateImage(
-            MultipartFile imageFile, List<Long> boardGameIdList, MeetingEntity meeting) {
-        if ((Objects.isNull(imageFile) && Objects.isNull(boardGameIdList))
-                || (Objects.nonNull(meeting.getThumbnail())
-                        && meeting.getThumbnail().startsWith("meeting"))) {
-            return meeting.getThumbnail();
-        } else {
+            MultipartFile imageFile,
+            List<Long> boardGameIdList,
+            MeetingEntity meeting,
+            MeetingUpdateRequest updateRequest) {
+        // 1. 썸네일을 지운 경우 - 기존 썸네일이 사용자가 등록한 이미지
+        // 2. 썸네일이 있는 경우 - 기존 사용자가 등록한 이미지가 있든지 말든지 모두 처리
+        // 3. 기존 썸네일이 사용자가 올린 경우가 아닌 경우 - 보드게임 이미지를 변경해야함
+        if (updateRequest.isDeleteThumbnail()
+                || Objects.nonNull(imageFile)
+                || (meeting.getThumbnail().startsWith(BOARDGAME)
+                        && Objects.nonNull(updateRequest.boardGameIdList()))) {
             s3Service.deleteFile(meeting.getThumbnail());
+            if (Objects.isNull(imageFile)
+                    && (Objects.isNull(boardGameIdList) || boardGameIdList.isEmpty())) {
+                return boardGameQueryUseCase.findFirstByMeetingId(meeting.getId()).thumbnail();
+            }
             return registerImage(boardGameIdList, imageFile);
+        } else {
+            // 1. 이미지 파일 수정 X, 보드게임 수정 X
+            // 2. 이미지 파일 수정 X, 보드게임 수정 O, thumbnail 사용자 등록 이미지인 경우
+            return meeting.getThumbnail();
         }
     }
 

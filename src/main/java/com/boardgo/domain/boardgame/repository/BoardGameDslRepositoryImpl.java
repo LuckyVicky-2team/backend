@@ -5,9 +5,11 @@ import com.boardgo.domain.boardgame.entity.QBoardGameEntity;
 import com.boardgo.domain.boardgame.entity.QBoardGameGenreEntity;
 import com.boardgo.domain.boardgame.entity.QGameGenreMatchEntity;
 import com.boardgo.domain.boardgame.repository.projection.BoardGameByMeetingIdProjection;
+import com.boardgo.domain.boardgame.repository.projection.BoardGameProjection;
 import com.boardgo.domain.boardgame.repository.projection.BoardGameSearchProjection;
 import com.boardgo.domain.boardgame.repository.projection.GenreSearchProjection;
 import com.boardgo.domain.boardgame.repository.projection.QBoardGameByMeetingIdProjection;
+import com.boardgo.domain.boardgame.repository.projection.QBoardGameProjection;
 import com.boardgo.domain.boardgame.repository.projection.QBoardGameSearchProjection;
 import com.boardgo.domain.boardgame.repository.projection.QGenreSearchProjection;
 import com.boardgo.domain.boardgame.repository.projection.QSituationBoardGameProjection;
@@ -16,7 +18,6 @@ import com.boardgo.domain.boardgame.service.response.GenreSearchResponse;
 import com.boardgo.domain.mapper.BoardGameGenreMapper;
 import com.boardgo.domain.mapper.BoardGameMapper;
 import com.boardgo.domain.meeting.entity.QMeetingGameMatchEntity;
-import com.boardgo.domain.meeting.service.response.BoardGameByMeetingIdResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -31,7 +32,6 @@ import org.springframework.stereotype.Repository;
 public class BoardGameDslRepositoryImpl implements BoardGameDslRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final BoardGameMapper boardGameMapper;
     private final BoardGameGenreMapper boardGameGenreMapper;
     private final QBoardGameEntity b = QBoardGameEntity.boardGameEntity;
     private final QBoardGameGenreEntity bgg = QBoardGameGenreEntity.boardGameGenreEntity;
@@ -43,32 +43,41 @@ public class BoardGameDslRepositoryImpl implements BoardGameDslRepository {
             BoardGameMapper boardGameMapper,
             BoardGameGenreMapper boardGameGenreMapper) {
         this.queryFactory = new JPAQueryFactory(entityManager);
-        this.boardGameMapper = boardGameMapper;
         this.boardGameGenreMapper = boardGameGenreMapper;
     }
 
     @Override
-    public List<BoardGameByMeetingIdResponse> findMeetingDetailByMeetingId(Long meetingId) {
-        List<BoardGameByMeetingIdProjection> queryResults =
-                queryFactory
-                        .select(
-                                new QBoardGameByMeetingIdProjection(
-                                        b.id,
-                                        b.title,
-                                        b.thumbnail,
-                                        Expressions.stringTemplate("GROUP_CONCAT({0})", bgg.genre)
-                                                .as("genres")))
-                        .from(mgm)
-                        .innerJoin(b)
-                        .on(mgm.boardGameId.eq(b.id))
-                        .innerJoin(ggm)
-                        .on(b.id.eq(ggm.boardGameId))
-                        .innerJoin(bgg)
-                        .on(bgg.id.eq(ggm.boardGameGenreId))
-                        .where(mgm.meetingId.eq(meetingId))
-                        .groupBy(b.id)
-                        .fetch();
-        return queryResults.stream().map(boardGameMapper::toBoardGameByMeetingIdResponse).toList();
+    public List<BoardGameByMeetingIdProjection> findMeetingDetailByMeetingId(Long meetingId) {
+        return queryFactory
+                .select(
+                        new QBoardGameByMeetingIdProjection(
+                                b.id,
+                                b.title,
+                                b.thumbnail,
+                                Expressions.stringTemplate("GROUP_CONCAT({0})", bgg.genre)
+                                        .as("genres")))
+                .from(mgm)
+                .innerJoin(b)
+                .on(mgm.boardGameId.eq(b.id))
+                .innerJoin(ggm)
+                .on(b.id.eq(ggm.boardGameId))
+                .innerJoin(bgg)
+                .on(bgg.id.eq(ggm.boardGameGenreId))
+                .where(mgm.meetingId.eq(meetingId))
+                .groupBy(b.id)
+                .fetch();
+    }
+
+    @Override
+    public BoardGameProjection findFirstByMeetingId(Long meetingId) {
+        return queryFactory
+                .select(new QBoardGameProjection(b.id, b.title, b.thumbnail))
+                .from(mgm)
+                .innerJoin(b)
+                .on(mgm.boardGameId.eq(b.id))
+                .where(mgm.meetingId.eq(meetingId))
+                .groupBy(b.id)
+                .fetchFirst();
     }
 
     @Override

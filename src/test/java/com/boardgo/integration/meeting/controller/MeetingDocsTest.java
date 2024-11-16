@@ -194,6 +194,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                         "1232.213213213",
                         "updateAddress",
                         "updateLocation",
+                        false,
                         LocalDateTime.now().plusDays(1),
                         List.of(3L, 4L));
         // when
@@ -227,6 +228,10 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("content")
                                                 .type(JsonFieldType.STRING)
                                                 .description("모임 내용"),
+                                        fieldWithPath("isDeleteThumbnail")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description(
+                                                        "모임 썸네일 지우는 여부 (true / false) 무조건 둘 중 하나 반환"),
                                         fieldWithPath("type")
                                                 .type(JsonFieldType.STRING)
                                                 .description("모임 타입 (FREE or ACCEPT)"),
@@ -299,6 +304,10 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         parameterWithName("searchType")
                                                 .description(
                                                         "검색 타입: TITLE, CONTENT, ALL(제목 or 내용 중 포함되면 가져옴)")
+                                                .optional(),
+                                        parameterWithName("state")
+                                                .description(
+                                                        "null -> 진행 중 상태만 / COMPLETE -> 진행 중 상태 / 모집 완료된 상태 모두 가져옴")
                                                 .optional(),
                                         parameterWithName("city").description("도시 필터").optional(),
                                         parameterWithName("county")
@@ -497,7 +506,7 @@ public class MeetingDocsTest extends RestDocsTestSupport {
                                         fieldWithPath("shareCount")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("모임 공유 수"),
-                                        fieldWithPath("createMeetingCount")
+                                        fieldWithPath("userWritingCount")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("작성자의 모임 개설 횟수"),
                                         fieldWithPath("userParticipantResponseList")

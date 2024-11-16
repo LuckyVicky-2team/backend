@@ -19,6 +19,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
+import com.boardgo.config.NotificationCommandFacadeTestConfig;
 import com.boardgo.domain.meeting.controller.request.MeetingOutRequest;
 import com.boardgo.domain.meeting.controller.request.MeetingParticipateRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
@@ -32,11 +33,13 @@ import com.boardgo.integration.support.RestDocsTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
 
+@Import({NotificationCommandFacadeTestConfig.class})
 public class MeetingParticipantDocsTest extends RestDocsTestSupport {
     @Autowired private UserRepository userRepository;
     @Autowired private MeetingRepository meetingRepository;
@@ -112,6 +115,54 @@ public class MeetingParticipantDocsTest extends RestDocsTestSupport {
                                                 .description("방장이 내보낸 사람이면 'OUT' / 아니면 null"))))
                 .when()
                 .get("/meeting-participant/out/{meetingId}")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("사용자는 모임에 참석한 유저 리스트를 볼 수 있다")
+    void 사용자는_모임에_참석한_유저_리스트를_볼_수_있다() {
+        // given
+        UserInfoEntity leader =
+                userRepository.save(userInfoEntityData("leader@test.com", "Leader").build());
+        UserInfoEntity participant =
+                userRepository.save(userInfoEntityData("bear@test.com", "bear").build());
+        MeetingEntity meetingEntity =
+                getMeetingEntityData(leader.getId()).limitParticipant(10).build();
+        MeetingEntity savedMeeting = meetingRepository.save(meetingEntity);
+        meetingParticipantRepository.save(
+                getLeaderMeetingParticipantEntity(savedMeeting.getId(), leader.getId()));
+        meetingParticipantRepository.save(
+                getParticipantMeetingParticipantEntity(savedMeeting.getId(), participant.getId()));
+        // when
+        // then
+        given(this.spec)
+                .log()
+                .all()
+                .port(port)
+                .header(API_VERSION_HEADER, "1")
+                .header(AUTHORIZATION, testAccessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .pathParams("meetingId", meetingEntity.getId())
+                .filter(
+                        document(
+                                "participant-list",
+                                pathParameters(parameterWithName("meetingId").description("모임 id")),
+                                responseFields(
+                                        fieldWithPath("[].userId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("유저 id"),
+                                        fieldWithPath("[].profileImage")
+                                                .type(JsonFieldType.STRING)
+                                                .description("유저 프로필 이미지"),
+                                        fieldWithPath("[].nickname")
+                                                .type(JsonFieldType.STRING)
+                                                .description("유저 닉네임"),
+                                        fieldWithPath("[].type")
+                                                .type(JsonFieldType.STRING)
+                                                .description("유저 타입 (LEADER / PARTICIPANT)"))))
+                .when()
+                .get("/meeting-participant/{meetingId}")
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }

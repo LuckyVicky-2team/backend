@@ -1,6 +1,6 @@
 package com.boardgo.domain.meeting.service;
 
-import com.boardgo.common.exception.CustomNoSuchElementException;
+import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.domain.mapper.MeetingMapper;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
@@ -14,6 +14,7 @@ import com.boardgo.domain.meeting.service.response.LikedMeetingMyPageResponse;
 import com.boardgo.domain.meeting.service.response.MeetingDetailResponse;
 import com.boardgo.domain.meeting.service.response.MeetingSearchResponse;
 import com.boardgo.domain.meeting.service.response.MyPageMeetingResponse;
+import com.boardgo.domain.review.service.response.ReviewMeetingResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class MeetingQueryServiceV1 implements MeetingQueryUseCase {
     public MeetingEntity getMeeting(Long meetingId) {
         return meetingRepository
                 .findById(meetingId)
-                .orElseThrow(() -> new CustomNoSuchElementException("모임"));
+                .orElseThrow(() -> new CustomNullPointException("모임이 존재하지 않습니다"));
     }
 
     @Override
@@ -100,5 +101,17 @@ public class MeetingQueryServiceV1 implements MeetingQueryUseCase {
     public List<LikedMeetingMyPageResponse> findLikedMeeting(List<Long> meetingIdList) {
         return meetingMapper.toLikedMeetingMyPageResponseList(
                 meetingRepository.findLikedMeeting(meetingIdList));
+    }
+
+    @Override
+    public List<MeetingEntity> findAllById(List<Long> meetingIds) {
+        return meetingRepository.findAllById(meetingIds);
+    }
+
+    @Override
+    public List<ReviewMeetingResponse> findReviewableMeeting(
+            Long reviewerId, List<Long> finishedReviewMeetingIds) {
+        return meetingMapper.toReviewMeetingResponses(
+                meetingRepository.findReviewableMeeting(reviewerId, finishedReviewMeetingIds));
     }
 }

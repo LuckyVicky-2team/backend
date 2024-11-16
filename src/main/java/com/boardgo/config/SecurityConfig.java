@@ -82,7 +82,10 @@ public class SecurityConfig {
         AntPathRequestMatcher.antMatcher("/evaluationTags"),
         AntPathRequestMatcher.antMatcher("/meeting/like"),
         AntPathRequestMatcher.antMatcher("/my/review/**"),
-        AntPathRequestMatcher.antMatcher("/terms-conditions/user")
+        AntPathRequestMatcher.antMatcher("/terms-conditions/user"),
+        AntPathRequestMatcher.antMatcher("/notification/**"),
+        AntPathRequestMatcher.antMatcher("/user-notification/**"),
+        AntPathRequestMatcher.antMatcher("/push-token")
     };
 
     @Bean

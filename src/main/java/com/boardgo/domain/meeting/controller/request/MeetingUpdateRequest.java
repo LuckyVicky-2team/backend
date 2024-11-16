@@ -21,5 +21,6 @@ public record MeetingUpdateRequest(
         @NotEmpty String longitude,
         @NotEmpty String detailAddress,
         @NotEmpty String locationName,
+        boolean isDeleteThumbnail,
         @Future @NotNull @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime meetingDatetime,
         List<Long> boardGameIdList) {}

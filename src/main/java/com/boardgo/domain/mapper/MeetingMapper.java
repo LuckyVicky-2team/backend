@@ -1,5 +1,6 @@
 package com.boardgo.domain.mapper;
 
+import com.boardgo.domain.boardgame.service.response.BoardGameByMeetingIdResponse;
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
 import com.boardgo.domain.meeting.entity.MeetingParticipantSubEntity;
@@ -8,9 +9,9 @@ import com.boardgo.domain.meeting.entity.enums.MeetingType;
 import com.boardgo.domain.meeting.repository.projection.HomeMeetingDeadlineProjection;
 import com.boardgo.domain.meeting.repository.projection.LikedMeetingMyPageProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingDetailProjection;
+import com.boardgo.domain.meeting.repository.projection.MeetingReviewProjection;
 import com.boardgo.domain.meeting.repository.projection.MeetingSearchProjection;
 import com.boardgo.domain.meeting.repository.projection.MyPageMeetingProjection;
-import com.boardgo.domain.meeting.service.response.BoardGameByMeetingIdResponse;
 import com.boardgo.domain.meeting.service.response.HomeMeetingDeadlineResponse;
 import com.boardgo.domain.meeting.service.response.LikedMeetingMyPageResponse;
 import com.boardgo.domain.meeting.service.response.MeetingDetailResponse;
@@ -20,6 +21,7 @@ import com.boardgo.domain.meeting.service.response.MeetingSearchPageResponse;
 import com.boardgo.domain.meeting.service.response.MeetingSearchResponse;
 import com.boardgo.domain.meeting.service.response.MyPageMeetingResponse;
 import com.boardgo.domain.meeting.service.response.UserParticipantResponse;
+import com.boardgo.domain.review.service.response.ReviewMeetingResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -162,4 +164,7 @@ public interface MeetingMapper {
 
     List<HomeMeetingDeadlineResponse> toHomeMeetingDeadlineResponses(
             List<HomeMeetingDeadlineProjection> homeMeetingDeadlineProjections);
+
+    List<ReviewMeetingResponse> toReviewMeetingResponses(
+            List<MeetingReviewProjection> meetingReviewProjection);
 }
