@@ -8,10 +8,7 @@ public class UserDto {
     int age;
     String name;
 
-    public UserEntity toEntity(){
-        return UserEntity.builder()
-                .age(age)
-                .name(name)
-                .build();
+    public UserEntity toEntity() {
+        return UserEntity.builder().age(age).name(name).build();
     }
 }

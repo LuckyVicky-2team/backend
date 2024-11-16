@@ -14,19 +14,19 @@ public class TestService {
     private final TestRepository testRepository;
     private final TestDslRepository testDslRepository;
 
-    void save(TestEntity testEntity){
+    void save(TestEntity testEntity) {
         testRepository.save(testEntity);
     }
 
-    TestEntity selectAll(){
+    TestEntity selectAll() {
         return testRepository.selectAll();
     }
 
-    void saveDsl(TestEntity testEntity){   //불가
+    void saveDsl(TestEntity testEntity) { // 불가
         testDslRepository.save(testEntity);
     }
 
-    TestResponse selectAllDsl(){ //불가
+    TestResponse selectAllDsl() { // 불가
         TestDto testDto = testDslRepository.selectAll();
         return new TestResponse();
     }

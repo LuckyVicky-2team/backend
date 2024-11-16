@@ -14,19 +14,19 @@ public class UserService implements UserUseCase {
     private final UserRepository userRepository;
     private final UserDslRepository userDslRepository;
 
-    public void save(UserEntity userEntity){
+    public void save(UserEntity userEntity) {
         userRepository.save(userEntity);
     }
 
-    public List<UserEntity> selectAll(){
+    public List<UserEntity> selectAll() {
         return userRepository.selectAll();
     }
 
-    public void saveDsl(UserEntity userEntity){
+    public void saveDsl(UserEntity userEntity) {
         userDslRepository.save(userEntity);
     }
 
-    public UserEntity selectDsl(){
+    public UserEntity selectDsl() {
         UserDto userDto = userDslRepository.selectAll();
         // UserDto > UserEntity
         return userDto.toEntity();

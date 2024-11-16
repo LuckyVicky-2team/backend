@@ -6,7 +6,5 @@ import jakarta.persistence.Id;
 
 @Entity
 public class TestEntity {
-    @Id
-    @GeneratedValue
-    private Long id;
+    @Id @GeneratedValue private Long id;
 }

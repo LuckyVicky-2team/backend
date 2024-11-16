@@ -1,4 +1,3 @@
 package com.boardgo.domain.test.dto;
 
-public class TestResponse {
-}
+public class TestResponse {}

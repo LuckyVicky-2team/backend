@@ -10,7 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private final TestService testService;
 
-    void save(TestRequest testRequest){
-    }
-
+    void save(TestRequest testRequest) {}
 }

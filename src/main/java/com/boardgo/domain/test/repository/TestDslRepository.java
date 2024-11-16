@@ -7,7 +7,7 @@ public class TestDslRepository {
 
     public void save(TestEntity testEntity) {}
 
-    public TestDto selectAll() {    //불가
+    public TestDto selectAll() { // 불가
         return new TestDto();
     }
 }

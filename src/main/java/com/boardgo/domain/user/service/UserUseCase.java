@@ -5,7 +5,10 @@ import java.util.List;
 
 public interface UserUseCase {
     void save(UserEntity userEntity);
+
     List<UserEntity> selectAll();
+
     void saveDsl(UserEntity userEntity);
+
     UserEntity selectDsl();
 }
