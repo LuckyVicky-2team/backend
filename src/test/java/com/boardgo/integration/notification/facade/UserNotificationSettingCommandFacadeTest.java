@@ -66,11 +66,10 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
         // 회원 푸시약관동의 비활성화
         userTermsConditionsRepository.save(
                 UserTermsConditionsEntity.builder()
-                        .userInfoId(userId)
+                        .userInfoId(1L)
                         .termsConditionsEntity(termsConditionsEntity)
                         .agreement(Boolean.FALSE)
                         .build());
-
         // when
         userNotificationSettingCommandFacade.update(
                 userId, new UserNotificationSettingUpdateRequest(messageType, true));
@@ -81,7 +80,7 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
                         userId, messageType);
         assertThat(userNotificationSettingEntity.getIsAgreed()).isTrue();
 
-        Thread.sleep(3000);
+        Thread.sleep(2000);
         UserTermsConditionsEntity userTermsConditionsEntity =
                 userTermsConditionsRepository.findByUserInfoIdAndTermsConditionsType(
                         userId, TermsConditionsType.PUSH);
