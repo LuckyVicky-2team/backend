@@ -1,0 +1,26 @@
+<included>
+    <property name="LOG_PATH" value="./board-logs"/>
+    <property name="PATTERN"
+              value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS, ${logback.timezone:-Asia/Seoul}}) %-4relative [%thread] %-5level %logger{30} - %msg%n"/>
+
+    <springProfile name="info-logging">
+        <appender name="INFO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/logFile.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/log_gz/logFile_%d{yyyy-MM-dd, ${logback.timezone:-Asia/Seoul}}_%i.log.gz
+                </fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>30</maxHistory>
+                <!--전체 로크 파일 크기 100MB 초과 시 가장 오래된 로그 파일부터 삭제-->
+                <totalSizeCap>100MB</totalSizeCap>
+            </rollingPolicy>
+
+            <encoder>
+                <pattern>${PATTERN}</pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+</included>

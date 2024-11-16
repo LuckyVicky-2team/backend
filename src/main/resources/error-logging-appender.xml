@@ -1,0 +1,28 @@
+<included>
+    <property name="LOG_PATH" value="./board-logs"/>
+    <property name="PATTERN"
+              value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS, ${logback.timezone:-Asia/Seoul}}) %-4relative [%thread] %-5level %logger{30} - %msg%n"/>
+
+    <springProfile name="error-logging">
+        <appender name="ERROR-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/errorFile.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/log_gz/errorFile_%d{yyyy-MM-dd, ${logback.timezone:-Asia/Seoul}}.log.gz
+                </fileNamePattern>
+                <maxFileSize>100MB</maxFileSize>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+
+            <encoder>
+                <pattern>${PATTERN}</pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+</included>

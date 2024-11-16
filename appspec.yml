@@ -1,0 +1,21 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/backend
+    overwrite: yes
+file_exists_behavior: OVERWRITE
+
+permissions:
+  - object: /
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  AfterInstall:
+    - location: script/stop.sh
+      timeout: 60
+  ApplicationStart:
+    - location: script/start.sh
+      timeout: 60

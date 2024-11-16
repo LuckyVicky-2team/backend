@@ -26,13 +26,48 @@ public class LayeredDependencyConventionTest {
     void controller_service_repository_레이어드_계층_접근_의존성() {
         layeredArchitecture()
                 .consideringAllDependencies()
-                .layer("Controller").definedBy("..controller..")
-                .layer("Service").definedBy("..service..")
-                .layer("Repository").definedBy("..repository..")
-                .whereLayer("Controller").mayNotBeAccessedByAnyLayer()
-                .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller")
-                .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service")
+                .layer("Controller")
+                .definedBy("..controller")
+                .layer("Service")
+                .definedBy("..service")
+                .layer("Repository")
+                .definedBy("..repository..")
+                .layer("Mapper")
+                .definedBy("..mapper..")
+                .layer("JWT")
+                .definedBy("..jwt..")
+                .layer("Common")
+                .definedBy("..common..")
+                .layer("Config")
+                .definedBy("..config..")
+                .layer("Init")
+                .definedBy("..init..")
+                .layer("Projection")
+                .definedBy("..projection..")
+                .layer("Job")
+                .definedBy("..job..")
+                .layer("Facade")
+                .definedBy("..facade")
+                .layer("Handler")
+                .definedBy("..handler")
+                .layer("Entity")
+                .definedBy("..entity")
+                .whereLayer("Controller")
+                .mayNotBeAccessedByAnyLayer()
+                .whereLayer("Service")
+                .mayOnlyBeAccessedByLayers(
+                        "Controller",
+                        "Facade",
+                        "JWT",
+                        "Common",
+                        "Config",
+                        "Init",
+                        "Mapper",
+                        "Job",
+                        "Handler",
+                        "Entity")
+                .whereLayer("Repository")
+                .mayOnlyBeAccessedByLayers("Service", "Init", "Controller", "Mapper")
                 .check(javaClasses);
     }
-
 }
