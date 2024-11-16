@@ -55,7 +55,11 @@
 ![AWS](https://img.shields.io/badge/AWS-4A154B?style=for-the-badge&logo=AWS&logoColor=white)
 
 # 🔍아키텍처 설계
-
+개발 서버 아키텍처
+![개발 서버 아키텍처](./img/dev_arch.png)
+---
+운영 서버 아키텍처
+![운영 서버 아키텍처](./img/prod_arch.png)
 # 🔍ERD
 
 # 🔍Git Flow
@@ -83,12 +87,6 @@
 
 - 설계 시 고려한 부분 작성하기
 
-### 서버 아키텍처 설계
-개발 서버 아키텍처
-![개발 서버 아키텍처](./img/dev_arch.png)
----
-운영 서버 아키텍처
-![운영 서버 아키텍처](./img/prod_arch.png)
 
 ### 계층 아키텍처 설계
 퍼사드 패턴 사용 시
