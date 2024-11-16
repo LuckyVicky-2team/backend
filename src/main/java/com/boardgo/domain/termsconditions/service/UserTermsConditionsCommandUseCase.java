@@ -5,4 +5,8 @@ import java.util.List;
 
 public interface UserTermsConditionsCommandUseCase {
     void createAll(List<UserTermsConditionsEntity> userTermsConditionsEntities);
+
+    void updatePushTermsCondition(Long userId);
+
+    void updatePushTermsCondition(Long userId, boolean flag);
 }
