@@ -43,7 +43,7 @@ public class ReviewController {
             @RequestParam("reviewType") ReviewType reviewType) {
         List<ReviewMeetingResponse> reviewMeetings =
                 reviewQueryFacade.getMeetingsToReview(reviewType, currentUserId());
-        if (Objects.isNull(reviewMeetings)) {
+        if (Objects.isNull(reviewMeetings) || reviewMeetings.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(reviewMeetings);
