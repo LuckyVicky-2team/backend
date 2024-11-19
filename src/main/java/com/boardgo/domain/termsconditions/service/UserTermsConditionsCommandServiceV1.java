@@ -34,7 +34,6 @@ public class UserTermsConditionsCommandServiceV1 implements UserTermsConditionsC
         UserTermsConditionsEntity userTermsConditionsEntity =
                 userTermsConditionsRepository.findByUserInfoIdAndTermsConditionsType(
                         userId, TermsConditionsType.PUSH);
-        // 회원의 모든 알림설정이 N 이라면 푸시약관동의 N 변경
         if (flag) {
             userTermsConditionsEntity.updateAgreement(Boolean.FALSE);
         }

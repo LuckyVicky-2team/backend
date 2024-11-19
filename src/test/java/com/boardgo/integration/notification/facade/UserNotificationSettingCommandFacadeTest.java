@@ -45,7 +45,6 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
                 });
     }
 
-    // FIXME 2번째 ParameterizedTest 부터 given 더미데이터가 삽입안됨(근데 테스트는 통과됨)
     @ParameterizedTest
     @EnumSource(MessageType.class)
     @DisplayName("회원의 기존 푸시 약관동의가 N 일때 특정 알림설정을 Y로 변경하면 푸시 약관동의도 Y 로 변경된다")
@@ -78,6 +77,7 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
                                             .agreement(Boolean.FALSE)
                                             .build());
                         });
+        dummyFuture.join();
 
         // when
         CompletableFuture<Void> resultFuture =
