@@ -1136,3 +1136,39 @@ include::{snippets}/get-user-notifications/response-fields.adoc[]
 |===
 
 '''
+
+=== *회원 알림설정 수정*
+
+==== *요청*
+
+include::{snippets}/patch-user-notification/http-request.adoc[]
+include::{snippets}/patch-user-notification/request-fields.adoc[]
+
+※ messageType 데이터는 알림설정 목록 API 의 알림설정 타입(messageType) 과 일치합니다.
+
+==== *응답*
+
+include::{snippets}/patch-user-notification/http-response.adoc[]
+
+- HTTP 상태 코드
+
+|===
+| code | messages
+
+| 200
+| 데이터 존재 시
+
+|===
+
+- HTTP 에러 상태 코드
+
+|===
+| errorCode | messages
+
+| 400
+|회원의 알림설정이 존재하지 않습니다 +
+알림설정 수정 중 예외가 발생했습니다.
+
+|===
+
+'''

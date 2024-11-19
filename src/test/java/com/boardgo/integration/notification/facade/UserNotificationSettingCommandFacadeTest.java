@@ -166,4 +166,9 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
                     assertThat(userTermsConditionsEntity.getAgreement()).isFalse();
                 });
     }
+
+    // TODO 비동기 검증: 알림설정 수정 후 푸시 약관동의 수정 작업 완료 유무와 상관없이 알림설정 수정 작업 결과를 반환한다
+    // TODO 비동기 예외발생 검증: 알림설정 수정 중 예외가 발생할 경우 푸시 약관동의 수정은 진행하지 않는다.
+    // TODO 비동기 예외발생 검증: 알림설정 수정 후 푸시 약관동의에서 예외가 발생해도 알림설정 수정은 적용된다.
+
 }
