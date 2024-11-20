@@ -66,14 +66,12 @@ public class UserNotificationSettingCommandFacadeImpl
             // 회원의 모든 알림설정이 N 이라면 푸시약관동의 N 변경
             List<UserNotificationSettingResponse> userNotificationSettings =
                     userNotificationSettingQueryUseCase.getUserNotificationSettingsList(userId);
-            boolean flag = true;
             for (UserNotificationSettingResponse setting : userNotificationSettings) {
-                if (setting.isAgreed()) {
-                    flag = false;
-                    break;
+                if (setting.isAgreed()) { // 하나라도 true 가 존재하면 패스
+                    return;
                 }
             }
-            userTermsConditionsCommandUseCase.updatePushTermsCondition(userId, flag);
+            userTermsConditionsCommandUseCase.updatePushTermsCondition(userId);
         }
     }
 }

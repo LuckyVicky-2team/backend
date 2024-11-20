@@ -24,18 +24,10 @@ public class UserTermsConditionsCommandServiceV1 implements UserTermsConditionsC
         UserTermsConditionsEntity userTermsConditionsEntity =
                 userTermsConditionsRepository.findByUserInfoIdAndTermsConditionsType(
                         userId, TermsConditionsType.PUSH);
-        if (!userTermsConditionsEntity.getAgreement()) {
-            userTermsConditionsEntity.updateAgreement(Boolean.TRUE);
-        }
-    }
-
-    @Override
-    public void updatePushTermsCondition(Long userId, boolean flag) {
-        UserTermsConditionsEntity userTermsConditionsEntity =
-                userTermsConditionsRepository.findByUserInfoIdAndTermsConditionsType(
-                        userId, TermsConditionsType.PUSH);
-        if (flag) {
+        if (userTermsConditionsEntity.getAgreement()) {
             userTermsConditionsEntity.updateAgreement(Boolean.FALSE);
+        } else {
+            userTermsConditionsEntity.updateAgreement(Boolean.TRUE);
         }
     }
 }
