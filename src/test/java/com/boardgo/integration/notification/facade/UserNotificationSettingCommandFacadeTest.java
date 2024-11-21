@@ -27,14 +27,19 @@ import com.boardgo.domain.termsconditions.repository.TermsConditionsRepository;
 import com.boardgo.domain.termsconditions.repository.UserTermsConditionsRepository;
 import com.boardgo.integration.support.IntegrationTestSupport;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
 @Import({UserNotificationSettingCommandFacadeTestConfig.class})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSupport {
 
     @Autowired private UserNotificationSettingCommandFacade userNotificationSettingCommandFacade;
@@ -43,6 +48,7 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
     @Autowired private UserTermsConditionsRepository userTermsConditionsRepository;
     @Autowired private TermsConditionsRepository termsConditionsRepository;
 
+    @Order(1)
     @ParameterizedTest
     @EnumSource(MessageType.class)
     @DisplayName("회원의 기존 푸시 약관동의가 N 일때 특정 알림설정을 Y로 변경하면 푸시 약관동의도 Y 로 변경된다")
@@ -86,16 +92,20 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
 
         // then
         assertThat(resultFuture.isCompletedExceptionally()).isFalse();
-        resultFuture.thenRun(
-                () -> {
-                    assertThat(userNotificationSetting.getIsAgreed()).isTrue();
-                    UserTermsConditionsEntity userTermsConditionsEntity =
-                            userTermsConditionsRepository.findByUserInfoIdAndTermsConditionsType(
-                                    userId, TermsConditionsType.PUSH);
-                    assertThat(userTermsConditionsEntity.getAgreement()).isTrue();
-                });
+        resultFuture
+                .thenRun(
+                        () -> {
+                            assertThat(userNotificationSetting.getIsAgreed()).isTrue();
+                            UserTermsConditionsEntity userTermsConditionsEntity =
+                                    userTermsConditionsRepository
+                                            .findByUserInfoIdAndTermsConditionsType(
+                                                    userId, TermsConditionsType.PUSH);
+                            assertThat(userTermsConditionsEntity.getAgreement()).isTrue();
+                        })
+                .join();
     }
 
+    @Order(3)
     @Test
     @DisplayName("회원의 모든 알림설정이 N 이라면 푸시 약관동의를 N 변경한다")
     void 회원의_모든_알림설정이_N_이라면_푸시_약관동의를_N_변경한다() {
@@ -142,16 +152,20 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
 
         // then
         assertThat(resultFuture.isCompletedExceptionally()).isFalse();
-        resultFuture.thenRun(
-                () -> {
-                    assertThat(userNotificationSetting.getIsAgreed()).isFalse();
-                    UserTermsConditionsEntity userTermsConditionsEntity =
-                            userTermsConditionsRepository.findByUserInfoIdAndTermsConditionsType(
-                                    userId, TermsConditionsType.PUSH);
-                    assertThat(userTermsConditionsEntity.getAgreement()).isFalse();
-                });
+        resultFuture
+                .thenRun(
+                        () -> {
+                            assertThat(userNotificationSetting.getIsAgreed()).isFalse();
+                            UserTermsConditionsEntity userTermsConditionsEntity =
+                                    userTermsConditionsRepository
+                                            .findByUserInfoIdAndTermsConditionsType(
+                                                    userId, TermsConditionsType.PUSH);
+                            assertThat(userTermsConditionsEntity.getAgreement()).isFalse();
+                        })
+                .join();
     }
 
+    @Order(2)
     @Test
     @DisplayName("비동기 예외발생 검증: 알림설정 수정 중 예외가 발생할 경우 푸시 약관동의 수정은 진행하지 않는다")
     void 알림설정_수정_중_예외가_발생할_경우_푸시_약관동의_수정은_진행하지_않는다() {
@@ -168,13 +182,15 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
         // when
         // then
         CompletableFuture.runAsync(
-                () ->
-                        assertThatThrownBy(
-                                        () ->
-                                                userNotificationSettingCommandFacade.update(
-                                                        userId, request))
-                                .isInstanceOf(CustomIllegalArgumentException.class)
-                                .hasMessageContaining(error));
+                        () ->
+                                assertThatThrownBy(
+                                                () ->
+                                                        userNotificationSettingCommandFacade.update(
+                                                                userId, request))
+                                        .isInstanceOf(CompletionException.class)
+                                        .hasCauseInstanceOf(CustomIllegalArgumentException.class)
+                                        .hasMessageContaining(error))
+                .join();
         then(userNotificationSettingQueryUseCase)
                 .should(times(0))
                 .getUserNotificationSettingsList(userId);
