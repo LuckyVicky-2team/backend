@@ -2,11 +2,16 @@ package com.boardgo.integration.notification.facade;
 
 import static com.boardgo.integration.data.TermsConditionsData.getTermsConditions;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willAnswer;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
+import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.config.UserNotificationSettingCommandFacadeTestConfig;
 import com.boardgo.domain.notification.controller.request.UserNotificationSettingUpdateRequest;
 import com.boardgo.domain.notification.entity.MessageType;
@@ -145,5 +150,33 @@ public class UserNotificationSettingCommandFacadeTest extends IntegrationTestSup
                                     userId, TermsConditionsType.PUSH);
                     assertThat(userTermsConditionsEntity.getAgreement()).isFalse();
                 });
+    }
+
+    @Test
+    @DisplayName("비동기 예외발생 검증: 알림설정 수정 중 예외가 발생할 경우 푸시 약관동의 수정은 진행하지 않는다")
+    void 알림설정_수정_중_예외가_발생할_경우_푸시_약관동의_수정은_진행하지_않는다() {
+        // given
+        Long userId = 1L;
+        String error = "알림설정 수정 중 예외가 발생했습니다.";
+        UserNotificationSettingUpdateRequest request =
+                new UserNotificationSettingUpdateRequest(MessageType.MEETING_REMINDER, false);
+
+        willThrow(new CustomIllegalArgumentException(error))
+                .given(userNotificationSettingCommandUseCase)
+                .update(userId, request.isAgreed(), request.messageType());
+
+        // when
+        // then
+        CompletableFuture.runAsync(
+                () ->
+                        assertThatThrownBy(
+                                        () ->
+                                                userNotificationSettingCommandFacade.update(
+                                                        userId, request))
+                                .isInstanceOf(CustomIllegalArgumentException.class)
+                                .hasMessageContaining(error));
+        then(userNotificationSettingQueryUseCase)
+                .should(times(0))
+                .getUserNotificationSettingsList(userId);
     }
 }
