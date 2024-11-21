@@ -8,6 +8,7 @@ import com.boardgo.domain.notification.service.response.UserNotificationSettingR
 import com.boardgo.domain.termsconditions.service.UserTermsConditionsCommandUseCase;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -38,14 +39,13 @@ public class UserNotificationSettingCommandFacadeImpl
                                             request);
                                     throw new CustomIllegalArgumentException(
                                             "알림설정 수정 중 예외가 발생했습니다.");
-                                });
+                                })
+                        .orTimeout(3, TimeUnit.SECONDS);
         notificationSettingFuture.join();
 
         CompletableFuture<Void> pushTermsConditionFuture =
                 notificationSettingFuture.thenRun(
-                        () -> {
-                            this.updateUserSettings(userId, request.isAgreed());
-                        });
+                        () -> this.updateUserSettings(userId, request.isAgreed()));
         pushTermsConditionFuture.exceptionally(
                 (throwable) -> {
                     log.error(
