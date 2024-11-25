@@ -20,8 +20,6 @@ import com.boardgo.integration.support.IntegrationTestSupport;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -85,31 +83,24 @@ public class UserNotificationSettingCommandFacade성능테스트 extends Integra
                         });
         dummyFuture.join();
         assertThat(dummyFuture.isDone()).isTrue(); // 더미데이터 추가 비동기 연산이 모두 끝날때 까지 대기
-
-        ExecutorService executorService = Executors.newFixedThreadPool(count);
-        CountDownLatch latch = new CountDownLatch(count);
         // when
+        CountDownLatch latch = new CountDownLatch(count);
         for (long i = 1; i <= count; i++) {
             long finalI = i;
-            executorService.submit(
-                    () -> {
-                        CompletableFuture<Void> future =
-                                dummyFuture.thenRunAsync(
-                                        () -> {
-                                            userNotificationSettingCommandFacade.update(
-                                                    finalI,
-                                                    new UserNotificationSettingUpdateRequest(
-                                                            messageType, false));
-                                            latch.countDown();
-                                        });
-
-                        assertThat(future.isDone()).isFalse();
-                        future.join();
-                        assertThat(future.isCompletedExceptionally()).isFalse();
-                        assertThat(future.isDone()).isTrue();
-                    });
+            CompletableFuture<Void> future =
+                    dummyFuture.thenRunAsync(
+                            () -> {
+                                userNotificationSettingCommandFacade.update(
+                                        finalI,
+                                        new UserNotificationSettingUpdateRequest(
+                                                messageType, false));
+                                latch.countDown();
+                            });
+            assertThat(future.isDone()).isFalse();
+            future.join();
+            assertThat(future.isCompletedExceptionally()).isFalse();
+            assertThat(future.isDone()).isTrue();
         }
-
         // then
         boolean completed = latch.await(1L, TimeUnit.SECONDS);
         assertThat(completed).isTrue();
