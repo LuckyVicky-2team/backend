@@ -48,8 +48,8 @@ public class UserNotificationSettingCommandFacade성능테스트 extends Integra
     }
 
     @Test
-    @DisplayName("TO_BE 회원 100명이 동시에 알림설정을 변경한다")
-    void TO_BE_회원_100명이_동시에_알림설정을_변경한다() throws InterruptedException {
+    @DisplayName("회원 100명이 동시에 알림설정을 변경한다")
+    void 회원_100명이_동시에_알림설정을_변경한다() throws InterruptedException {
         // given
         List<NotificationSettingEntity> notificationSettings = getNotificationSettings();
         MessageType messageType =
@@ -84,7 +84,7 @@ public class UserNotificationSettingCommandFacade성능테스트 extends Integra
                             }
                         });
         dummyFuture.join();
-        assertThat(dummyFuture.isDone()).isTrue(); // 아래 다른 비동기 로직이 있어도 무조건 해당 비동기 연산이 모두 끝날때 까지 대기
+        assertThat(dummyFuture.isDone()).isTrue(); // 더미데이터 추가 비동기 연산이 모두 끝날때 까지 대기
 
         ExecutorService executorService = Executors.newFixedThreadPool(count);
         CountDownLatch latch = new CountDownLatch(count);
@@ -93,10 +93,20 @@ public class UserNotificationSettingCommandFacade성능테스트 extends Integra
             long finalI = i;
             executorService.submit(
                     () -> {
-                        userNotificationSettingCommandFacade.update(
-                                finalI,
-                                new UserNotificationSettingUpdateRequest(messageType, false));
-                        latch.countDown();
+                        CompletableFuture<Void> future =
+                                dummyFuture.thenRunAsync(
+                                        () -> {
+                                            userNotificationSettingCommandFacade.update(
+                                                    finalI,
+                                                    new UserNotificationSettingUpdateRequest(
+                                                            messageType, false));
+                                            latch.countDown();
+                                        });
+
+                        assertThat(future.isDone()).isFalse();
+                        future.join();
+                        assertThat(future.isCompletedExceptionally()).isFalse();
+                        assertThat(future.isDone()).isTrue();
                     });
         }
 
