@@ -2,6 +2,7 @@ package com.boardgo.integration.notification.facade;
 
 import static com.boardgo.integration.data.TermsConditionsData.getTermsConditions;
 import static com.boardgo.integration.fixture.NotificationSettingFixture.getNotificationSettings;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.boardgo.domain.notification.controller.request.UserNotificationSettingUpdateRequest;
 import com.boardgo.domain.notification.entity.MessageType;
@@ -21,8 +22,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserNotificationSettingCommandFacade성능테스트 extends IntegrationTestSupport {
@@ -44,7 +47,7 @@ public class UserNotificationSettingCommandFacade성능테스트 extends Integra
                 });
     }
 
-    // @Test
+    @Test
     @DisplayName("TO_BE 회원 100명이 동시에 알림설정을 변경한다")
     void TO_BE_회원_100명이_동시에_알림설정을_변경한다() throws InterruptedException {
         // given
@@ -81,34 +84,25 @@ public class UserNotificationSettingCommandFacade성능테스트 extends Integra
                             }
                         });
         dummyFuture.join();
+        assertThat(dummyFuture.isDone()).isTrue(); // 아래 다른 비동기 로직이 있어도 무조건 해당 비동기 연산이 모두 끝날때 까지 대기
 
         ExecutorService executorService = Executors.newFixedThreadPool(count);
         CountDownLatch latch = new CountDownLatch(count);
-
         // when
-        // 00:46:42.026
         for (long i = 1; i <= count; i++) {
-            try {
-                long finalI = i;
-                executorService.submit(
-                        () -> {
-                            dummyFuture.thenRun(
-                                    () ->
-                                            userNotificationSettingCommandFacade.update(
-                                                    finalI,
-                                                    new UserNotificationSettingUpdateRequest(
-                                                            messageType, false)));
-                        });
-            } finally {
-                latch.countDown();
-            }
+            long finalI = i;
+            executorService.submit(
+                    () -> {
+                        userNotificationSettingCommandFacade.update(
+                                finalI,
+                                new UserNotificationSettingUpdateRequest(messageType, false));
+                        latch.countDown();
+                    });
         }
 
-        try {
-            // 00:46:42.644 > ★약 0.5초 소요 (3번 측정)
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-        }
-        latch.await();
+        // then
+        boolean completed = latch.await(1L, TimeUnit.SECONDS);
+        assertThat(completed).isTrue();
+        assertThat(latch.getCount()).isEqualTo(0);
     }
 }
