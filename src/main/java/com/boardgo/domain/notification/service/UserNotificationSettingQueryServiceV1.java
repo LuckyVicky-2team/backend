@@ -21,7 +21,7 @@ public class UserNotificationSettingQueryServiceV1 implements UserNotificationSe
     private final UserNotificationSettingMapper userNotificationSettingMapper;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserNotificationSettingResponse> getUserNotificationSettingsList(Long userId) {
         List<UserNotificationSettingEntity> entities =
                 userNotificationSettingRepository.findByUserInfoId(userId);
