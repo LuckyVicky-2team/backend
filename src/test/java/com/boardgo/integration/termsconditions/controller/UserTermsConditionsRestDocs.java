@@ -69,6 +69,6 @@ public class UserTermsConditionsRestDocs extends RestDocsTestSupport {
     }
 
     private QueryParametersSnippet getUserTermsConditionsQueryParamSnippet() {
-        return queryParameters(parameterWithName("isAgreed").description("동의여부(TRUE/FALSE)"));
+        return queryParameters(parameterWithName("isAgreed").description("동의여부(true/false)"));
     }
 }

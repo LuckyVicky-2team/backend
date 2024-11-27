@@ -1150,15 +1150,28 @@ include::{snippets}/patch-user-notification/request-fields.adoc[]
 
 include::{snippets}/patch-user-notification/http-response.adoc[]
 
-- HTTP 상태 코드
+- HTTP 에러 상태 코드
 
 |===
-| code | messages
+| errorCode | messages
 
-| 200
-| 데이터 존재 시
+| 400
+|회원의 알림설정이 존재하지 않습니다
 
 |===
+
+'''
+
+=== *PUSH 알림 약관동의 수정*
+
+==== *요청*
+
+include::{snippets}/patch-user-terms-conditions-push/http-request.adoc[]
+include::{snippets}/patch-user-terms-conditions-push/query-parameters.adoc[]
+
+==== *응답*
+
+include::{snippets}/patch-user-terms-conditions-push/http-response.adoc[]
 
 - HTTP 에러 상태 코드
 
@@ -1166,8 +1179,7 @@ include::{snippets}/patch-user-notification/http-response.adoc[]
 | errorCode | messages
 
 | 400
-|회원의 알림설정이 존재하지 않습니다 +
-알림설정 수정 중 예외가 발생했습니다.
+|회원의 알림설정이 존재하지 않습니다
 
 |===
 
