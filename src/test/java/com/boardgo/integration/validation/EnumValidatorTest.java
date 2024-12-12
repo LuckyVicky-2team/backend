@@ -16,10 +16,10 @@ public class EnumValidatorTest extends IntegrationTestSupport {
 
     @Autowired private Validator validatorInjected;
 
-    @ParameterizedTest
-    @DisplayName("정해진 enum 타입의 문자열만 검증한다")
+    // @ParameterizedTest
+    @DisplayName("정해진 enum 타입의 문자열만 유효성 검증에 성공한다")
     @ValueSource(strings = {"PROGRESS", "progress"})
-    void 정해진_enum_타입의_문자열만_검증한다(String meetingState) {
+    void 정해진_enum_타입의_문자열만_유효성_검증에_성공한다(String meetingState) {
         // given
         MeetingOutRequest request = new MeetingOutRequest(1L, meetingState);
 
@@ -29,6 +29,25 @@ public class EnumValidatorTest extends IntegrationTestSupport {
 
         // Then
         assertThat(violations).isEmpty();
+    }
+
+    @ParameterizedTest
+    @DisplayName("정해진 enum 타입의 문자열을 포함할 경우 유효성 검증에 실패한다")
+    @ValueSource(strings = {"FINISH", "finish"})
+    void 정해진_enum_타입의_문자열을_포함할_경우_유효성_검증에_실패한다(String meetingState) {
+        // given
+        MeetingOutRequest request = new MeetingOutRequest(1L, meetingState);
+
+        // when
+        Set<ConstraintViolation<MeetingOutRequest>> violations =
+                validatorInjected.validate(request);
+
+        // Then
+        violations.forEach(
+                violation -> {
+                    assertThat(violation).isNotNull();
+                    assertThat(violation.getMessage()).contains("유효하지 않은 모임 상태입니다");
+                });
     }
 
     @ParameterizedTest

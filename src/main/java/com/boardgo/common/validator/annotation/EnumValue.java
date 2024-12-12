@@ -25,5 +25,11 @@ public @interface EnumValue {
 
     Class<? extends Payload>[] payload() default {};
 
+    /***
+     * 특정 문자열과 같지 않으면 유효성 검증 실패
+     */
     String constraintEquals() default "";
+
+    /** 특정 문자열과 같으면 유효성 검증 실패 */
+    String constraintNotEquals() default "";
 }
