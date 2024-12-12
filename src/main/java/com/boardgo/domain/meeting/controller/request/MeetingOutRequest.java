@@ -11,5 +11,5 @@ public record MeetingOutRequest(
                 @EnumValue(
                         enumClass = MeetingState.class,
                         message = "유효하지 않은 모임 상태입니다",
-                        constraintEquals = "PROGRESS")
+                        constraintNotEquals = "FINISH")
                 String meetingState) {}

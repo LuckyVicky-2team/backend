@@ -17,9 +17,9 @@ public class EnumValidatorTest extends IntegrationTestSupport {
     @Autowired private Validator validatorInjected;
 
     // @ParameterizedTest
-    @DisplayName("정해진 enum 타입의 문자열만 유효성 검증에 성공한다")
+    @DisplayName("정해진 enum 타입과 같은 문자열만 유효성 검증에 성공한다")
     @ValueSource(strings = {"PROGRESS", "progress"})
-    void 정해진_enum_타입의_문자열만_유효성_검증에_성공한다(String meetingState) {
+    void 정해진_enum_타입과_같은_문자열만_유효성_검증에_성공한다(String meetingState) {
         // given
         MeetingOutRequest request = new MeetingOutRequest(1L, meetingState);
 
