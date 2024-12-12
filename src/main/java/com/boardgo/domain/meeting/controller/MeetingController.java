@@ -1,11 +1,14 @@
 package com.boardgo.domain.meeting.controller;
 
-import static com.boardgo.common.constant.HeaderConstant.*;
-import static com.boardgo.common.utils.SecurityUtils.*;
+import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER1;
+import static com.boardgo.common.utils.SecurityUtils.currentUserId;
+import static com.boardgo.common.utils.SecurityUtils.currentUserIdWithoutThrow;
 
 import com.boardgo.domain.meeting.controller.request.MeetingCreateRequest;
 import com.boardgo.domain.meeting.controller.request.MeetingSearchRequest;
 import com.boardgo.domain.meeting.controller.request.MeetingUpdateRequest;
+import com.boardgo.domain.meeting.entity.enums.MeetingState;
+import com.boardgo.domain.meeting.service.MeetingCommandUseCase;
 import com.boardgo.domain.meeting.service.facade.MeetingCommandFacade;
 import com.boardgo.domain.meeting.service.facade.MeetingQueryFacade;
 import com.boardgo.domain.meeting.service.response.MeetingResponse;
@@ -32,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class MeetingController {
     private final MeetingCommandFacade meetingCommandFacade;
+    private final MeetingCommandUseCase meetingCommandUseCase;
     private final MeetingQueryFacade meetingQueryFacade;
 
     @PostMapping(value = "/meeting", headers = API_VERSION_HEADER1)
@@ -59,7 +63,7 @@ public class MeetingController {
     public ResponseEntity<MeetingResponse> getById(@PathVariable("id") @Positive Long id) {
         MeetingResponse meetingDetail =
                 meetingQueryFacade.getDetailById(id, currentUserIdWithoutThrow());
-        meetingCommandFacade.incrementViewCount(meetingDetail.meetingId());
+        meetingCommandUseCase.incrementViewCount(meetingDetail.meetingId());
         return ResponseEntity.ok(meetingDetail);
     }
 
@@ -73,13 +77,13 @@ public class MeetingController {
 
     @PatchMapping(value = "/meeting/share/{id}", headers = API_VERSION_HEADER1)
     public ResponseEntity<Void> incrementShareCount(@PathVariable("id") @Positive Long id) {
-        meetingCommandFacade.incrementShareCount(id);
+        meetingCommandUseCase.incrementShareCount(id);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping(value = "/meeting/complete/{id}", headers = API_VERSION_HEADER1)
     public ResponseEntity<Void> updateCompleteMeetingState(@PathVariable("id") @Positive Long id) {
-        meetingCommandFacade.updateCompleteMeetingState(id);
+        meetingCommandUseCase.updateMeetingState(id, MeetingState.COMPLETE);
         return ResponseEntity.ok().build();
     }
 
