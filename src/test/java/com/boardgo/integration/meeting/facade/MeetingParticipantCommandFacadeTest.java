@@ -91,6 +91,11 @@ public class MeetingParticipantCommandFacadeTest extends IntegrationTestSupport 
         meetingParticipantCommandFacade.outMeeting(meeting.getId(), userId, false);
 
         // then
-        assertThat(meeting.getState()).isEqualTo(MeetingState.PROGRESS);
+        meetingRepository
+                .findById(meeting.getId())
+                .ifPresent(
+                        meetingEntity -> {
+                            assertThat(meetingEntity.getState()).isEqualTo(MeetingState.PROGRESS);
+                        });
     }
 }

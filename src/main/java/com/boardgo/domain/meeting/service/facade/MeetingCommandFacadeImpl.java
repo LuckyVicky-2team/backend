@@ -2,7 +2,6 @@ package com.boardgo.domain.meeting.service.facade;
 
 import static com.boardgo.common.constant.S3BucketConstant.BOARDGAME;
 import static com.boardgo.common.constant.S3BucketConstant.MEETING;
-import static com.boardgo.domain.meeting.entity.enums.MeetingState.COMPLETE;
 import static com.boardgo.domain.meeting.entity.enums.MeetingState.PROGRESS;
 import static com.boardgo.domain.notification.entity.MessageType.MEETING_MODIFY;
 
@@ -82,24 +81,6 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
                         meetingId, userId, ParticipantType.LEADER));
         chatRoomCommandUseCase.create(meetingId);
         return meetingId;
-    }
-
-    @Override
-    public void incrementShareCount(Long meetingId) {
-        MeetingEntity meeting = meetingQueryUseCase.getMeeting(meetingId);
-        meeting.incrementShareCount();
-    }
-
-    @Override
-    public void incrementViewCount(Long meetingId) {
-        MeetingEntity meeting = meetingQueryUseCase.getMeeting(meetingId);
-        meeting.incrementViewCount();
-    }
-
-    @Override
-    public void updateCompleteMeetingState(Long meetingId) {
-        MeetingEntity meeting = meetingQueryUseCase.getMeeting(meetingId);
-        meeting.updateMeetingState(COMPLETE);
     }
 
     @Override
