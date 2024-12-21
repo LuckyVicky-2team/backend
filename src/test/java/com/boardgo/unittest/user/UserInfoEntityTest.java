@@ -1,6 +1,7 @@
 package com.boardgo.unittest.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.boardgo.integration.fixture.UserInfoFixture.*;
+import static org.assertj.core.api.Assertions.*;
 
 import com.boardgo.domain.mapper.UserInfoMapper;
 import com.boardgo.domain.user.controller.request.SignupRequest;
@@ -8,6 +9,7 @@ import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.entity.UserInfoStatus;
 import com.boardgo.domain.user.entity.enums.ProviderType;
 import com.boardgo.unittest.user.fake.FakePasswordEncoder;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -125,5 +127,17 @@ public class UserInfoEntityTest {
 
         // then
         assertThat(userInfoEntity.getUserInfoStatus().getPushToken()).isEqualTo(pushToken);
+    }
+
+    @Test
+    @DisplayName("유저 삭제 처리할 수 있다")
+    void 유저_삭제_처리할_수_있다() {
+        // given
+        LocalDateTime now = LocalDateTime.now();
+        UserInfoEntity userInfoEntity = localUserInfoEntity();
+        // when
+        userInfoEntity.delete(now);
+        // then
+        assertThat(userInfoEntity.getDeleteAt()).isEqualTo(now);
     }
 }

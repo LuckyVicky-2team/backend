@@ -219,7 +219,7 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                                 requestParts(
                                         partWithName("password")
                                                 .attributes(constraints("STRING"))
-                                                .description("PR태그 목록"))))
+                                                .description("기존 비밀번호"))))
                 .when()
                 .post("/personal-info/password")
                 .then()

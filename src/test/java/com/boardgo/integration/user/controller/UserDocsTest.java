@@ -1,17 +1,17 @@
 package com.boardgo.integration.user.controller;
 
-import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
-import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
-import static com.boardgo.integration.data.UserInfoData.userInfoEntityData;
-import static io.restassured.RestAssured.given;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static com.boardgo.common.constant.HeaderConstant.*;
+import static com.boardgo.integration.data.UserInfoData.*;
+import static com.boardgo.integration.fixture.UserInfoFixture.*;
+import static io.restassured.RestAssured.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.*;
 
 import com.boardgo.domain.user.controller.request.PushTokenRequest;
+import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.entity.UserInfoStatus;
 import com.boardgo.domain.user.entity.enums.ProviderType;
 import com.boardgo.domain.user.repository.UserRepository;
@@ -22,9 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserDocsTest extends RestDocsTestSupport {
 
+    @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private UserRepository userRepository;
 
     @Test
@@ -104,6 +106,40 @@ public class UserDocsTest extends RestDocsTestSupport {
                 .log()
                 .ifError()
                 .extract();
+    }
+
+    @Test
+    @DisplayName("계정 삭제")
+    void 계정_삭제() {
+        // given
+        String password = "fhs@#$fa124";
+        UserInfoEntity userInfoEntity = localUserInfoEntity();
+        userInfoEntity.encodePassword(passwordEncoder);
+        UserInfoEntity save = userRepository.save(userInfoEntity);
+
+        // when
+        // then
+        given(this.spec)
+                .log()
+                .all()
+                .port(port)
+                .multiPart("password", password)
+                .header(API_VERSION_HEADER, "1")
+                .header(AUTHORIZATION, testAccessToken)
+                .filter(
+                        document(
+                                "delete-user",
+                                requestHeaders( // 요청 헤더 문서화
+                                        headerWithName(API_VERSION_HEADER).description("API 버전"),
+                                        headerWithName(AUTHORIZATION).description("Bearer 인증 토큰")),
+                                requestParts(
+                                        partWithName("password")
+                                                .attributes(constraints("STRING"))
+                                                .description("기존 비밀번호"))))
+                .when()
+                .delete("/user")
+                .then()
+                .statusCode(HttpStatus.OK.value());
     }
 
     private RequestFieldsSnippet getPushTokenRequestFieldSnippet() {

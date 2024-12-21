@@ -86,4 +86,8 @@ public class UserInfoEntity extends BaseEntity {
     public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
+
+    public void delete(LocalDateTime now) {
+        this.deleteAt = now;
+    }
 }

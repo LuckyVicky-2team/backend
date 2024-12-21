@@ -284,7 +284,32 @@ include::{snippets}/check-password-equal/http-response.adoc[]
 |===
 
 '''
+=== *계정 삭제*
 
+==== *요청*
+
+include::{snippets}/delete-user/http-request.adoc[]
+- http-request
+include::{snippets}/delete-user/request-parts.adoc[]
+
+==== *응답*
+
+include::{snippets}/delete-user/http-response.adoc[]
+
+- 에러 HTTP 상태 코드
+
+|===
+| code | messages
+
+| 200
+| 계정 삭제 성공
+|400
+| 비밀번호가 다름
+|404
+| 계정이 없음
+|===
+
+'''
 === *다른 사람 프로필 조회*
 
 ==== *요청*
