@@ -259,6 +259,32 @@ PR태그 글자 수는 10자 까지 가능합니다 +
 
 '''
 
+
+=== *비밀번호 확인*
+
+==== *요청*
+
+include::{snippets}/check-password-equal/http-request.adoc[]
+- http-request
+include::{snippets}/check-password-equal/request-parts.adoc[]
+
+==== *응답*
+
+include::{snippets}/check-password-equal/http-response.adoc[]
+
+- 에러 HTTP 상태 코드
+
+|===
+| code | messages
+
+| 200
+| 비밀번호가 같음
+|400
+| 비밀번호가 다름
+|===
+
+'''
+
 === *다른 사람 프로필 조회*
 
 ==== *요청*

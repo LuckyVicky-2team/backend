@@ -8,6 +8,8 @@ public interface UserQueryUseCase {
 
     UserInfoEntity getUserInfoEntity(Long id);
 
+    boolean isEqualPassword(Long userId, String password);
+
     void existEmail(EmailRequest emailRequest);
 
     boolean existNickName(String nickName);

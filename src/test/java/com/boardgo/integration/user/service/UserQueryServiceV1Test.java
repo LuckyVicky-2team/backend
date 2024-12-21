@@ -32,12 +32,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserQueryServiceV1Test extends IntegrationTestSupport {
     @Autowired private UserRepository userRepository;
     @Autowired private UserPrTagRepository userPrTagRepository;
     @Autowired private MeetingParticipantRepository meetingParticipantRepository;
     @Autowired private ReviewRepository reviewRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private UserQueryUseCase userQueryUseCase;
     @Autowired private UserQueryServiceFacade userQueryServiceFacade;
 
@@ -49,6 +51,34 @@ public class UserQueryServiceV1Test extends IntegrationTestSupport {
         // when
         // then
         userQueryUseCase.existEmail(emailRequest);
+    }
+
+    @Test
+    @DisplayName("비밀번호가 같으면 true를 반환한다")
+    void 비밀번호가_같으면_true를_반환한다() {
+        // given
+        String password = "fhs@#$fa124";
+        UserInfoEntity userInfoEntity = localUserInfoEntity();
+        userInfoEntity.encodePassword(passwordEncoder);
+        UserInfoEntity save = userRepository.save(userInfoEntity);
+        // when
+        boolean result = userQueryUseCase.isEqualPassword(save.getId(), password);
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("비밀번호가 같지 않으면 false를 반환한다")
+    void 비밀번호가_같지_않으면_false를_반환한다() {
+        // given
+        String password = "WrongPassword";
+        UserInfoEntity userInfoEntity = localUserInfoEntity();
+        userInfoEntity.encodePassword(passwordEncoder);
+        UserInfoEntity save = userRepository.save(userInfoEntity);
+        // when
+        boolean result = userQueryUseCase.isEqualPassword(save.getId(), password);
+        // then
+        assertThat(result).isFalse();
     }
 
     @Test
