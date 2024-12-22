@@ -93,7 +93,8 @@ public class UserCommandServiceV1Test extends IntegrationTestSupport {
         String pushToken = "ghdskjapushtokengskla";
 
         Optional<UserInfoEntity> loginUser =
-                userRepository.findByEmailAndProviderType(email, ProviderType.KAKAO);
+                userRepository.findByEmailAndProviderTypeAndDeleteAtIsNull(
+                        email, ProviderType.KAKAO);
         assertThat(loginUser.isPresent()).isTrue();
 
         // when

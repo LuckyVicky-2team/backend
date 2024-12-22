@@ -6,7 +6,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserInfoEntity, Long>, UserDslRepository {
-    Optional<UserInfoEntity> findByEmailAndProviderType(String email, ProviderType providerType);
+    Optional<UserInfoEntity> findByEmailAndProviderTypeAndDeleteAtIsNull(
+            String email, ProviderType providerType);
 
     boolean existsByEmailAndProviderType(String email, ProviderType providerType);
 
