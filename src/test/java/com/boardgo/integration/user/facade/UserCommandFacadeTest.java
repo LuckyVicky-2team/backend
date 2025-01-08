@@ -1,9 +1,9 @@
 package com.boardgo.integration.user.facade;
 
-import static com.boardgo.integration.data.UserInfoData.userInfoEntityData;
-import static com.boardgo.integration.fixture.TermsConditionsFixture.getTermsConditionsList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.boardgo.integration.data.UserInfoData.*;
+import static com.boardgo.integration.fixture.TermsConditionsFixture.*;
+import static com.boardgo.integration.fixture.UserInfoFixture.*;
+import static org.assertj.core.api.Assertions.*;
 
 import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.config.UserNotificationSettingCommandUseCaseTestConfig;
@@ -26,15 +26,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Import({UserNotificationSettingCommandUseCaseTestConfig.class})
 public class UserCommandFacadeTest extends IntegrationTestSupport {
-
+    @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private TermsConditionsFactory termsConditionsFactory;
     @Autowired private UserCommandFacade userCommandFacade;
     @Autowired private UserRepository userRepository;
@@ -147,5 +149,35 @@ public class UserCommandFacadeTest extends IntegrationTestSupport {
             termsConditions.add(new TermsConditionsCreateRequest(type.name(), true));
         }
         return Stream.of(Arguments.of(termsConditions));
+    }
+
+    @Test
+    @DisplayName("비밀번호 확인 후 계정을 삭제할 수 있다")
+    void 비밀번호_확인_후_계정을_삭제할_수_있다() {
+        // given
+        String password = "fhs@#$fa124";
+        UserInfoEntity userInfoEntity = localUserInfoEntity();
+        userInfoEntity.encodePassword(passwordEncoder);
+        UserInfoEntity save = userRepository.save(userInfoEntity);
+        // when
+        boolean result = userCommandFacade.deleteById(save.getId(), password);
+        // then
+        assertThat(result).isTrue();
+        UserInfoEntity userInfoEntity1 = userRepository.findById(save.getId()).get();
+        assertThat(userInfoEntity1.getDeleteAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("비밀번호가 다를 경우 삭제할 수 없다")
+    void 비밀번호가_다를_경우_삭제할_수_없다() {
+        // given
+        String password = "WrongPassword";
+        UserInfoEntity userInfoEntity = localUserInfoEntity();
+        userInfoEntity.encodePassword(passwordEncoder);
+        UserInfoEntity save = userRepository.save(userInfoEntity);
+        // when
+        boolean result = userCommandFacade.deleteById(save.getId(), password);
+        // then
+        assertThat(result).isFalse();
     }
 }

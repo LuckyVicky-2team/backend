@@ -1,9 +1,8 @@
 package com.boardgo.domain.user.service;
 
-import static com.boardgo.common.constant.S3BucketConstant.USER;
-import static com.boardgo.common.utils.CustomStringUtils.existString;
-import static com.boardgo.common.utils.ValidateUtils.validateNickname;
-import static com.boardgo.common.utils.ValidateUtils.validatePassword;
+import static com.boardgo.common.constant.S3BucketConstant.*;
+import static com.boardgo.common.utils.CustomStringUtils.*;
+import static com.boardgo.common.utils.ValidateUtils.*;
 
 import com.boardgo.common.exception.CustomNullPointException;
 import com.boardgo.common.exception.DuplicateException;
@@ -14,6 +13,7 @@ import com.boardgo.domain.user.controller.request.SignupRequest;
 import com.boardgo.domain.user.controller.request.UserPersonalInfoUpdateRequest;
 import com.boardgo.domain.user.entity.UserInfoEntity;
 import com.boardgo.domain.user.repository.UserRepository;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +74,12 @@ public class UserCommandServiceV1 implements UserCommandUseCase {
     public void updatePushToken(String pushToken, Long userId) {
         UserInfoEntity userInfoEntity = getUserInfoEntity(userId);
         userInfoEntity.getUserInfoStatus().updatePushToken(pushToken);
+    }
+
+    @Override
+    public void deleteById(Long userId) {
+        UserInfoEntity userInfo = getUserInfoEntity(userId);
+        userInfo.delete(LocalDateTime.now());
     }
 
     private UserInfoEntity getUserInfoEntity(Long userId) {
