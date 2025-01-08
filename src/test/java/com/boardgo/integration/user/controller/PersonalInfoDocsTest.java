@@ -1,24 +1,16 @@
 package com.boardgo.integration.user.controller;
 
-import static com.boardgo.common.constant.HeaderConstant.API_VERSION_HEADER;
-import static com.boardgo.common.constant.HeaderConstant.AUTHORIZATION;
-import static com.boardgo.integration.fixture.EvaluationTagFixture.getEvaluationTagEntity;
-import static com.boardgo.integration.fixture.ReviewFixture.getReview;
-import static com.boardgo.integration.fixture.UserInfoFixture.localUserInfoEntity;
-import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
-import static com.boardgo.integration.fixture.UserPrTagFixture.userPrTagEntity;
-import static io.restassured.RestAssured.given;
-import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static com.boardgo.common.constant.HeaderConstant.*;
+import static com.boardgo.integration.fixture.EvaluationTagFixture.*;
+import static com.boardgo.integration.fixture.ReviewFixture.*;
+import static com.boardgo.integration.fixture.UserInfoFixture.*;
+import static com.boardgo.integration.fixture.UserPrTagFixture.*;
+import static io.restassured.RestAssured.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.*;
 
 import com.boardgo.domain.review.repository.EvaluationTagRepository;
 import com.boardgo.domain.review.repository.ReviewRepository;
@@ -39,11 +31,13 @@ import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.PathParametersSnippet;
 import org.springframework.restdocs.request.RequestPartsSnippet;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class PersonalInfoDocsTest extends RestDocsTestSupport {
 
     @Autowired private UserRepository userRepository;
     @Autowired private UserPrTagRepository userPrTagRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private EvaluationTagRepository evaluationTagRepository;
     @Autowired private ReviewRepository reviewRepository;
 
@@ -194,6 +188,40 @@ public class PersonalInfoDocsTest extends RestDocsTestSupport {
                                 getOtherPersonalInfoResponseFieldsSnippet()))
                 .when()
                 .get("/personal-info/{userId}", userInfo.getId())
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("비밀번호 체크 확인")
+    void 비밀번호_체크_확인() {
+        // given
+        String password = "fhs@#$fa124";
+        UserInfoEntity userInfoEntity = localUserInfoEntity();
+        userInfoEntity.encodePassword(passwordEncoder);
+        UserInfoEntity save = userRepository.save(userInfoEntity);
+
+        // when
+        // then
+        given(this.spec)
+                .log()
+                .all()
+                .port(port)
+                .multiPart("password", password)
+                .header(API_VERSION_HEADER, "1")
+                .header(AUTHORIZATION, testAccessToken)
+                .filter(
+                        document(
+                                "check-password-equal",
+                                requestHeaders( // 요청 헤더 문서화
+                                        headerWithName(API_VERSION_HEADER).description("API 버전"),
+                                        headerWithName(AUTHORIZATION).description("Bearer 인증 토큰")),
+                                requestParts(
+                                        partWithName("password")
+                                                .attributes(constraints("STRING"))
+                                                .description("기존 비밀번호"))))
+                .when()
+                .post("/personal-info/password")
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }

@@ -1,7 +1,6 @@
 package com.boardgo.domain.user.service.facade;
 
-import static com.boardgo.common.utils.ValidateUtils.validateNickname;
-import static com.boardgo.common.utils.ValidateUtils.validatePrTag;
+import static com.boardgo.common.utils.ValidateUtils.*;
 
 import com.boardgo.common.exception.DuplicateException;
 import com.boardgo.domain.termsconditions.service.facade.UserTermsConditionsCommandFacade;
@@ -49,6 +48,15 @@ public class UserCommandFacadeImpl implements UserCommandFacade {
         userInfoEntity.updateNickname(signupRequest.nickName());
         userPrTagCommandUseCase.bulkInsertPrTags(signupRequest.prTags(), userInfoEntity.getId());
         return userInfoEntity.getId();
+    }
+
+    @Override
+    public boolean deleteById(Long userId, String password) {
+        if (!userQueryUseCase.isEqualPassword(userId, password)) {
+            return false;
+        }
+        userCommandUseCase.deleteById(userId);
+        return true;
     }
 
     private void validateNickNameAndPrTag(String nickName, List<String> prTags) {

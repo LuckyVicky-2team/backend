@@ -1,9 +1,8 @@
 package com.boardgo.integration.user.service;
 
-import static com.boardgo.integration.data.UserInfoData.userInfoEntityData;
-import static com.boardgo.integration.fixture.UserInfoFixture.localUserInfoEntity;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.boardgo.integration.data.UserInfoData.*;
+import static com.boardgo.integration.fixture.UserInfoFixture.*;
+import static org.assertj.core.api.Assertions.*;
 
 import com.boardgo.common.exception.DuplicateException;
 import com.boardgo.domain.user.controller.request.SignupRequest;
@@ -94,7 +93,8 @@ public class UserCommandServiceV1Test extends IntegrationTestSupport {
         String pushToken = "ghdskjapushtokengskla";
 
         Optional<UserInfoEntity> loginUser =
-                userRepository.findByEmailAndProviderType(email, ProviderType.KAKAO);
+                userRepository.findByEmailAndProviderTypeAndDeleteAtIsNull(
+                        email, ProviderType.KAKAO);
         assertThat(loginUser.isPresent()).isTrue();
 
         // when

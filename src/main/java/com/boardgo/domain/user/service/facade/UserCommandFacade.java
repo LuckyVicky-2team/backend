@@ -7,4 +7,6 @@ public interface UserCommandFacade {
     Long signup(SignupRequest signupRequest);
 
     Long socialSignup(SocialSignupRequest signupRequest, Long userId);
+
+    boolean deleteById(Long userId, String password);
 }

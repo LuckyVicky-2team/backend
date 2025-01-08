@@ -12,6 +12,7 @@ import com.boardgo.domain.user.repository.UserRepository;
 import com.boardgo.domain.user.repository.projection.PersonalInfoProjection;
 import com.boardgo.domain.user.service.response.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserQueryServiceV1 implements UserQueryUseCase {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final UserInfoMapper userInfoMapper;
 
     @Override
@@ -27,6 +29,16 @@ public class UserQueryServiceV1 implements UserQueryUseCase {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new CustomNullPointException("회원이 존재하지 않습니다"));
+    }
+
+    @Override
+    public boolean isEqualPassword(Long userId, String password) {
+        UserInfoEntity userInfo =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomNullPointException("회원이 존재하지 않습니다"));
+
+        return passwordEncoder.matches(password, userInfo.getPassword());
     }
 
     @Override

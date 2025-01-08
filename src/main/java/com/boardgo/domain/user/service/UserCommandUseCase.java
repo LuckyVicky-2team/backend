@@ -12,4 +12,6 @@ public interface UserCommandUseCase {
     void updateProfileImage(Long userId, MultipartFile profileImage);
 
     void updatePushToken(String pushToken, Long userId);
+
+    void deleteById(Long userId);
 }
