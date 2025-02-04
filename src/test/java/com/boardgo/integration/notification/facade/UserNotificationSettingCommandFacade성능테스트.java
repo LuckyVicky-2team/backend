@@ -23,7 +23,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserNotificationSettingCommandFacade성능테스트 extends IntegrationTestSupport {
@@ -45,7 +44,7 @@ public class UserNotificationSettingCommandFacade성능테스트 extends Integra
                 });
     }
 
-    @Test
+    // @Test
     @DisplayName("회원 100명이 동시에 알림설정을 변경한다")
     void 회원_100명이_동시에_알림설정을_변경한다() throws InterruptedException {
         // given

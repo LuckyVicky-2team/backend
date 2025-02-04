@@ -193,7 +193,7 @@ public class MeetingCommandFacadeImpl implements MeetingCommandFacade {
 
     private static void validateNotProgressState(MeetingEntity meeting) {
         if (!meeting.isSameState(PROGRESS)) {
-            throw new IllegalArgumentException("모집 중인 상태만 삭제할 수 있습니다.");
+            throw new CustomIllegalArgumentException("모집 중인 상태만 삭제할 수 있습니다.");
         }
     }
 

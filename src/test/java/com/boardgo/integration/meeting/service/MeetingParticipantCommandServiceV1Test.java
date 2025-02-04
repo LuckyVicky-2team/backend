@@ -7,12 +7,12 @@ import static com.boardgo.integration.fixture.MeetingParticipantFixture.getParti
 import static com.boardgo.integration.fixture.UserInfoFixture.localUserInfoEntity;
 import static com.boardgo.integration.fixture.UserInfoFixture.socialUserInfoEntity;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.boardgo.common.exception.CustomIllegalArgumentException;
 import com.boardgo.domain.meeting.controller.request.MeetingParticipateRequest;
 import com.boardgo.domain.meeting.entity.MeetingEntity;
+import com.boardgo.domain.meeting.entity.enums.MeetingState;
 import com.boardgo.domain.meeting.entity.enums.MeetingType;
 import com.boardgo.domain.meeting.repository.MeetingParticipantRepository;
 import com.boardgo.domain.meeting.repository.MeetingRepository;
@@ -131,31 +131,30 @@ public class MeetingParticipantCommandServiceV1Test extends IntegrationTestSuppo
     }
 
     @Test
-    @DisplayName("수락 형식 모임일 경우 바로 모임에 참가할 수 없다")
-    void 수락_형식_모임일_경우_바로_모임에_참가할_수_없다() {
+    @DisplayName("모임 상태가 진행중이 아닐 경우 예외가 발생한다")
+    void 모임_상태가_진행중이_아닐_경우_예외가_발생한다() {
         // given
-        UserInfoEntity participants = getAcceptMeetingParticipationData();
+        UserInfoEntity participants = getCompleteMeetingParticipationData();
         Long meetingId = 1L;
         MeetingParticipateRequest participateRequest = new MeetingParticipateRequest(meetingId);
-
         // when
-        participantCommandUseCase.participateMeeting(participateRequest, participants.getId());
-
         // then
-        assertFalse(
-                meetingParticipantRepository.existsByUserInfoIdAndMeetingId(
-                        participants.getId(), meetingId));
+        assertThatThrownBy(
+                        () ->
+                                participantCommandUseCase.participateMeeting(
+                                        participateRequest, participants.getId()))
+                .isInstanceOf(CustomIllegalArgumentException.class)
+                .hasMessageContaining("모임 중인 상태만 참여할 수 있습니다.");
     }
 
-    private UserInfoEntity getAcceptMeetingParticipationData() {
+    private UserInfoEntity getCompleteMeetingParticipationData() {
         UserInfoEntity participants = userRepository.save(socialUserInfoEntity(ProviderType.KAKAO));
         UserInfoEntity leader = userRepository.save(localUserInfoEntity());
         MeetingEntity meeting =
                 meetingRepository.save(
-                        getMeetingEntityData(leader.getId()).type(MeetingType.ACCEPT).build());
+                        getMeetingEntityData(leader.getId()).state(MeetingState.COMPLETE).build());
         meetingParticipantRepository.save(
                 getLeaderMeetingParticipantEntity(meeting.getId(), leader.getId()));
-
         return participants;
     }
 
